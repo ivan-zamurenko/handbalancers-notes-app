@@ -1,0 +1,143 @@
+ПОКРОКОВА ІНСТРУКЦІЯ: Налаштування Supabase (База даних)
+==========================================================
+
+КРОК 1 — Створити проект у Supabase
+-------------------------------------
+1. Зайди на https://supabase.com і увійди в акаунт
+2. Натисни "New project"
+3. Заповни:
+   - Name: handbalancers-notes-app
+   - Database Password: придумай надійний пароль і збережи його
+   - Region: обери найближчий (наприклад, eu-central-1 для Європи)
+4. Натисни "Create new project" і почекай ~2 хвилини
+
+
+КРОК 2 — Отримати ключі API
+-----------------------------
+1. Зайди в Project Settings → API
+2. Скопіюй:
+   - Project URL → це NEXT_PUBLIC_SUPABASE_URL
+   - anon public key → це NEXT_PUBLIC_SUPABASE_ANON_KEY
+3. Відкрий файл .env.local у проекті і встав ці значення:
+
+   NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...
+
+
+КРОК 3 — Виконати SQL схему
+-----------------------------
+1. Зайди в Supabase → SQL Editor (у лівому меню)
+2. Натисни "New query"
+3. Відкрий файл supabase/schema.sql у проекті
+4. Скопіюй весь вміст файлу у SQL Editor
+5. Натисни "Run" (або Ctrl+Enter)
+6. Переконайся що знизу з'явилось "Success. No rows returned"
+
+
+КРОК 4 — Перевірити таблиці
+-----------------------------
+1. Зайди в Supabase → Table Editor
+2. У лівому меню мають з'явитись таблиці:
+   - profiles
+   - programs
+   - workouts
+   - exercises
+   - workout_logs
+   - user_programs
+   - subscriptions
+
+
+КРОК 5 — Налаштувати автентифікацію
+--------------------------------------
+(Supabase оновили UI — Providers більше немає як окремий пункт)
+
+Email авторизація:
+1. Authentication → Configuration → Sign In / Sign Up
+2. Переконайся що "Email" увімкнено (має бути за замовчуванням)
+
+За бажанням увімкни Google / GitHub OAuth:
+1. Authentication → Configuration → Social Auth
+2. Обери провайдера і встав Client ID / Secret
+
+Опціонально — вимкнути підтвердження email (для розробки):
+1. Authentication → Configuration → Sign In / Sign Up
+2. Вимкни "Enable email confirmations"
+
+
+КРОК 6 — Додати тестові дані (опціонально)
+--------------------------------------------
+Можна вставити тестову програму через SQL Editor:
+
+  INSERT INTO programs (title, description, level, is_free)
+  VALUES
+    ('Beginner Handstand', 'Основи стійки на руках', 'beginner', true),
+    ('90 Day Flexibility', '90 днів розтяжки', 'intermediate', false);
+
+
+СТРУКТУРА ТАБЛИЦЬ
+==================
+
+profiles
+  id            uuid  (прив'язаний до auth.users)
+  name          text
+  avatar_url    text  (необов'язково)
+  created_at    timestamp
+
+programs
+  id            uuid
+  title         text
+  description   text
+  level         text  (beginner / intermediate / advanced)
+  is_free       boolean
+  thumbnail_url text  (необов'язково)
+  created_at    timestamp
+
+workouts  (тренування у програмі)
+  id            uuid
+  program_id    uuid  → programs
+  title         text
+  description   text
+  order         int   (порядок у програмі)
+  created_at    timestamp
+
+exercises  (вправи у тренуванні)
+  id            uuid
+  workout_id    uuid  → workouts
+  name          text
+  description   text
+  target_hold   int   (ціль у секундах, для hold-вправ)
+  target_reps   int   (ціль у повтореннях)
+  video_url     text  (необов'язково)
+  order         int
+
+workout_logs  (результати тренувань користувача)
+  id            uuid
+  user_id       uuid  → auth.users
+  exercise_id   uuid  → exercises
+  achieved_hold int   (скільки секунд утримав)
+  reps          int   (скільки повторень зробив)
+  note          text  (нотатка)
+  logged_at     timestamp
+
+user_programs  (які програми доступні користувачу)
+  id            uuid
+  user_id       uuid  → auth.users
+  program_id    uuid  → programs
+  purchased_at  timestamp
+
+subscriptions  (Stripe підписки)
+  id                     uuid
+  user_id                uuid  → auth.users
+  stripe_customer_id     text
+  stripe_subscription_id text
+  status                 text  (active / canceled / trialing / past_due)
+  current_period_end     timestamp
+  created_at             timestamp
+
+
+БЕЗПЕКА (RLS — Row Level Security)
+=====================================
+Вже налаштовано у schema.sql:
+- Кожен користувач бачить ТІЛЬКИ свої logs, підписки та доступи до програм
+- Програми, тренування та вправи — публічні для читання
+- Профіль — тільки власний
