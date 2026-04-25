@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 // Захищені маршрути — потребують авторизації
 const protectedRoutes = ['/dashboard', '/programs', '/workout', '/tracking', '/billing']
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const response = NextResponse.next({ request })
 
   const supabase = createServerClient(
