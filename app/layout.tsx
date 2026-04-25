@@ -1,17 +1,23 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import Navbar from '@/components/layout/Navbar'
+import { createClient } from '@/lib/supabase-server'
 
 export const metadata: Metadata = {
   title: 'Handbalancers — Training Platform',
   description: 'Track your handstand, stretching and fitness progress',
 }
 
-// Кореневий layout — обгортає всі сторінки
-// Сюди додамо: навігацію, Supabase auth provider, глобальні стилі
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   return (
     <html lang="uk">
-      <body>{children}</body>
+      <body>
+        {user && <Navbar />}
+        {children}
+      </body>
     </html>
   )
 }
