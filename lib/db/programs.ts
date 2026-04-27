@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import type { Program, Week, Day } from '@/types'
 
+/** Повертає всі програми в межах категорії, відсортовані за полем order. */
 export async function getProgramsByCategory(categoryId: string): Promise<Program[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -13,6 +14,7 @@ export async function getProgramsByCategory(categoryId: string): Promise<Program
   return data
 }
 
+/** Повертає програму за ID або null якщо не знайдено. */
 export async function getProgramById(id: string): Promise<Program | null> {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -25,6 +27,7 @@ export async function getProgramById(id: string): Promise<Program | null> {
   return data
 }
 
+/** Повертає всі тижні програми, відсортовані за полем order. */
 export async function getWeeksByProgram(programId: string): Promise<Week[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -37,6 +40,7 @@ export async function getWeeksByProgram(programId: string): Promise<Week[]> {
   return data
 }
 
+/** Повертає всі дні тижня, відсортовані за полем order. */
 export async function getDaysByWeek(weekId: string): Promise<Day[]> {
   const supabase = await createClient()
   const { data, error } = await supabase

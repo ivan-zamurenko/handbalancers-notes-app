@@ -32,7 +32,8 @@
   "dashboard": {
     "title": "Dashboard",
     "streak": "{count, plural, one {# day streak} other {# day streak}}",
-    "streakZero": "No streak yet"
+    "streakZero": "No streak yet",
+    "noFavorites": "Star an exercise to track your progress here."
   },
   "programs": {
     "title": "Training Programs",
@@ -62,6 +63,11 @@
     "save": "Save result"
   },
   "stats": {
-    "title": "Average Stats"
+    "title": "Average Stats",
+    "totalSessions": "training days",
+    "avgHold": "avg hold",
+    "avgReps": "avg reps",
+    "seconds": "sec",
+    "reps": "reps"
   }
 }

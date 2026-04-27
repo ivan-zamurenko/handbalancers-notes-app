@@ -28,7 +28,20 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const { pathname } = request.nextUrl
+  const [, locale, ...rest] = pathname.split('/')
+  const path = '/' + rest.join('/')
+
+  const isAuthPage = ['/login', '/register'].some(p => path.startsWith(p))
+  const isProtectedPage = !isAuthPage && path !== '/'
+
+  if (user && isAuthPage)
+    return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url))
+
+  if (!user && isProtectedPage)
+    return NextResponse.redirect(new URL(`/${locale}/login`, request.url))
 
   // Run next-intl locale routing
   const intlResponse = intlMiddleware(request)

@@ -101,3 +101,10 @@ export type Booking = {
   note: string | null
   created_at: string
 }
+
+export type ExerciseFavorite = {
+  id: string
+  user_id: string
+  exercise_id: string
+  created_at: string
+}

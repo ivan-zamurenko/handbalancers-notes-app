@@ -5,6 +5,7 @@
 -- ============================================================
 
 -- Drop tables (order matters: dependents first)
+DROP TABLE IF EXISTS user_exercise_favorites CASCADE;
 DROP TABLE IF EXISTS bookings CASCADE;
 DROP TABLE IF EXISTS workout_logs CASCADE;
 DROP TABLE IF EXISTS user_programs CASCADE;

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import type { Subscription } from '@/types'
 
+/** Повертає підписку користувача або null якщо її немає. */
 export async function getSubscription(userId: string): Promise<Subscription | null> {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -13,6 +14,7 @@ export async function getSubscription(userId: string): Promise<Subscription | nu
   return data
 }
 
+/** Повертає true якщо користувач має активну підписку або trial ще не закінчився. */
 export async function hasActiveAccess(userId: string): Promise<boolean> {
   const supabase = await createClient()
 

@@ -28,10 +28,10 @@ export default function Navbar() {
       <Link href="/billing">{t('billing')}</Link>
       <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
         <button
-          onClick={() => switchLocale(locale === 'uk' ? 'en' : 'uk')}
+          onClick={() => switchLocale(locale === 'ua' ? 'en' : 'ua')}
           style={{ fontWeight: 'bold' }}
         >
-          {locale === 'uk' ? 'EN' : 'UK'}
+          {locale === 'ua' ? 'EN' : 'UA'}
         </button>
         <button onClick={handleLogout}>{t('logout')}</button>
       </div>

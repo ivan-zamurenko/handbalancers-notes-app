@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import type { Exercise } from '@/types'
 
+/** Повертає всі вправи дня, відсортовані за полем order. */
 export async function getExercisesByDay(dayId: string): Promise<Exercise[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -13,6 +14,7 @@ export async function getExercisesByDay(dayId: string): Promise<Exercise[]> {
   return data
 }
 
+/** Повертає вправу за ID або null якщо не знайдено. */
 export async function getExerciseById(id: string): Promise<Exercise | null> {
   const supabase = await createClient()
   const { data, error } = await supabase

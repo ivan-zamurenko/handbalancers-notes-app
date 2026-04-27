@@ -134,6 +134,17 @@ CREATE TABLE bookings (
 );
 
 
+-- 11. USER EXERCISE FAVORITES
+-- Вправи, які користувач позначив зірочкою для відстеження прогресу на дашборді
+CREATE TABLE user_exercise_favorites (
+  id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id      uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  exercise_id  uuid NOT NULL REFERENCES exercises(id) ON DELETE CASCADE,
+  created_at   timestamptz DEFAULT now(),
+  UNIQUE (user_id, exercise_id)
+);
+
+
 -- ============================================================
 -- INDEXES
 -- ============================================================
@@ -147,6 +158,7 @@ CREATE INDEX ON programs (category_id, "order");
 CREATE INDEX ON user_programs (user_id);
 CREATE INDEX ON subscriptions (user_id);
 CREATE INDEX ON bookings (user_id);
+CREATE INDEX ON user_exercise_favorites (user_id);
 
 
 -- ============================================================
@@ -193,6 +205,7 @@ ALTER TABLE workout_logs    ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_programs   ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscriptions   ENABLE ROW LEVEL SECURITY;
 ALTER TABLE bookings        ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_exercise_favorites ENABLE ROW LEVEL SECURITY;
 ALTER TABLE categories      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE programs        ENABLE ROW LEVEL SECURITY;
 ALTER TABLE weeks           ENABLE ROW LEVEL SECURITY;
@@ -208,7 +221,8 @@ CREATE POLICY "profiles_update" ON profiles FOR UPDATE USING (auth.uid() = id);
 CREATE POLICY "Own logs"             ON workout_logs  FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "Own program access"   ON user_programs FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "Own subscription"     ON subscriptions FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY "Own bookings"         ON bookings      FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Own bookings"         ON bookings                    FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Own favorites"        ON user_exercise_favorites     FOR ALL USING (auth.uid() = user_id);
 
 -- content (read-only для всіх авторизованих)
 CREATE POLICY "Read categories" ON categories FOR SELECT USING (true);

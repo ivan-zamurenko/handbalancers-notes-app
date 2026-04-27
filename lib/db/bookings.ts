@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase-server'
 import type { Booking } from '@/types'
 
+/** Повертає всі бронювання (Google Meet сесії) користувача, від найновішого. */
 export async function getBookingsByUser(userId: string): Promise<Booking[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
@@ -18,6 +19,7 @@ export type CreateBookingInput = {
   note?: string
 }
 
+/** Створює нове бронювання на сесію з тренером. */
 export async function createBooking(
   userId: string,
   input: CreateBookingInput
