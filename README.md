@@ -1,87 +1,122 @@
-# 🤸 Handbalancers — Training Platform
+# 🤸 Handbalancers Notes App
 
-Платформа для відстеження тренувань з handstand, розтяжки та фітнесу. Користувач проходить програми, записує результати тренувань і спостерігає за своїм прогресом через дашборд.
+Тренувальна платформа для акробатів, гімнастів та всіх, хто займається стійками на руках, розтяжкою, силовими та повітряними елементами.
+
+Побудована на **Next.js 16**, **Supabase** та **Stripe**. Підтримує дві мови: 🇺🇦 українська (за замовчуванням) та 🇬🇧 англійська.
 
 ---
 
-## ✨ Функціонал
+## 🛠 Стек технологій
 
-| Розділ | Опис |
+| Технологія | Роль |
 |---|---|
-| **Авторизація** | Реєстрація та вхід через Supabase Auth |
-| **Програми** | Список тренувальних програм з рівнями складності |
-| **Тренування** | Таймер для hold-вправ, запис результатів |
-| **Трекінг** | Історія, середні показники, графіки прогресу |
-| **Дашборд** | Streak, статистика за 1M / 3M / 6M, досягнення |
-| **Оплата** | Підписки та покупка курсів через Stripe |
+| Next.js 16 (App Router, Turbopack) | Фреймворк |
+| TypeScript | Типізація |
+| Tailwind CSS | Стилі (mobile-first) |
+| Supabase (+ @supabase/ssr) | Auth + PostgreSQL + RLS |
+| next-intl 4 | Інтернаціоналізація (uk / en) |
+| Stripe | Підписки + Payment Links |
+| Recharts | Графіки прогресу |
+| Resend | Email-сповіщення (заплановано) |
 
 ---
 
-## 🛠 Технології
-
-- **Frontend** — [Next.js 14](https://nextjs.org/) (App Router)
-- **Backend / DB** — [Supabase](https://supabase.com/) (PostgreSQL + Auth)
-- **Графіки** — [Recharts](https://recharts.org/)
-- **Оплата** — [Stripe](https://stripe.com/)
-- **Мова** — TypeScript (ES2017)
-- **Стилі** — Tailwind CSS
-
----
-
-## 📁 Структура проекту
+## 📁 Структура проєкту
 
 ```
-handbalancers-notes-app/
-├── app/
+app/
+├── [locale]/                       # uk (default) / en
+│   ├── layout.tsx                  # NextIntlClientProvider + Navbar
+│   ├── page.tsx                    # Лендінг
 │   ├── (auth)/
-│   │   ├── login/page.tsx          # Вхід в акаунт
-│   │   └── register/page.tsx       # Реєстрація
-│   ├── api/
-│   │   └── stripe/
-│   │       ├── checkout/route.ts   # Створення Stripe Checkout Session
-│   │       └── webhook/route.ts    # Обробка Stripe webhook
-│   ├── billing/page.tsx            # Підписки та оплата
-│   ├── dashboard/page.tsx          # Дашборд користувача
-│   ├── programs/
-│   │   ├── page.tsx                # Список програм
-│   │   └── [id]/page.tsx           # Деталі програми
-│   ├── tracking/page.tsx           # Трекінг прогресу
-│   ├── workout/[id]/page.tsx       # Активне тренування
-│   ├── layout.tsx                  # Кореневий layout
-│   └── page.tsx                    # Лендінг-сторінка
-├── components/
-│   ├── auth/
-│   │   ├── LoginForm.tsx
-│   │   └── RegisterForm.tsx
-│   ├── billing/
-│   │   ├── PricingCard.tsx
-│   │   └── SubscriptionStatus.tsx
+│   │   ├── login/
+│   │   └── register/
 │   ├── dashboard/
-│   │   ├── ProgressChart.tsx       # Графік (Recharts)
-│   │   ├── StatsCard.tsx           # Середні показники
-│   │   └── StreakBadge.tsx         # Streak лічильник
 │   ├── programs/
-│   │   ├── ProgramCard.tsx
-│   │   └── ProgramList.tsx
+│   │   ├── page.tsx                # Список категорій / програм
+│   │   └── [id]/                   # Деталі програми
+│   ├── workout/
+│   │   └── [id]/                   # Сторінка тренування
 │   ├── tracking/
-│   │   ├── ExerciseStats.tsx
-│   │   └── TrackingHistory.tsx
-│   └── workout/
-│       ├── ExerciseCard.tsx
-│       ├── LogForm.tsx             # Форма запису результату
-│       └── Timer.tsx               # Таймер для hold-вправ
-├── lib/
-│   ├── supabase.ts                 # Supabase клієнт
-│   ├── stripe.ts                   # Stripe клієнт
-│   └── hooks/
-│       └── useAuth.ts              # Хук авторизації
-├── types/
-│   └── index.ts                    # TypeScript типи
-├── .env.example                    # Шаблон змінних середовища
-├── next.config.js
-├── package.json
-└── tsconfig.json
+│   └── billing/
+├── api/
+│   └── stripe/
+│       ├── checkout/
+│       └── webhook/
+├── globals.css
+└── layout.tsx
+
+components/
+├── auth/           LoginForm, RegisterForm
+├── billing/        PricingCard, SubscriptionStatus
+├── dashboard/      ProgressChart, StatsCard, StreakBadge
+├── layout/         Navbar (з перемикачем мови)
+├── programs/       ProgramCard, ProgramList
+├── tracking/       ExerciseStats, TrackingHistory
+└── workout/        ExerciseCard, LogForm, Timer
+
+lib/
+├── supabase.ts             # Браузерний клієнт
+├── supabase-server.ts      # Серверний клієнт (RSC / Server Actions)
+├── stripe.ts
+├── db/                     # Весь доступ до БД тут
+│   ├── categories.ts
+│   ├── programs.ts         # programs + weeks + days
+│   ├── exercises.ts
+│   ├── workoutLogs.ts
+│   ├── subscriptions.ts    # hasActiveAccess() (підписка або trial)
+│   └── bookings.ts
+└── hooks/
+    └── useAuth.ts
+
+i18n/
+├── routing.ts              # Локалі: uk (default), en
+├── request.ts              # getRequestConfig
+└── navigation.ts           # createNavigation
+
+messages/
+├── uk.json
+└── en.json
+
+types/
+└── index.ts                # Profile, Category, Program, Week, Day,
+                            # Exercise, WorkoutLog, Booking, Subscription
+
+supabase/
+├── schema.sql              # Схема v2
+└── reset.sql               # Скидання БД перед застосуванням схеми
+
+proxy.ts                    # Supabase session refresh + next-intl routing
 ```
+
+---
+
+## 🗄 Схема бази даних
+
+Ієрархія контенту: **категорія → програма → тиждень → день → вправа**
+
+| Таблиця | Опис |
+|---|---|
+| `profiles` | Профілі користувачів (`trial_ends_at`) |
+| `categories` | Категорії (стійки, розтяжка, сила, повітряне) |
+| `programs` | Тренувальні програми |
+| `weeks` | Тижні у програмі |
+| `days` | Дні у тижні |
+| `exercises` | Вправи (`youtube_url`, `screenshot_urls[]`, `target_sets`) |
+| `workout_logs` | Записи результатів (`sets`, `video_url`) |
+| `user_programs` | Зв'язок користувач–програма |
+| `subscriptions` | Підписки Stripe |
+| `bookings` | Записи на Google Meet з тренером |
+
+Усі таблиці захищені **Row Level Security (RLS)**.
+
+---
+
+## 💰 Доступ та білінг
+
+- Нові користувачі отримують **7-денний безкоштовний trial** (тригер `handle_new_user`)
+- Після trial — платна підписка через Stripe
+- `lib/db/subscriptions.ts → hasActiveAccess()` перевіряє обидва стани
 
 ---
 
@@ -102,12 +137,6 @@ npm install
 
 ### 3. Налаштувати змінні середовища
 
-```bash
-cp .env.example .env.local
-```
-
-Заповни `.env.local`:
-
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -115,28 +144,22 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 STRIPE_SECRET_KEY=your_stripe_secret_key
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+NEXT_PUBLIC_STRIPE_PAYMENT_LINK=your_stripe_payment_link_url
 ```
 
-### 4. Запустити dev-сервер
+### 4. Застосувати схему Supabase
+
+Якщо оновлюєш існуючу БД, спочатку запусти `supabase/reset.sql` у Supabase SQL Editor, потім `supabase/schema.sql`.
+
+Для нового проєкту — одразу `supabase/schema.sql`.
+
+### 5. Запустити dev-сервер
 
 ```bash
 npm run dev
 ```
 
 Відкрий [http://localhost:3000](http://localhost:3000)
-
----
-
-## 🗄 Supabase таблиці
-
-| Таблиця | Опис |
-|---|---|
-| `profiles` | Профілі користувачів |
-| `programs` | Тренувальні програми |
-| `workouts` | Тренування у програмах |
-| `exercises` | Вправи у тренуваннях |
-| `workout_logs` | Записи результатів |
-| `subscriptions` | Підписки (Stripe) |
 
 ---
 
