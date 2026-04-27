@@ -1,10 +1,13 @@
 'use client'
-import { useRouter } from 'next/navigation'
+import { useTranslations, useLocale } from 'next-intl'
+import { Link, useRouter, usePathname } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase'
-import Link from 'next/link'
 
 export default function Navbar() {
+  const t = useTranslations('nav')
   const router = useRouter()
+  const pathname = usePathname()
+  const locale = useLocale()
 
   async function handleLogout() {
     const supabase = createClient()
@@ -13,13 +16,25 @@ export default function Navbar() {
     router.refresh()
   }
 
+  function switchLocale(next: string) {
+    router.replace(pathname, { locale: next })
+  }
+
   return (
     <nav style={{ display: 'flex', gap: '1rem', padding: '1rem', borderBottom: '1px solid #eee' }}>
-      <Link href="/dashboard">Дашборд</Link>
-      <Link href="/programs">Програми</Link>
-      <Link href="/tracking">Трекінг</Link>
-      <Link href="/billing">Підписка</Link>
-      <button onClick={handleLogout} style={{ marginLeft: 'auto' }}>Вийти</button>
+      <Link href="/dashboard">{t('dashboard')}</Link>
+      <Link href="/programs">{t('programs')}</Link>
+      <Link href="/tracking">{t('tracking')}</Link>
+      <Link href="/billing">{t('billing')}</Link>
+      <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+        <button
+          onClick={() => switchLocale(locale === 'uk' ? 'en' : 'uk')}
+          style={{ fontWeight: 'bold' }}
+        >
+          {locale === 'uk' ? 'EN' : 'UK'}
+        </button>
+        <button onClick={handleLogout}>{t('logout')}</button>
+      </div>
     </nav>
   )
 }

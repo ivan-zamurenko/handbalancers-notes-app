@@ -1,17 +1,16 @@
-// Форма збереження результату після вправи / тренування
-// Поля: achieved_hold (сек), reps, note
-// Записує в Supabase `workout_logs` разом із userId, exerciseId, date
 'use client'
+import { useTranslations } from 'next-intl'
 
 export default function LogForm({ exerciseId }: { exerciseId?: string }) {
+  const t = useTranslations('workout')
   // TODO: стан (hold, reps, note)
   // TODO: handleSubmit → supabase.from('workout_logs').insert(...)
   return (
     <form>
-      <input type="number" placeholder="Hold (сек)" />
-      <input type="number" placeholder="Повторення" />
-      <textarea placeholder="Нотатка..." />
-      <button type="submit">Зберегти результат</button>
+      <input type="number" placeholder={t('holdPlaceholder')} />
+      <input type="number" placeholder={t('repsPlaceholder')} />
+      <textarea placeholder={t('notePlaceholder')} />
+      <button type="submit">{t('save')}</button>
     </form>
   )
 }

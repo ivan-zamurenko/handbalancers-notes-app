@@ -1,13 +1,16 @@
-// Бейдж поточного стріку (к-сть днів поспіль)
-// Рахує кількість consecutive-днів де є хоча б одне тренування
-// Дані: з таблиці Supabase `workout_logs` по userId
-export default function StreakBadge() {
-  // TODO: обчислити streak з масиву дат з Supabase
-  const streak = 0 // placeholder
+'use client'
+import { useTranslations } from 'next-intl'
+
+interface Props {
+  streak?: number
+}
+
+export default function StreakBadge({ streak = 0 }: Props) {
+  const t = useTranslations('dashboard')
 
   return (
     <div>
-      <span>🔥 {streak} днів поспіль</span>
+      <span>🔥 {streak > 0 ? t('streak', { count: streak }) : t('streakZero')}</span>
     </div>
   )
 }

@@ -1,10 +1,9 @@
-// Таймер для hold-вправ (наприклад handstand hold)
-// Запускається / зупиняється вручну
-// Зберігає рекорд поточного тренування, передає значення у LogForm
 'use client'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 export default function Timer() {
+  const t = useTranslations('workout')
   const [seconds, setSeconds] = useState(0)
   const [running, setRunning] = useState(false)
 
@@ -15,7 +14,7 @@ export default function Timer() {
     <div>
       <span>{seconds}s</span>
       <button onClick={() => setRunning(!running)}>
-        {running ? 'Стоп' : 'Старт'}
+        {running ? t('stop') : t('start')}
       </button>
     </div>
   )

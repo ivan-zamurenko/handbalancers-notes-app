@@ -1,11 +1,12 @@
-// Картка поточної вправи під час тренування
-// Показує: назву, опис, ціль (hold X сек / X повторень), відео/gif
+'use client'
+import { useTranslations } from 'next-intl'
 import type { Exercise } from '@/types'
 
 export default function ExerciseCard({ exercise }: { exercise?: Exercise }) {
+  const t = useTranslations('workout')
   return (
     <div>
-      <h2>{exercise?.name ?? 'Вправа'}</h2>
+      <h2>{exercise?.name ?? t('defaultExercise')}</h2>
       <p>{exercise?.description}</p>
       {/* TODO: ціль (target_hold або target_reps), відео посилання */}
     </div>

@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "dashboard": "Дашборд",
+    "programs": "Програми",
+    "tracking": "Трекінг",
+    "billing": "Підписка",
+    "logout": "Вийти"
+  },
+  "auth": {
+    "login": {
+      "title": "Увійти",
+      "email": "Email",
+      "password": "Пароль",
+      "submit": "Увійти",
+      "noAccount": "Немає акаунту?",
+      "registerLink": "Зареєструватись"
+    },
+    "register": {
+      "title": "Реєстрація",
+      "name": "Ім'я",
+      "email": "Email",
+      "password": "Пароль",
+      "submit": "Зареєструватись",
+      "hasAccount": "Вже є акаунт?",
+      "loginLink": "Увійти"
+    }
+  },
+  "home": {
+    "title": "Handbalancers Training Platform",
+    "subtitle": "Тренуйся. Відстежуй прогрес. Досягай результату."
+  },
+  "dashboard": {
+    "title": "Дашборд",
+    "streak": "{count, plural, one {# день поспіль} few {# дні поспіль} many {# днів поспіль} other {# днів поспіль}}",
+    "streakZero": "Ще немає стріку"
+  },
+  "programs": {
+    "title": "Програми тренувань",
+    "detail": "Програма",
+    "level": "Рівень",
+    "view": "Переглянути"
+  },
+  "tracking": {
+    "title": "Трекінг прогресу",
+    "statsTitle": "Статистика вправ",
+    "historyTitle": "Історія тренувань"
+  },
+  "billing": {
+    "title": "Підписка та оплата",
+    "subscriptionTitle": "Ваша підписка",
+    "subscribe": "Підписатись",
+    "perMonth": "/ міс"
+  },
+  "workout": {
+    "title": "Тренування",
+    "start": "Старт",
+    "stop": "Стоп",
+    "defaultExercise": "Вправа",
+    "holdPlaceholder": "Hold (сек)",
+    "repsPlaceholder": "Повторення",
+    "notePlaceholder": "Нотатка...",
+    "save": "Зберегти результат"
+  },
+  "stats": {
+    "title": "Середні показники"
+  }
+}

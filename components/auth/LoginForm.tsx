@@ -1,41 +1,21 @@
-'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase'
+'use server'
+import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
+import { getLocale } from 'next-intl/server'
+import { createClient } from '@/lib/supabase-server'
 
-export default function LoginForm() {
-  const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+export async function loginAction(formData: FormData) {
+  const supabase = await createClient()
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-    const supabase = createClient()
+  const { error } = await supabase.auth.signInWithPassword({
+    email: formData.get('email') as string,
+    password: formData.get('password') as string,
+  })
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+  const locale = await getLocale()
 
-    if (signInError) {
-      setError(signInError.message)
-      setLoading(false)
-      return
-    }
+  if (error) redirect(`/${locale}/login?error=` + encodeURIComponent(error.message))
 
-    router.push('/dashboard')
-    router.refresh()
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
-      <input type="password" placeholder="Пароль" value={password} onChange={e => setPassword(e.target.value)} required />
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button type="submit" disabled={loading}>
-        {loading ? 'Завантаження...' : 'Увійти'}
-      </button>
-    </form>
-  )
+  revalidatePath('/', 'layout')
+  redirect(`/${locale}/dashboard`)
 }

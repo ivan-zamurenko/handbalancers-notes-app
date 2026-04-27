@@ -1,11 +1,11 @@
-// Картка зі середніми показниками за обраний період
-// Показує: avg hold (сек), avg reps, кількість тренувань
-// Перемикач: 1 тиждень / 1 місяць / 3 місяці
+'use client'
+import { useTranslations } from 'next-intl'
+
 export default function StatsCard() {
-  // TODO: отримати агреговані дані з Supabase (avg, count) за period
+  const t = useTranslations('stats')
   return (
     <div>
-      <h2>Середні показники</h2>
+      <h2>{t('title')}</h2>
       {/* TODO: таби 7D / 1M / 3M, значення avg hold, avg reps, total sessions */}
     </div>
   )

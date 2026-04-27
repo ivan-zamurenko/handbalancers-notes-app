@@ -1,42 +1,24 @@
-'use client'
-// Форма реєстрації
-// Поля: ім'я, email, пароль
-// supabase.auth.signUp() → профіль створюється автоматично через DB trigger
-// name передається у metadata → trigger записує у profiles.name
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase'
+'use server'
+import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
+import { getLocale } from 'next-intl/server'
+import { createClient } from '@/lib/supabase-server'
 
-export default function RegisterForm() {
-  const router = useRouter()
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+export async function registerAction(formData: FormData) {
+  const supabase = await createClient()
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    const supabase = createClient()
+  const { error } = await supabase.auth.signUp({
+    email: formData.get('email') as string,
+    password: formData.get('password') as string,
+    options: {
+      data: { full_name: formData.get('name') as string },
+    },
+  })
 
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: name }, // trigger читає raw_user_meta_data->>'full_name'
-      },
-    })
+  const locale = await getLocale()
 
-    if (signUpError) { setError(signUpError.message); return }
-    router.push('/dashboard')
-  }
+  if (error) redirect(`/${locale}/register?error=` + encodeURIComponent(error.message))
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" placeholder="Ім'я" value={name} onChange={e => setName(e.target.value)} required />
-      <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
-      <input type="password" placeholder="Пароль" value={password} onChange={e => setPassword(e.target.value)} required />
-      {error && <p>{error}</p>}
-      <button type="submit">Зареєструватись</button>
-    </form>
-  )
+  revalidatePath('/', 'layout')
+  redirect(`/${locale}/dashboard`)
 }

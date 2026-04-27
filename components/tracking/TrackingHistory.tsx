@@ -1,11 +1,11 @@
-// Таблиця/список записів тренувань (workout_logs) з Supabase
-// Фільтр по: вправа, дата від/до
-// Колонки: дата, вправа, hold, reps, нотатка
+'use client'
+import { useTranslations } from 'next-intl'
+
 export default function TrackingHistory() {
-  // TODO: fetch workout_logs з Supabase для userId, відсортовані по даті DESC
+  const t = useTranslations('tracking')
   return (
     <div>
-      <h2>Історія тренувань</h2>
+      <h2>{t('historyTitle')}</h2>
       {/* TODO: фільтри, таблиця записів */}
     </div>
   )

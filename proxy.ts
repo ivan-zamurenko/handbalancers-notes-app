@@ -1,11 +1,13 @@
+import createIntlMiddleware from 'next-intl/middleware'
+import { routing } from './i18n/routing'
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-// Захищені маршрути — потребують авторизації
-const protectedRoutes = ['/dashboard', '/programs', '/workout', '/tracking', '/billing']
+const intlMiddleware = createIntlMiddleware(routing)
 
 export async function proxy(request: NextRequest) {
-  const response = NextResponse.next({ request })
+  // Refresh Supabase session cookies
+  let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,30 +17,31 @@ export async function proxy(request: NextRequest) {
         getAll: () => request.cookies.getAll(),
         setAll: (cookiesToSet) => {
           cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
+            request.cookies.set(name, value, options)
+          )
+          supabaseResponse = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
           )
         },
       },
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
-  const path = request.nextUrl.pathname
-  const isProtected = protectedRoutes.some(route => path.startsWith(route))
+  await supabase.auth.getUser()
 
-  // Не авторизований → redirect на /login
-  if (isProtected && !user) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
+  // Run next-intl locale routing
+  const intlResponse = intlMiddleware(request)
 
-  // Авторизований і намагається зайти на /login або /register → redirect на /dashboard
-  if (user && (path === '/login' || path === '/register')) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
-  }
+  // Forward any refreshed Supabase cookies to the intl response
+  supabaseResponse.cookies.getAll().forEach(({ name, value }) => {
+    intlResponse.cookies.set(name, value)
+  })
 
-  return response
+  return intlResponse
 }
 
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico|api).*)'],
 }
+

@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "programs": "Programs",
+    "tracking": "Tracking",
+    "billing": "Billing",
+    "logout": "Log out"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "noAccount": "No account?",
+      "registerLink": "Register"
+    },
+    "register": {
+      "title": "Register",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Register",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in"
+    }
+  },
+  "home": {
+    "title": "Handbalancers Training Platform",
+    "subtitle": "Train. Track progress. Achieve results."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "streak": "{count, plural, one {# day streak} other {# day streak}}",
+    "streakZero": "No streak yet"
+  },
+  "programs": {
+    "title": "Training Programs",
+    "detail": "Program",
+    "level": "Level",
+    "view": "View"
+  },
+  "tracking": {
+    "title": "Progress Tracking",
+    "statsTitle": "Exercise Stats",
+    "historyTitle": "Workout History"
+  },
+  "billing": {
+    "title": "Billing & Subscription",
+    "subscriptionTitle": "Your Subscription",
+    "subscribe": "Subscribe",
+    "perMonth": "/ mo"
+  },
+  "workout": {
+    "title": "Workout",
+    "start": "Start",
+    "stop": "Stop",
+    "defaultExercise": "Exercise",
+    "holdPlaceholder": "Hold (sec)",
+    "repsPlaceholder": "Reps",
+    "notePlaceholder": "Note...",
+    "save": "Save result"
+  },
+  "stats": {
+    "title": "Average Stats"
+  }
+}

@@ -1,3 +1,4 @@
+'use client'
 // Графік прогресу (Recharts)
 // Відображає динаміку показників по вправі за обраний період: 1M / 3M / 6M / 1Y
 // Дані: масив { date, value } з Supabase `workout_logs`
