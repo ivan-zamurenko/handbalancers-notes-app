@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS weeks CASCADE;
 DROP TABLE IF EXISTS programs CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS subscriptions CASCADE;
+DROP TABLE IF EXISTS workouts CASCADE;
 DROP TABLE IF EXISTS profiles CASCADE;
 
 -- Drop trigger and function for new user handler
