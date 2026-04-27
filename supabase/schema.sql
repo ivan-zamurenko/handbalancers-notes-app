@@ -1,68 +1,102 @@
 -- ============================================================
--- Handbalancers — Database Schema
+-- Handbalancers — Database Schema v2
 -- Supabase / PostgreSQL
 -- ============================================================
+-- RESET (run this first if rebuilding from scratch)
+-- DROP TABLE IF EXISTS bookings, workout_logs, exercises, days, weeks, programs, categories, subscriptions, user_programs, profiles CASCADE;
+-- DROP FUNCTION IF EXISTS handle_new_user CASCADE;
+-- ============================================================
+
 
 -- 1. PROFILES
--- Розширює вбудовану auth.users таблицю Supabase
--- Створюється автоматично через trigger при будь-якій реєстрації (email, OAuth, тощо)
 CREATE TABLE profiles (
-  id          uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  name        text,
-  avatar_url  text,
-  created_at  timestamptz DEFAULT now()
+  id             uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  name           text,
+  avatar_url     text,
+  trial_ends_at  timestamptz,          -- коли закінчується 7-денний trial
+  created_at     timestamptz DEFAULT now()
 );
 
--- 2. PROGRAMS
--- Тренувальні програми (handstand, flexibility, etc.)
+
+-- 2. CATEGORIES
+-- Верхній рівень: handstand / stretching / strength / aerial (легко додати нові)
+CREATE TABLE categories (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug        text NOT NULL UNIQUE,    -- 'handstand', 'stretching', тощо
+  title       text NOT NULL,
+  description text,
+  "order"     int  NOT NULL DEFAULT 0
+);
+
+
+-- 3. PROGRAMS
+-- Програма всередині категорії
 CREATE TABLE programs (
   id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  category_id   uuid NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
   title         text NOT NULL,
   description   text,
   level         text NOT NULL CHECK (level IN ('beginner', 'intermediate', 'advanced')),
   is_free       boolean NOT NULL DEFAULT false,
   thumbnail_url text,
+  "order"       int NOT NULL DEFAULT 0,
   created_at    timestamptz DEFAULT now()
 );
 
--- 3. WORKOUTS
--- Окремі тренування всередині програми (одне заняття)
-CREATE TABLE workouts (
+
+-- 4. WEEKS
+-- Тиждень всередині програми
+CREATE TABLE weeks (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   program_id  uuid NOT NULL REFERENCES programs(id) ON DELETE CASCADE,
   title       text NOT NULL,
-  description text,
-  "order"     int NOT NULL DEFAULT 0,
-  created_at  timestamptz DEFAULT now()
+  "order"     int  NOT NULL DEFAULT 0
 );
 
--- 4. EXERCISES
--- Вправи всередині одного тренування
+
+-- 5. DAYS
+-- День всередині тижня
+CREATE TABLE days (
+  id       uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  week_id  uuid NOT NULL REFERENCES weeks(id) ON DELETE CASCADE,
+  title    text NOT NULL,
+  "order"  int  NOT NULL DEFAULT 0
+);
+
+
+-- 6. EXERCISES
+-- Вправи всередині одного дня
 CREATE TABLE exercises (
-  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  workout_id    uuid NOT NULL REFERENCES workouts(id) ON DELETE CASCADE,
-  name          text NOT NULL,
-  description   text,
-  target_hold   int,   -- ціль: секунди (для hold-вправ, наприклад handstand)
-  target_reps   int,   -- ціль: кількість повторень
-  video_url     text,
-  "order"       int NOT NULL DEFAULT 0
+  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  day_id          uuid NOT NULL REFERENCES days(id) ON DELETE CASCADE,
+  name            text NOT NULL,
+  description     text,
+  target_hold     int,                 -- ціль: секунди (handstand hold)
+  target_reps     int,                 -- ціль: кількість повторень
+  target_sets     int,                 -- ціль: кількість підходів
+  youtube_url     text,                -- посилання на YouTube (легко замінити на Vimeo)
+  screenshot_urls text[],              -- масив URL зображень з Supabase Storage
+  "order"         int NOT NULL DEFAULT 0
 );
 
--- 5. WORKOUT LOGS
--- Записи результатів — що зробив користувач під час тренування
+
+-- 7. WORKOUT LOGS
+-- Результат виконання однієї вправи користувачем
 CREATE TABLE workout_logs (
   id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id        uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   exercise_id    uuid NOT NULL REFERENCES exercises(id) ON DELETE CASCADE,
-  achieved_hold  int,    -- досягнутий час у секундах
-  reps           int,    -- кількість повторень
+  sets           int,                  -- скільки підходів зробив
+  reps           int,                  -- повторень за підхід
+  achieved_hold  int,                  -- секунди (для hold-вправ)
+  video_url      text,                 -- власне відео виконання
   note           text,
   logged_at      timestamptz NOT NULL DEFAULT now()
 );
 
--- 6. USER PROGRAMS
--- Доступ користувача до програм (безкоштовні або куплені)
+
+-- 8. USER PROGRAMS
+-- Доступ користувача до програми (куплена або відкрита)
 CREATE TABLE user_programs (
   id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id      uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -71,8 +105,9 @@ CREATE TABLE user_programs (
   UNIQUE (user_id, program_id)
 );
 
--- 7. SUBSCRIPTIONS
--- Статус підписки через Stripe
+
+-- 9. SUBSCRIPTIONS
+-- Підписка через Stripe
 CREATE TABLE subscriptions (
   id                      uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id                 uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -83,20 +118,39 @@ CREATE TABLE subscriptions (
   created_at              timestamptz DEFAULT now()
 );
 
+
+-- 10. BOOKINGS
+-- Бронювання онлайн-уроку (окрема оплата через Stripe Payment Link)
+CREATE TABLE bookings (
+  id                    uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id               uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  stripe_payment_intent text,          -- id платежу для підтвердження
+  status                text NOT NULL DEFAULT 'pending'
+                          CHECK (status IN ('pending', 'paid', 'canceled')),
+  scheduled_at          timestamptz,   -- обрана дата/час уроку
+  meet_url              text,          -- посилання на Google Meet
+  note                  text,          -- побажання від користувача
+  created_at            timestamptz DEFAULT now()
+);
+
+
 -- ============================================================
--- INDEXES — для швидкого пошуку
+-- INDEXES
 -- ============================================================
 
 CREATE INDEX ON workout_logs (user_id, logged_at DESC);
 CREATE INDEX ON workout_logs (exercise_id);
-CREATE INDEX ON workouts (program_id, "order");
-CREATE INDEX ON exercises (workout_id, "order");
+CREATE INDEX ON exercises (day_id, "order");
+CREATE INDEX ON days (week_id, "order");
+CREATE INDEX ON weeks (program_id, "order");
+CREATE INDEX ON programs (category_id, "order");
 CREATE INDEX ON user_programs (user_id);
 CREATE INDEX ON subscriptions (user_id);
+CREATE INDEX ON bookings (user_id);
+
 
 -- ============================================================
--- TRIGGER — автоматичне створення профілю після будь-якої реєстрації
--- Спрацьовує для email/password, Google, GitHub та інших OAuth провайдерів
+-- TRIGGER — автоматичне створення профілю + trial при реєстрації
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION handle_new_user()
@@ -106,69 +160,60 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  INSERT INTO public.profiles (id, name)
+  INSERT INTO public.profiles (id, name, trial_ends_at)
   VALUES (
     NEW.id,
     COALESCE(
-      NEW.raw_user_meta_data->>'full_name',  -- Google OAuth
-      NEW.raw_user_meta_data->>'user_name',  -- GitHub OAuth
-      NEW.raw_user_meta_data->>'name',       -- email реєстрація
-      split_part(NEW.email, '@', 1)          -- fallback: частина email до @
-    )
+      NEW.raw_user_meta_data->>'full_name',
+      NEW.raw_user_meta_data->>'user_name',
+      NEW.raw_user_meta_data->>'name',
+      split_part(NEW.email, '@', 1)
+    ),
+    now() + interval '7 days'
   )
   ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 EXCEPTION
   WHEN OTHERS THEN
-    RETURN NEW; -- не блокуємо створення користувача якщо profiles insert впав
+    RETURN NEW;
 END;
 $$;
 
 CREATE OR REPLACE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+
+
+-- ============================================================
 -- ROW LEVEL SECURITY (RLS)
--- Кожен користувач бачить ТІЛЬКИ свої дані
 -- ============================================================
 
 ALTER TABLE profiles        ENABLE ROW LEVEL SECURITY;
 ALTER TABLE workout_logs    ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_programs   ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscriptions   ENABLE ROW LEVEL SECURITY;
--- programs, workouts, exercises — публічні для читання
+ALTER TABLE bookings        ENABLE ROW LEVEL SECURITY;
+ALTER TABLE categories      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE programs        ENABLE ROW LEVEL SECURITY;
-ALTER TABLE workouts        ENABLE ROW LEVEL SECURITY;
+ALTER TABLE weeks           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE days            ENABLE ROW LEVEL SECURITY;
 ALTER TABLE exercises       ENABLE ROW LEVEL SECURITY;
 
--- profiles: читання і оновлення лише власного профілю
--- INSERT виконує trigger (SECURITY DEFINER) — RLS не блокує його
-CREATE POLICY "profiles_select" ON profiles
-  FOR SELECT USING (auth.uid() = id);
+-- profiles
+CREATE POLICY "profiles_select" ON profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "profiles_insert" ON profiles FOR INSERT WITH CHECK (true);
+CREATE POLICY "profiles_update" ON profiles FOR UPDATE USING (auth.uid() = id);
 
-CREATE POLICY "profiles_insert" ON profiles
-  FOR INSERT WITH CHECK (true); -- trigger має SECURITY DEFINER, тому дозволяємо
+-- user data
+CREATE POLICY "Own logs"             ON workout_logs  FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Own program access"   ON user_programs FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Own subscription"     ON subscriptions FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Own bookings"         ON bookings      FOR ALL USING (auth.uid() = user_id);
 
-CREATE POLICY "profiles_update" ON profiles
-  FOR UPDATE USING (auth.uid() = id);
+-- content (read-only для всіх авторизованих)
+CREATE POLICY "Read categories" ON categories FOR SELECT USING (true);
+CREATE POLICY "Read programs"   ON programs   FOR SELECT USING (true);
+CREATE POLICY "Read weeks"      ON weeks      FOR SELECT USING (true);
+CREATE POLICY "Read days"       ON days       FOR SELECT USING (true);
+CREATE POLICY "Read exercises"  ON exercises  FOR SELECT USING (true);
 
--- workout_logs: лише власні записи
-CREATE POLICY "Own logs" ON workout_logs
-  FOR ALL USING (auth.uid() = user_id);
-
--- user_programs: лише свій доступ
-CREATE POLICY "Own programs access" ON user_programs
-  FOR ALL USING (auth.uid() = user_id);
-
--- subscriptions: лише своя підписка
-CREATE POLICY "Own subscription" ON subscriptions
-  FOR ALL USING (auth.uid() = user_id);
-
--- programs / workouts / exercises: всі авторизовані можуть читати
-CREATE POLICY "Public programs read" ON programs
-  FOR SELECT USING (true);
-
-CREATE POLICY "Public workouts read" ON workouts
-  FOR SELECT USING (true);
-
-CREATE POLICY "Public exercises read" ON exercises
-  FOR SELECT USING (true);

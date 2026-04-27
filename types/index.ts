@@ -1,61 +1,103 @@
-// Всі TypeScript типи проекту
+// ============================================================
+// Handbalancers — TypeScript Types
+// Відповідають таблицям Supabase schema v2
+// ============================================================
 
 export type Level = 'beginner' | 'intermediate' | 'advanced'
+export type SubscriptionStatus = 'active' | 'canceled' | 'trialing' | 'past_due'
+export type BookingStatus = 'pending' | 'paid' | 'canceled'
 
-// Програма тренувань (таблиця `programs` у Supabase)
-export type Program = {
+export type Profile = {
   id: string
-  title: string
-  description: string
-  level: Level
-  is_free: boolean
+  name: string | null
+  avatar_url: string | null
+  trial_ends_at: string | null
   created_at: string
 }
 
-// Тренування у програмі (таблиця `workouts`)
-export type Workout = {
+export type Category = {
+  id: string
+  slug: string
+  title: string
+  description: string | null
+  order: number
+}
+
+export type Program = {
+  id: string
+  category_id: string
+  title: string
+  description: string | null
+  level: Level
+  is_free: boolean
+  thumbnail_url: string | null
+  order: number
+  created_at: string
+}
+
+export type Week = {
   id: string
   program_id: string
   title: string
   order: number
 }
 
-// Вправа у тренуванні (таблиця `exercises`)
-export type Exercise = {
+export type Day = {
   id: string
-  workout_id: string
-  name: string
-  description: string
-  target_hold?: number   // секунди
-  target_reps?: number
-  video_url?: string
+  week_id: string
+  title: string
+  order: number
 }
 
-// Запис результату тренування (таблиця `workout_logs`)
+export type Exercise = {
+  id: string
+  day_id: string
+  name: string
+  description: string | null
+  target_hold: number | null    // секунди
+  target_reps: number | null
+  target_sets: number | null
+  youtube_url: string | null
+  screenshot_urls: string[] | null
+  order: number
+}
+
 export type WorkoutLog = {
   id: string
   user_id: string
   exercise_id: string
-  achieved_hold?: number  // секунди
-  reps?: number
-  note?: string
+  sets: number | null
+  reps: number | null
+  achieved_hold: number | null  // секунди
+  video_url: string | null
+  note: string | null
   logged_at: string
 }
 
-// Підписка (таблиця `subscriptions`)
+export type UserProgram = {
+  id: string
+  user_id: string
+  program_id: string
+  purchased_at: string
+}
+
 export type Subscription = {
   id: string
   user_id: string
+  stripe_customer_id: string
   stripe_subscription_id: string
-  status: 'active' | 'canceled' | 'trialing' | 'past_due'
+  status: SubscriptionStatus
   current_period_end: string
+  created_at: string
 }
 
-// Тарифний план (для відображення на сторінці billing)
-export type Plan = {
+export type Booking = {
   id: string
-  name: string
-  price: number
-  stripe_price_id: string
-  features: string[]
+  user_id: string
+  stripe_payment_intent: string | null
+  status: BookingStatus
+  scheduled_at: string | null
+  meet_url: string | null
+  note: string | null
+  created_at: string
 }
