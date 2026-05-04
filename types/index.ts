@@ -108,3 +108,10 @@ export type ExerciseFavorite = {
   exercise_id: string
   created_at: string
 }
+
+export type DayProgress = {
+  id: string
+  user_id: string
+  day_id: string
+  completed_at: string
+}

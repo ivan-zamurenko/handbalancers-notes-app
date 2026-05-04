@@ -10,7 +10,7 @@ export async function getFavoriteExercises(userId: string): Promise<Exercise[]> 
     .eq('user_id', userId)
 
   if (error) throw error
-  return data.map(r => r.exercises as Exercise)
+  return data.map(r => r.exercises as unknown as unknown as Exercise)
 }
 
 /** Додає або видаляє вправу з обраних (toggle). Повертає новий стан: true = додано. */
