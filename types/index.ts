@@ -18,16 +18,20 @@ export type Profile = {
 export type Category = {
   id: string
   slug: string
-  title: string
-  description: string | null
+  title_ua: string
+  title_en: string
+  description_ua: string | null
+  description_en: string | null
   order: number
 }
 
 export type Program = {
   id: string
   category_id: string
-  title: string
-  description: string | null
+  title_ua: string
+  title_en: string
+  description_ua: string | null
+  description_en: string | null
   level: Level
   is_free: boolean
   thumbnail_url: string | null
@@ -38,22 +42,26 @@ export type Program = {
 export type Week = {
   id: string
   program_id: string
-  title: string
+  title_ua: string
+  title_en: string
   order: number
 }
 
 export type Day = {
   id: string
   week_id: string
-  title: string
+  title_ua: string
+  title_en: string
   order: number
 }
 
 export type Exercise = {
   id: string
   day_id: string
-  name: string
-  description: string | null
+  name_ua: string
+  name_en: string
+  description_ua: string | null
+  description_en: string | null
   target_hold: number | null    // секунди
   target_reps: number | null
   target_sets: number | null

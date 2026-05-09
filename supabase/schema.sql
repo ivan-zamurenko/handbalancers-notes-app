@@ -21,26 +21,30 @@ CREATE TABLE profiles (
 -- 2. CATEGORIES
 -- Верхній рівень: handstand / stretching / strength / aerial (легко додати нові)
 CREATE TABLE categories (
-  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  slug        text NOT NULL UNIQUE,    -- 'handstand', 'stretching', тощо
-  title       text NOT NULL,
-  description text,
-  "order"     int  NOT NULL DEFAULT 0
+  id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug           text NOT NULL UNIQUE,    -- 'handstand', 'stretching', тощо
+  title_ua       text NOT NULL,
+  title_en       text NOT NULL,
+  description_ua text,
+  description_en text,
+  "order"        int  NOT NULL DEFAULT 0
 );
 
 
 -- 3. PROGRAMS
 -- Програма всередині категорії
 CREATE TABLE programs (
-  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  category_id   uuid NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
-  title         text NOT NULL,
-  description   text,
-  level         text NOT NULL CHECK (level IN ('beginner', 'intermediate', 'advanced')),
-  is_free       boolean NOT NULL DEFAULT false,
-  thumbnail_url text,
-  "order"       int NOT NULL DEFAULT 0,
-  created_at    timestamptz DEFAULT now()
+  id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  category_id    uuid NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
+  title_ua       text NOT NULL,
+  title_en       text NOT NULL,
+  description_ua text,
+  description_en text,
+  level          text NOT NULL CHECK (level IN ('beginner', 'intermediate', 'advanced')),
+  is_free        boolean NOT NULL DEFAULT false,
+  thumbnail_url  text,
+  "order"        int NOT NULL DEFAULT 0,
+  created_at     timestamptz DEFAULT now()
 );
 
 
@@ -49,7 +53,8 @@ CREATE TABLE programs (
 CREATE TABLE weeks (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   program_id  uuid NOT NULL REFERENCES programs(id) ON DELETE CASCADE,
-  title       text NOT NULL,
+  title_ua    text NOT NULL,
+  title_en    text NOT NULL,
   "order"     int  NOT NULL DEFAULT 0
 );
 
@@ -59,7 +64,8 @@ CREATE TABLE weeks (
 CREATE TABLE days (
   id       uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   week_id  uuid NOT NULL REFERENCES weeks(id) ON DELETE CASCADE,
-  title    text NOT NULL,
+  title_ua text NOT NULL,
+  title_en text NOT NULL,
   "order"  int  NOT NULL DEFAULT 0
 );
 
@@ -69,8 +75,10 @@ CREATE TABLE days (
 CREATE TABLE exercises (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   day_id          uuid NOT NULL REFERENCES days(id) ON DELETE CASCADE,
-  name            text NOT NULL,
-  description     text,
+  name_ua         text NOT NULL,
+  name_en         text NOT NULL,
+  description_ua  text,
+  description_en  text,
   target_hold     int,                 -- ціль: секунди (handstand hold)
   target_reps     int,                 -- ціль: кількість повторень
   target_sets     int,                 -- ціль: кількість підходів
