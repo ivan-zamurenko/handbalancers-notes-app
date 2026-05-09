@@ -1,3 +1,4 @@
+// Pattern: Repository — ізолює всі запити до user_day_progress від решти коду
 import { createClient } from '@/lib/supabase-server'
 import type { Day } from '@/types'
 

@@ -94,9 +94,8 @@ CREATE TABLE workout_logs (
   id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id        uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   exercise_id    uuid NOT NULL REFERENCES exercises(id) ON DELETE CASCADE,
-  sets           int,                  -- скільки підходів зробив
-  reps           int,                  -- повторень за підхід
-  achieved_hold  int,                  -- секунди (для hold-вправ)
+  hold_sets      int[],                -- секунди кожного hold-підходу [10, 5, 20]
+  reps_sets      int[],                -- повторення кожного reps-підходу [10, 8, 10]
   video_url      text,                 -- власне відео виконання
   note           text,
   logged_at      timestamptz NOT NULL DEFAULT now()

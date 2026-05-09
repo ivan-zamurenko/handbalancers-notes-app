@@ -74,9 +74,8 @@ export type WorkoutLog = {
   id: string
   user_id: string
   exercise_id: string
-  sets: number | null
-  reps: number | null
-  achieved_hold: number | null  // секунди
+  hold_sets: number[] | null   // секунди кожного hold-підходу [10, 5, 20]
+  reps_sets: number[] | null   // повторення кожного reps-підходу [10, 8, 10]
   video_url: string | null
   note: string | null
   logged_at: string

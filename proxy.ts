@@ -37,10 +37,10 @@ export async function proxy(request: NextRequest) {
   const isAuthPage = ['/login', '/register'].some(p => path.startsWith(p))
   const isProtectedPage = !isAuthPage && path !== '/'
 
-  if (user && isAuthPage)
+  if (user && (isAuthPage || path === '/'))
     return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url))
 
-  if (!user && isProtectedPage)
+  if (!user && (isProtectedPage || path === '/'))
     return NextResponse.redirect(new URL(`/${locale}/login`, request.url))
 
   // Run next-intl locale routing

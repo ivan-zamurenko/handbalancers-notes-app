@@ -1,5 +1,18 @@
+// Pattern: Repository — ізолює всі запити до programs/weeks/days від решти коду
 import { createClient } from '@/lib/supabase-server'
 import type { Program, Week, Day } from '@/types'
+
+/** Повертає всі програми, відсортовані за категорією і полем order. */
+export async function getAllPrograms(): Promise<Program[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('programs')
+    .select('*')
+    .order('order')
+
+  if (error) throw error
+  return data
+}
 
 /** Повертає всі програми в межах категорії, відсортовані за полем order. */
 export async function getProgramsByCategory(categoryId: string): Promise<Program[]> {

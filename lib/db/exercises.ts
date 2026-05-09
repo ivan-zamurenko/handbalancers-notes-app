@@ -1,3 +1,4 @@
+// Pattern: Repository — ізолює всі запити до exercises від решти коду
 import { createClient } from '@/lib/supabase-server'
 import type { Exercise } from '@/types'
 

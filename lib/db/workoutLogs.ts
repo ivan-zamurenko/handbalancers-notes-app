@@ -1,3 +1,4 @@
+// Pattern: Repository — ізолює всі запити до workout_logs від решти коду
 import { createClient } from '@/lib/supabase-server'
 import type { WorkoutLog } from '@/types'
 
@@ -8,7 +9,7 @@ export async function getDashboardStats(userId: string) {
   const supabase = await createClient()
   const { data } = await supabase
     .from('workout_logs')
-    .select('reps, achieved_hold, logged_at')
+    .select('reps_sets, hold_sets, logged_at')
     .eq('user_id', userId)
 
   if (!data?.length) return { totalSessions: 0, avgHold: 0, avgReps: 0 }
@@ -16,10 +17,13 @@ export async function getDashboardStats(userId: string) {
   const avg = (nums: number[]) =>
     nums.length ? Math.round(nums.reduce((a, b) => a + b, 0) / nums.length) : 0
 
+  const allHolds = data.flatMap(r => r.hold_sets ?? [])
+  const allReps = data.flatMap(r => r.reps_sets ?? [])
+
   return {
     totalSessions: new Set(data.map(r => r.logged_at.slice(0, 10))).size,
-    avgHold: avg(data.filter(r => r.achieved_hold).map(r => r.achieved_hold!)),
-    avgReps: avg(data.filter(r => r.reps).map(r => r.reps!)),
+    avgHold: avg(allHolds),
+    avgReps: avg(allReps),
   }
 }
 
@@ -29,7 +33,7 @@ export async function getChartData(userId: string, exerciseId: string, days = 30
   const supabase = await createClient()
   const { data } = await supabase
     .from('workout_logs')
-    .select('logged_at, achieved_hold, reps')
+    .select('logged_at, hold_sets, reps_sets')
     .eq('user_id', userId)
     .eq('exercise_id', exerciseId)
     .gte('logged_at', since)
@@ -41,7 +45,8 @@ export async function getChartData(userId: string, exerciseId: string, days = 30
   for (const r of data) {
     const date = r.logged_at.slice(0, 10)
     grouped[date] ??= []
-    grouped[date].push(r.achieved_hold ?? r.reps ?? 0)
+    if (r.hold_sets?.length) grouped[date].push(Math.max(...r.hold_sets))
+    else if (r.reps_sets?.length) grouped[date].push(Math.round(r.reps_sets.reduce((a: number, b: number) => a + b, 0) / r.reps_sets.length))
   }
 
   const avg = (nums: number[]) => Math.round(nums.reduce((a, b) => a + b, 0) / nums.length)
@@ -77,9 +82,8 @@ export async function getLogsByExercise(userId: string, exerciseId: string): Pro
 
 export type CreateLogInput = {
   exercise_id: string
-  sets?: number
-  reps?: number
-  achieved_hold?: number
+  hold_sets?: number[]
+  reps_sets?: number[]
   video_url?: string
   note?: string
 }

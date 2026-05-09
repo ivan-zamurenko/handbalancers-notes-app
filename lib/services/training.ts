@@ -1,3 +1,5 @@
+// Pattern: Service Layer — бізнес-логіка тренувань (streak, авто-відмітка дня)
+// Використовує Repository (lib/db/) для доступу до даних
 import { createClient } from '@/lib/supabase-server'
 import { createLog, type CreateLogInput } from '@/lib/db/workoutLogs'
 import { markDayComplete } from '@/lib/db/dayProgress'
