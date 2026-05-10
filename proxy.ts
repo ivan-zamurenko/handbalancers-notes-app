@@ -31,8 +31,12 @@ export async function proxy(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   const { pathname } = request.nextUrl
-  const [, locale, ...rest] = pathname.split('/')
-  const path = '/' + rest.join('/')
+  const validLocales = ['ua', 'en']
+  const [, firstSegment, ...rest] = pathname.split('/')
+  const locale = validLocales.includes(firstSegment) ? firstSegment : 'ua'
+  const path = validLocales.includes(firstSegment)
+    ? '/' + rest.join('/')
+    : '/' + [firstSegment, ...rest].filter(Boolean).join('/')
 
   const isAuthPage = ['/login', '/register'].some(p => path.startsWith(p))
   const isProtectedPage = !isAuthPage && path !== '/'
