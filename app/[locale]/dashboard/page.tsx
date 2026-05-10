@@ -38,7 +38,7 @@ export default async function DashboardPage({
 
       {chartDataPerExercise.map(({ exercise, data }) => (
         <section key={exercise.id}>
-          <h2>⭐ {exercise.name}</h2>
+          <h2>⭐ {locale === 'en' ? exercise.name_en : exercise.name_ua}</h2>
           <ProgressChart data={data} />
         </section>
       ))}

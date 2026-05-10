@@ -1,6 +1,7 @@
 'use client'
 import { useTranslations } from 'next-intl'
-import type { Plan } from '@/types'
+
+type Plan = { name?: string; price?: string }
 
 export default function PricingCard({ plan }: { plan?: Plan }) {
   const t = useTranslations('billing')

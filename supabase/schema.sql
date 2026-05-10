@@ -84,6 +84,7 @@ CREATE TABLE exercises (
   target_sets     int,                 -- ціль: кількість підходів
   youtube_url     text,                -- посилання на YouTube (легко замінити на Vimeo)
   screenshot_urls text[],              -- масив URL зображень з Supabase Storage
+  is_handstand    boolean NOT NULL DEFAULT false,  -- враховується у добовому лічильнику handstand-часу
   "order"         int NOT NULL DEFAULT 0
 );
 

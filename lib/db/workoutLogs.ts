@@ -1,6 +1,6 @@
 // Pattern: Repository — ізолює всі запити до workout_logs від решти коду
 import { createClient } from '@/lib/supabase-server'
-import type { WorkoutLog } from '@/types'
+import type { WorkoutLog, WorkoutLogWithExercise } from '@/types'
 
 const DAY_MS = 86_400_000
 
@@ -53,17 +53,17 @@ export async function getChartData(userId: string, exerciseId: string, days = 30
   return Object.entries(grouped).map(([date, values]) => ({ date, value: avg(values) }))
 }
 
-/** Повертає всі записи тренувань користувача, відсортовані від найновішого. */
-export async function getLogsByUser(userId: string): Promise<WorkoutLog[]> {
+/** Повертає всі записи тренувань користувача з назвами вправ, відсортовані від найновішого. */
+export async function getLogsByUser(userId: string): Promise<WorkoutLogWithExercise[]> {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('workout_logs')
-    .select('*')
+    .select('*, exercises(name_ua, name_en, is_handstand)')
     .eq('user_id', userId)
     .order('logged_at', { ascending: false })
 
   if (error) throw error
-  return data
+  return data as WorkoutLogWithExercise[]
 }
 
 /** Повертає всі записи конкретної вправи для користувача, відсортовані від найстарішого (для графіку). */
@@ -99,4 +99,23 @@ export async function createLog(userId: string, input: CreateLogInput): Promise<
 
   if (error) throw error
   return data
+}
+
+export type UpdateLogInput = {
+  hold_sets?: number[]
+  reps_sets?: number[]
+  note?: string | null
+  video_url?: string | null
+}
+
+/** Оновлює запис тренування. Перевіряє що запис належить userId. */
+export async function updateLog(logId: string, userId: string, input: UpdateLogInput): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('workout_logs')
+    .update(input)
+    .eq('id', logId)
+    .eq('user_id', userId)  // security: тільки свої записи
+
+  if (error) throw error
 }

@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase-server'
 import { saveExerciseLog } from '@/lib/services/training'
 import { toggleFavorite } from '@/lib/db/favorites'
-import type { CreateLogInput } from '@/lib/db/workoutLogs'
+import { updateLog, type CreateLogInput, type UpdateLogInput } from '@/lib/db/workoutLogs'
 
 /** Зберігає результат вправи. userId береться з сесії — клієнту не довіряємо. */
 export async function saveLog(input: Omit<CreateLogInput, 'user_id'>) {
@@ -11,6 +11,14 @@ export async function saveLog(input: Omit<CreateLogInput, 'user_id'>) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Unauthorized')
   await saveExerciseLog(user.id, input)
+}
+
+/** Оновлює існуючий запис тренування. */
+export async function updateLogAction(logId: string, input: UpdateLogInput) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthorized')
+  await updateLog(logId, user.id, input)
 }
 
 /** Перемикає стан улюбленої вправи. Повертає новий стан: true = додано. */

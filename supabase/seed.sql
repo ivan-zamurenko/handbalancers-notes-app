@@ -3,6 +3,15 @@
 -- Запускати після schema.sql у Supabase SQL Editor
 -- ============================================================
 
+-- RESET (безпечне очищення в порядку залежностей, щоб можна було перезапускати)
+DELETE FROM workout_logs;
+DELETE FROM exercises;
+DELETE FROM days;
+DELETE FROM weeks;
+DELETE FROM user_programs;
+DELETE FROM programs;
+DELETE FROM categories;
+
 -- CATEGORIES
 INSERT INTO categories (id, slug, title_ua, title_en, description_ua, description_en, "order") VALUES
   (
@@ -81,7 +90,7 @@ INSERT INTO days (id, week_id, title_ua, title_en, "order") VALUES
 
 
 -- EXERCISES (день 1)
-INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description_en, target_hold, target_reps, target_sets, youtube_url, "order") VALUES
+INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description_en, target_hold, target_reps, target_sets, youtube_url, is_handstand, "order") VALUES
   (
     '00000000-0000-0000-0004-000000000001',
     '00000000-0000-0000-0003-000000000001',
@@ -89,7 +98,7 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Wrist Warm-up',
     'Кола, згинання, розгинання — по 10 повторень у кожну сторону',
     'Circles, flexion, extension — 10 reps each direction',
-    null, 10, 2, 'https://www.youtube.com/watch?v=mSZWSQSSEjE', 1
+    null, 10, 2, 'https://www.youtube.com/watch?v=mSZWSQSSEjE', false, 1
   ),
   (
     '00000000-0000-0000-0004-000000000002',
@@ -98,7 +107,7 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Planche Lean',
     'Нахил вперед на прямих руках — тримати рівновагу',
     'Lean forward on straight arms — hold the balance',
-    10, null, 3, 'https://www.youtube.com/watch?v=B6JVHmZWjIY', 2
+    10, null, 3, 'https://www.youtube.com/watch?v=B6JVHmZWjIY', false, 2
   ),
   (
     '00000000-0000-0000-0004-000000000003',
@@ -107,11 +116,11 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Pike Hold',
     'Стійка в складці на руках біля стіни',
     'Pike position hold with hands near the wall',
-    15, null, 3, 'https://www.youtube.com/watch?v=5fmOH2a57hI', 3
+    15, null, 3, 'https://www.youtube.com/watch?v=5fmOH2a57hI', true, 3
   );
 
 -- EXERCISES (день 2)
-INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description_en, target_hold, target_reps, target_sets, youtube_url, "order") VALUES
+INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description_en, target_hold, target_reps, target_sets, youtube_url, is_handstand, "order") VALUES
   (
     '00000000-0000-0000-0004-000000000004',
     '00000000-0000-0000-0003-000000000002',
@@ -119,7 +128,7 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Hollow Body Hold',
     'Лежачи на спині — підняти руки і ноги, тримати тіло як банан',
     'Lying on back — raise arms and legs, hold banana shape',
-    20, null, 3, 'https://www.youtube.com/watch?v=LlDNef_Ztsc', 1
+    20, null, 3, 'https://www.youtube.com/watch?v=LlDNef_Ztsc', false, 1
   ),
   (
     '00000000-0000-0000-0004-000000000005',
@@ -128,11 +137,11 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Superman Hold',
     'Лежачи на животі — підняти руки і ноги вгору',
     'Lying on stomach — raise arms and legs up',
-    15, null, 3, 'https://www.youtube.com/watch?v=cc6UVRS7PW4', 2
+    15, null, 3, 'https://www.youtube.com/watch?v=cc6UVRS7PW4', false, 2
   );
 
 -- EXERCISES (день 3 — Опора на руки)
-INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description_en, target_hold, target_reps, target_sets, youtube_url, "order") VALUES
+INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description_en, target_hold, target_reps, target_sets, youtube_url, is_handstand, "order") VALUES
   (
     '00000000-0000-0000-0004-000000000006',
     '00000000-0000-0000-0003-000000000003',
@@ -140,7 +149,7 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Frog Stand',
     'Коліна на ліктях, руки на підлозі — утримувати рівновагу',
     'Knees on elbows, hands on floor — hold the balance',
-    10, null, 3, 'https://www.youtube.com/watch?v=tVPVl_VIXFE', 1
+    10, null, 3, 'https://www.youtube.com/watch?v=tVPVl_VIXFE', false, 1
   ),
   (
     '00000000-0000-0000-0004-000000000007',
@@ -149,7 +158,7 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Wide Push-ups',
     'Руки ширше плечей — контроль лопаток і протракція',
     'Hands wider than shoulders — scapular control and protraction',
-    null, 10, 3, 'https://www.youtube.com/watch?v=_l3ySVKYVJ8', 2
+    null, 10, 3, 'https://www.youtube.com/watch?v=_l3ySVKYVJ8', false, 2
   ),
   (
     '00000000-0000-0000-0004-000000000008',
@@ -158,11 +167,11 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Elevated Pike Hold',
     'Ноги на лаві або стільці, руки на підлозі — утримувати позицію',
     'Feet on bench or chair, hands on floor — hold the position',
-    20, null, 3, 'https://www.youtube.com/watch?v=5fmOH2a57hI', 3
+    20, null, 3, 'https://www.youtube.com/watch?v=5fmOH2a57hI', true, 3
   );
 
 -- EXERCISES (день 4 — Kick-up до стіни)
-INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description_en, target_hold, target_reps, target_sets, youtube_url, "order") VALUES
+INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description_en, target_hold, target_reps, target_sets, youtube_url, is_handstand, "order") VALUES
   (
     '00000000-0000-0000-0004-000000000009',
     '00000000-0000-0000-0003-000000000004',
@@ -170,7 +179,7 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Donkey Kicks',
     'З положення нахилу — поштовх ногами вгору без доходу до стіни',
     'From bent position — kick legs up without reaching the wall',
-    null, 8, 3, 'https://www.youtube.com/watch?v=A_gGFhL5dB4', 1
+    null, 8, 3, 'https://www.youtube.com/watch?v=A_gGFhL5dB4', false, 1
   ),
   (
     '00000000-0000-0000-0004-000000000010',
@@ -179,7 +188,7 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Kick-up to Wall',
     'Повний kick-up з доходом до стіни і утриманням',
     'Full kick-up reaching the wall and holding',
-    null, 5, 3, 'https://www.youtube.com/watch?v=d9s6h7rMhZU', 2
+    null, 5, 3, 'https://www.youtube.com/watch?v=d9s6h7rMhZU', true, 2
   ),
   (
     '00000000-0000-0000-0004-000000000011',
@@ -188,11 +197,11 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Back-to-Wall Handstand',
     'Стійка спиною до стіни — контроль лінії тіла',
     'Handstand with back to wall — body line control',
-    15, null, 3, 'https://www.youtube.com/watch?v=d9s6h7rMhZU', 3
+    15, null, 3, 'https://www.youtube.com/watch?v=d9s6h7rMhZU', true, 3
   );
 
 -- EXERCISES (день 5 — Тримання біля стіни)
-INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description_en, target_hold, target_reps, target_sets, youtube_url, "order") VALUES
+INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description_en, target_hold, target_reps, target_sets, youtube_url, is_handstand, "order") VALUES
   (
     '00000000-0000-0000-0004-000000000012',
     '00000000-0000-0000-0003-000000000005',
@@ -200,7 +209,7 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Chest-to-Wall Handstand',
     'Руки впритул до стіни — відпрацювання вирівнювання',
     'Hands close to wall — alignment practice',
-    20, null, 3, 'https://www.youtube.com/watch?v=BGt0DxbFGbA', 1
+    20, null, 3, 'https://www.youtube.com/watch?v=BGt0DxbFGbA', true, 1
   ),
   (
     '00000000-0000-0000-0004-000000000013',
@@ -209,7 +218,7 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Shoulder Shrugs in Handstand',
     'У стійці біля стіни — підйоми і опускання через лопатки',
     'In handstand at wall — elevate and depress through shoulder blades',
-    null, 10, 3, 'https://www.youtube.com/watch?v=BGt0DxbFGbA', 2
+    null, 10, 3, 'https://www.youtube.com/watch?v=BGt0DxbFGbA', true, 2
   ),
   (
     '00000000-0000-0000-0004-000000000014',
@@ -218,6 +227,6 @@ INSERT INTO exercises (id, day_id, name_ua, name_en, description_ua, description
     'Long Wall Handstand Hold',
     'Максимально довге утримання стійки біля стіни з контролем дихання',
     'Maximum hold at wall with breath control',
-    30, null, 3, 'https://www.youtube.com/watch?v=BGt0DxbFGbA', 3
+    30, null, 3, 'https://www.youtube.com/watch?v=BGt0DxbFGbA', true, 3
   );
 

@@ -55,7 +55,21 @@
   "tracking": {
     "title": "Progress Tracking",
     "statsTitle": "Exercise Stats",
-    "historyTitle": "Workout History"
+    "historyTitle": "Training History",
+    "noHistory": "No records yet",
+    "sets": "sets",
+    "reps": "reps",
+    "sec": "sec",
+    "best": "Best",
+    "avg": "Avg",
+    "total": "Total sessions",
+    "edit": "Edit",
+    "update": "Update",
+    "cancel": "Cancel",
+    "updated": "Saved ✓",
+    "note": "Note",
+    "video": "Video",
+    "noStats": "No data to display"
   },
   "billing": {
     "title": "Billing & Subscription",

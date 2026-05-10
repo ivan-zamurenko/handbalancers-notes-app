@@ -67,6 +67,7 @@ export type Exercise = {
   target_sets: number | null
   youtube_url: string | null
   screenshot_urls: string[] | null
+  is_handstand: boolean        // враховується у лічильнику handstand-часу
   order: number
 }
 
@@ -79,6 +80,15 @@ export type WorkoutLog = {
   video_url: string | null
   note: string | null
   logged_at: string
+}
+
+// WorkoutLog з вкладеною інформацією про вправу (для tracking-сторінки)
+export type WorkoutLogWithExercise = WorkoutLog & {
+  exercises: {
+    name_ua: string
+    name_en: string
+    is_handstand: boolean
+  }
 }
 
 export type UserProgram = {

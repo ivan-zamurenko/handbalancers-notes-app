@@ -10,7 +10,7 @@ export default function ProgramList() {
   return (
     <div>
       {/* TODO: фільтр beginner / intermediate / advanced */}
-      {programs.map((p) => <ProgramCard key={p.id} program={p} />)}
+      {programs.map((p) => <ProgramCard key={p.id} program={p} locale="ua" />)}
     </div>
   )
 }
