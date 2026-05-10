@@ -27,6 +27,30 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
+/** Повертає true якщо цей лог є новим рекордом для вправи серед усіх логів. */
+function isRecord(log: WorkoutLogWithExercise, allLogs: WorkoutLogWithExercise[]): boolean {
+  const sameLogs = allLogs.filter(l => l.exercise_id === log.exercise_id)
+  if (sameLogs.length < 2) return false  // перший результат не рекорд — немає з чим порівнювати
+
+  const logMax = log.hold_sets?.length
+    ? Math.max(...log.hold_sets)
+    : log.reps_sets?.length
+      ? Math.max(...log.reps_sets)
+      : 0
+
+  // Перевіряємо чи є хоча б один раніший лог з кращим або рівним результатом
+  const earlier = sameLogs.filter(l => l.logged_at < log.logged_at)
+  if (!earlier.length) return false
+
+  const prevBest = Math.max(...earlier.map(l => {
+    if (l.hold_sets?.length) return Math.max(...l.hold_sets)
+    if (l.reps_sets?.length) return Math.max(...l.reps_sets)
+    return 0
+  }))
+
+  return logMax > prevBest
+}
+
 export default function TrackingHistory({ logs, locale }: Props) {
   const t = useTranslations('tracking')
   const [editing, setEditing] = useState<EditState | null>(null)
@@ -88,6 +112,7 @@ export default function TrackingHistory({ logs, locale }: Props) {
           const isEditing = editing?.logId === log.id
           const wasSaved = savedId === log.id
           const exerciseName = locale === 'en' ? log.exercises.name_en : log.exercises.name_ua
+          const record = isRecord(log, localLogs)
 
           return (
             <div key={log.id} style={{
@@ -99,7 +124,10 @@ export default function TrackingHistory({ logs, locale }: Props) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
                   <div style={{ fontWeight: 'bold', fontSize: '0.95rem' }}>{exerciseName}</div>
-                  <div style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '0.15rem' }}>{formatSets(log)}</div>
+                  <div style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '0.15rem' }}>
+                    {formatSets(log)}
+                    {record && <span style={{ marginLeft: '0.4rem', color: '#f59e0b', fontWeight: 'bold' }}>🏆</span>}
+                  </div>
                   <div style={{ color: '#94a3b8', fontSize: '0.8rem', marginTop: '0.2rem' }}>
                     {formatDate(log.logged_at)}
                   </div>

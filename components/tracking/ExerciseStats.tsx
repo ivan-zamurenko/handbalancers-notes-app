@@ -13,37 +13,86 @@ function computeStats(exerciseId: string, logs: WorkoutLogWithExercise[]) {
   const exerciseLogs = logs.filter(l => l.exercise_id === exerciseId)
   const totalSessions = exerciseLogs.length
 
-  // Найкращий холд: максимум з усіх hold_sets
   const allHolds = exerciseLogs.flatMap(l => l.hold_sets ?? [])
   const bestHold = allHolds.length ? Math.max(...allHolds) : null
 
-  // Середній рівень: середнє з максимумів кожної сесії (hold або reps)
   const allReps = exerciseLogs.flatMap(l => l.reps_sets ?? [])
   const avgReps = allReps.length ? Math.round(allReps.reduce((a, b) => a + b, 0) / allReps.length) : null
 
   return { totalSessions, bestHold, avgReps }
 }
 
+/** Сума секунд handstand-вправ за сьогодні (за локальним часом). */
+function computeHandstandToday(logs: WorkoutLogWithExercise[]): number {
+  const today = new Date().toLocaleDateString('sv-SE')  // формат YYYY-MM-DD
+  return logs
+    .filter(l => l.exercises.is_handstand && l.logged_at.startsWith(today))
+    .flatMap(l => l.hold_sets ?? [])
+    .reduce((sum, s) => sum + s, 0)
+}
+
 export default function ExerciseStats({ favorites, logs, locale }: Props) {
   const t = useTranslations('tracking')
 
-  if (!favorites.length) {
-    return (
-      <div style={{ marginBottom: '1.5rem' }}>
-        <h2>{t('statsTitle')}</h2>
-        <p style={{ color: '#888' }}>{t('noStats')}</p>
-      </div>
-    )
+  // Унікальні вправи з логів — favorites першими, потім решта
+  const favoriteIds = new Set(favorites.map(f => f.id))
+  const allExercises: { id: string; name_ua: string; name_en: string; target_hold: number | null }[] = []
+  const seen = new Set<string>()
+
+  // 1. Улюблені першими (зберігаємо порядок)
+  for (const fav of favorites) {
+    if (!seen.has(fav.id)) {
+      allExercises.push(fav)
+      seen.add(fav.id)
+    }
   }
+  // 2. Решта — з логів
+  for (const log of logs) {
+    if (!seen.has(log.exercise_id)) {
+      allExercises.push({
+        id: log.exercise_id,
+        name_ua: log.exercises.name_ua,
+        name_en: log.exercises.name_en,
+        target_hold: log.hold_sets?.length ? 1 : null,  // визначаємо тип по наявності hold_sets
+      })
+      seen.add(log.exercise_id)
+    }
+  }
+
+  const handstandSec = computeHandstandToday(logs)
+  const handstandMin = Math.floor(handstandSec / 60)
+  const handstandRemSec = handstandSec % 60
 
   return (
     <div style={{ marginBottom: '2rem' }}>
       <h2>{t('statsTitle')}</h2>
+
+      {/* Handstand-лічильник за сьогодні */}
+      {handstandSec > 0 && (
+        <div style={{
+          background: '#f0fdf4',
+          border: '1px solid #bbf7d0',
+          borderRadius: '10px',
+          padding: '0.75rem 1rem',
+          marginBottom: '1rem',
+          fontWeight: 'bold',
+          color: '#15803d',
+        }}>
+          🤸 {t('handstandToday')}: {handstandMin > 0 ? `${handstandMin} ${t('min')} ` : ''}{handstandRemSec} {t('sec')}
+        </div>
+      )}
+
+      {!allExercises.length && (
+        <p style={{ color: '#888' }}>{t('noStats')}</p>
+      )}
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {favorites.map(ex => {
+        {allExercises.map(ex => {
           const name = locale === 'en' ? ex.name_en : ex.name_ua
           const { totalSessions, bestHold, avgReps } = computeStats(ex.id, logs)
+          if (totalSessions === 0) return null
           const isHold = ex.target_hold !== null
+          const isFav = favoriteIds.has(ex.id)
 
           return (
             <div key={ex.id} style={{
@@ -52,7 +101,9 @@ export default function ExerciseStats({ favorites, logs, locale }: Props) {
               padding: '0.875rem',
               background: '#fff',
             }}>
-              <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>⭐ {name}</div>
+              <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                {isFav ? '⭐' : '·'} {name}
+              </div>
               <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.9rem', color: '#64748b' }}>
                 <span>📅 {t('total')}: <b>{totalSessions}</b></span>
                 {isHold && bestHold !== null && (

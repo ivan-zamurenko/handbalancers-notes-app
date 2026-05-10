@@ -69,8 +69,10 @@
     "updated": "Saved ✓",
     "note": "Note",
     "video": "Video",
-    "noStats": "No data to display"
-  },
+    "noStats": "No data to display",
+    "handstandToday": "Handstand today",
+    "min": "min",
+    "sec": "sec"
   "billing": {
     "title": "Billing & Subscription",
     "subscriptionTitle": "Your Subscription",
