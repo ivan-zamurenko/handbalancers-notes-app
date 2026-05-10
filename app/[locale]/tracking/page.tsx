@@ -3,8 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase-server'
 import { getLogsByUser } from '@/lib/db/workoutLogs'
 import { getFavoriteExercises } from '@/lib/db/favorites'
-import TrackingHistory from '@/components/tracking/TrackingHistory'
-import ExerciseStats from '@/components/tracking/ExerciseStats'
+import TrackingClient from '@/components/tracking/TrackingClient'
 
 export default async function TrackingPage({
   params,
@@ -27,8 +26,7 @@ export default async function TrackingPage({
   return (
     <main style={{ padding: '1rem', maxWidth: '600px', margin: '0 auto' }}>
       <h1>{t('title')}</h1>
-      <ExerciseStats favorites={favorites} logs={logs} locale={locale} />
-      <TrackingHistory logs={logs} locale={locale} />
+      <TrackingClient logs={logs} favorites={favorites} locale={locale} />
     </main>
   )
 }

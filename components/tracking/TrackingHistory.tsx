@@ -7,6 +7,7 @@ import { updateLogAction } from '@/components/workout/actions'
 
 type Props = {
   logs: WorkoutLogWithExercise[]
+  onUpdate: (updater: (prev: WorkoutLogWithExercise[]) => WorkoutLogWithExercise[]) => void
   locale: string
 }
 
@@ -51,14 +52,13 @@ function isRecord(log: WorkoutLogWithExercise, allLogs: WorkoutLogWithExercise[]
   return logMax > prevBest
 }
 
-export default function TrackingHistory({ logs, locale }: Props) {
+export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
   const t = useTranslations('tracking')
   const [editing, setEditing] = useState<EditState | null>(null)
-  const [localLogs, setLocalLogs] = useState<WorkoutLogWithExercise[]>(logs)
   const [saving, setSaving] = useState(false)
   const [savedId, setSavedId] = useState<string | null>(null)
 
-  if (!localLogs.length) {
+  if (!logs.length) {
     return (
       <div style={{ marginTop: '2rem' }}>
         <h2>{t('historyTitle')}</h2>
@@ -90,8 +90,8 @@ export default function TrackingHistory({ logs, locale }: Props) {
       note: editing.note || null,
       video_url: editing.video.trim() || null,
     })
-    // Оновлюємо локальний стан без перезавантаження
-    setLocalLogs(prev => prev.map(l => l.id === editing.logId ? {
+    // Оновлюємо спільний стан через батьківський callback
+    onUpdate(prev => prev.map(l => l.id === editing.logId ? {
       ...l,
       hold_sets: isHold ? parsed : l.hold_sets,
       reps_sets: isHold ? l.reps_sets : parsed,
@@ -108,11 +108,11 @@ export default function TrackingHistory({ logs, locale }: Props) {
     <div style={{ marginTop: '2rem' }}>
       <h2>{t('historyTitle')}</h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {localLogs.map(log => {
+        {logs.map(log => {
           const isEditing = editing?.logId === log.id
           const wasSaved = savedId === log.id
           const exerciseName = locale === 'en' ? log.exercises.name_en : log.exercises.name_ua
-          const record = isRecord(log, localLogs)
+          const record = isRecord(log, logs)
 
           return (
             <div key={log.id} style={{
