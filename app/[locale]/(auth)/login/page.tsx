@@ -28,7 +28,7 @@ export default async function LoginPage({
           <img
             src="/hnLogo.png"
             alt="Handbalancer's Notes"
-            style={{ width: '130px', height: '130px', objectFit: 'contain', mixBlendMode: 'screen', display: 'block', margin: '0 auto' }}
+            style={{ width: '200px', height: '200px', objectFit: 'contain', mixBlendMode: 'screen', display: 'block', margin: '0 auto' }}
           />
         </div>
 
