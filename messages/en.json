@@ -87,8 +87,25 @@
   "billing": {
     "title": "Billing & Subscription",
     "subscriptionTitle": "Your Subscription",
+    "noSubscription": "No active subscription",
+    "statusActive": "Active",
+    "statusTrialing": "Trial",
+    "statusCanceled": "Canceled",
+    "statusPastDue": "Past due",
+    "validUntil": "Valid until",
+    "proName": "Premium Access",
+    "priceLabel": "$5.99",
     "subscribe": "Subscribe",
-    "perMonth": "/ mo"
+    "perMonth": "/ mo",
+    "loading": "Loading...",
+    "successMessage": "Subscription activated!",
+    "canceledMessage": "Checkout canceled.",
+    "featuresList": [
+      "All premium programs",
+      "Unlimited exercise access",
+      "Progress tracking",
+      "New programs monthly"
+    ]
   },
   "workout": {
     "title": "Workout",

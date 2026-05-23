@@ -87,8 +87,25 @@
   "billing": {
     "title": "Підписка та оплата",
     "subscriptionTitle": "Ваша підписка",
-    "subscribe": "Підписатись",
-    "perMonth": "/ міс"
+    "noSubscription": "Немає активної підписки",
+    "statusActive": "Активна",
+    "statusTrialing": "Пробний період",
+    "statusCanceled": "Скасована",
+    "statusPastDue": "Прострочена оплата",
+    "validUntil": "Дійсна до",
+    "proName": "Преміум доступ",
+    "priceLabel": "199 ₴",
+    "subscribe": "Оформити підписку",
+    "perMonth": "/ міс",
+    "loading": "Завантаження...",
+    "successMessage": "Підписку успішно оформлено!",
+    "canceledMessage": "Оформлення скасовано.",
+    "featuresList": [
+      "Всі преміум програми",
+      "Необмежений доступ до вправ",
+      "Трекінг прогресу",
+      "Нові програми щомісяця"
+    ]
   },
   "workout": {
     "title": "Тренування",

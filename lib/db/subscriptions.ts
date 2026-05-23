@@ -14,6 +14,37 @@ export async function getSubscription(userId: string): Promise<Subscription | nu
   return data
 }
 
+type UpsertPayload = {
+  user_id: string
+  stripe_customer_id: string
+  stripe_subscription_id: string
+  status: 'active' | 'canceled' | 'trialing' | 'past_due'
+  current_period_end: string
+}
+
+/** Вставляє або оновлює підписку після успішного Stripe checkout. */
+export async function upsertSubscription(payload: UpsertPayload): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('subscriptions')
+    .upsert(payload, { onConflict: 'stripe_subscription_id' })
+  if (error) throw error
+}
+
+/** Оновлює статус і дату закінчення підписки після Stripe subscription event. */
+export async function updateSubscriptionStatus(
+  stripeSubscriptionId: string,
+  status: 'active' | 'canceled' | 'trialing' | 'past_due',
+  currentPeriodEnd: string,
+): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('subscriptions')
+    .update({ status, current_period_end: currentPeriodEnd })
+    .eq('stripe_subscription_id', stripeSubscriptionId)
+  if (error) throw error
+}
+
 /** Повертає true якщо користувач має активну підписку або trial ще не закінчився. */
 export async function hasActiveAccess(userId: string): Promise<boolean> {
   const supabase = await createClient()

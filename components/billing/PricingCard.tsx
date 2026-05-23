@@ -1,17 +1,75 @@
 'use client'
+import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 
-type Plan = { name?: string; price?: string }
+type Props = { priceId: string; locale: string }
 
-export default function PricingCard({ plan }: { plan?: Plan }) {
+export default function PricingCard({ priceId, locale }: Props) {
   const t = useTranslations('billing')
-  // TODO: handleSubscribe → fetch('/api/stripe/checkout', { priceId }) → redirect
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleSubscribe() {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priceId, locale }),
+      })
+      const data = await res.json() as { url?: string; error?: string }
+      if (!res.ok || !data.url) throw new Error(data.error ?? 'Unknown error')
+      window.location.href = data.url
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error')
+      setLoading(false)
+    }
+  }
+
   return (
-    <div>
-      <h3>{plan?.name ?? 'Pro'}</h3>
-      <p>{plan?.price ?? '—'} {t('perMonth')}</p>
-      {/* TODO: список переваг, кнопка з redirect на Stripe */}
-      <button>{t('subscribe')}</button>
+    <div style={{
+      background: '#fff',
+      border: '2px solid #e5e7eb',
+      borderRadius: '16px',
+      padding: '2rem',
+      maxWidth: '360px',
+    }}>
+      <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>
+        {t('proName')}
+      </h3>
+      <p style={{ fontSize: '2rem', fontWeight: 800, color: '#111', marginBottom: '0.25rem' }}>
+        {t('priceLabel')}
+        <span style={{ fontSize: '1rem', fontWeight: 400, color: '#6b7280' }}> {t('perMonth')}</span>
+      </p>
+
+      <ul style={{ margin: '1rem 0 1.5rem', padding: '0 0 0 1.25rem', color: '#374151', lineHeight: '1.9' }}>
+        {(t.raw('featuresList') as string[]).map((f: string) => (
+          <li key={f}>{f}</li>
+        ))}
+      </ul>
+
+      {error && (
+        <p style={{ color: '#dc2626', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>
+      )}
+
+      <button
+        onClick={handleSubscribe}
+        disabled={loading}
+        style={{
+          width: '100%',
+          padding: '0.875rem',
+          background: loading ? '#9ca3af' : '#16a34a',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '10px',
+          fontWeight: 700,
+          fontSize: '1rem',
+          cursor: loading ? 'not-allowed' : 'pointer',
+        }}
+      >
+        {loading ? t('loading') : t('subscribe')}
+      </button>
     </div>
   )
 }
