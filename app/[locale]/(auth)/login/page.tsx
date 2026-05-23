@@ -17,18 +17,18 @@ export default async function LoginPage({
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      background: '#000',
-      padding: '3rem 1.5rem',
+      background: '#0d0d0d',
+      padding: '2rem 1.5rem',
     }}>
       <div style={{ width: '100%', maxWidth: '320px' }}>
 
         {/* Лого */}
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/hnLogo.png"
             alt="Handbalancer's Notes"
-            style={{ width: '160px', height: '160px', objectFit: 'contain' }}
+            style={{ width: '200px', height: '200px', objectFit: 'contain', mixBlendMode: 'screen' }}
           />
         </div>
 
