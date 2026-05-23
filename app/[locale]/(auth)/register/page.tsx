@@ -18,17 +18,17 @@ export default async function RegisterPage({
       alignItems: 'center',
       justifyContent: 'flex-start',
       background: '#0d0d0d',
-      padding: '4rem 1.5rem 3rem',
+      padding: '3.5rem 1.5rem 2.5rem',
     }}>
       <div style={{ width: '100%', maxWidth: '320px' }}>
 
         {/* Лого */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/hnLogo.png"
             alt="Handbalancer's Notes"
-            style={{ width: '200px', height: '200px', objectFit: 'contain', mixBlendMode: 'screen' }}
+            style={{ width: '130px', height: '130px', objectFit: 'contain', mixBlendMode: 'screen', display: 'block', margin: '0 auto' }}
           />
         </div>
 
@@ -40,7 +40,7 @@ export default async function RegisterPage({
           letterSpacing: '0.3em',
           textAlign: 'center',
           textTransform: 'uppercase',
-          marginBottom: '2.5rem',
+          margin: '0 0 1.5rem',
         }}>
           {t('title')}
         </h1>
@@ -60,7 +60,7 @@ export default async function RegisterPage({
           </div>
         )}
 
-        <form action={registerAction} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <form action={registerAction} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <input
             type="text"
             name="name"
@@ -127,6 +127,7 @@ export default async function RegisterPage({
               fontWeight: 600,
               fontSize: '0.75rem',
               border: 'none',
+              borderRadius: '12px',
               cursor: 'pointer',
               letterSpacing: '0.25em',
               textTransform: 'uppercase',
@@ -137,7 +138,7 @@ export default async function RegisterPage({
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', color: '#444', fontSize: '0.75rem', marginTop: '2.5rem', letterSpacing: '0.05em' }}>
+        <p style={{ textAlign: 'center', color: '#444', fontSize: '0.75rem', marginTop: '1.75rem', letterSpacing: '0.05em' }}>
           {t('hasAccount')}{' '}
           <Link href="/login" style={{ color: '#39e600', fontWeight: 500, textDecoration: 'none' }}>
             {t('loginLink')}
