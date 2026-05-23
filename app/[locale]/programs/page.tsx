@@ -21,7 +21,7 @@ export default async function ProgramsPage({
   ])
 
   return (
-    <main style={{ padding: '1rem' }}>
+    <main style={{ padding: '1rem', maxWidth: '480px', margin: '0 auto' }}>
       <h1>{t('title')}</h1>
       {categories.map(category => {
         const categoryPrograms = programs.filter(p => p.category_id === category.id)

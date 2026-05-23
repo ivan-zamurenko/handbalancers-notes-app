@@ -39,7 +39,7 @@ export default async function ProgramDetailPage({
   const description = locale === 'en' ? program.description_en : program.description_ua
 
   return (
-    <main style={{ padding: '1rem' }}>
+    <main style={{ padding: '1rem', maxWidth: '480px', margin: '0 auto' }}>
       <h1>{title}</h1>
       {description && <p style={{ color: '#666' }}>{description}</p>}
       <p style={{ fontSize: '0.875rem' }}>
