@@ -17,60 +17,79 @@ export default async function RegisterPage({
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      background: '#f5f5f7',
-      padding: '2rem 1.5rem',
+      background: '#000',
+      padding: '3rem 1.5rem',
     }}>
-      <div style={{
-        width: '100%',
-        maxWidth: '400px',
-      }}>
-        {/* Лого */}
-        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+      <div style={{ width: '100%', maxWidth: '320px' }}>
+
+        {/* Монограма */}
+        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
           <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.375rem',
-            marginBottom: '1.75rem',
+            fontSize: '2.25rem',
+            fontWeight: 200,
+            letterSpacing: '0.25em',
+            color: '#fff',
+            lineHeight: 1,
           }}>
+            H
             <span style={{
-              fontSize: '1.375rem',
-              fontWeight: 900,
-              letterSpacing: '-0.03em',
-              color: '#1d1d1f',
-            }}>
-              HB
-            </span>
-            <span style={{ fontSize: '0.75rem', color: '#86868b', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 500 }}>
-              Training
-            </span>
+              display: 'inline-block',
+              borderLeft: '1px solid #fff',
+              height: '1.6rem',
+              verticalAlign: 'middle',
+              margin: '0 0.35em',
+            }} />
+            N
           </div>
-          <h1 style={{
-            fontSize: '2rem',
-            fontWeight: 700,
-            lineHeight: 1.1,
-            letterSpacing: '-0.025em',
-            color: '#1d1d1f',
-            margin: 0,
+          <div style={{
+            fontSize: '0.55rem',
+            letterSpacing: '0.35em',
+            color: '#555',
+            textTransform: 'uppercase',
+            marginTop: '0.75rem',
           }}>
-            {t('title')}
-          </h1>
+            HANDBALANCER&apos;S NOTES
+          </div>
+          <div style={{
+            fontSize: '0.85rem',
+            fontStyle: 'italic',
+            color: '#444',
+            marginTop: '0.2rem',
+            fontWeight: 300,
+          }}>
+            by Ivan
+          </div>
         </div>
+
+        {/* Заголовок */}
+        <h1 style={{
+          color: '#fff',
+          fontWeight: 300,
+          fontSize: '0.8rem',
+          letterSpacing: '0.3em',
+          textAlign: 'center',
+          textTransform: 'uppercase',
+          marginBottom: '2.5rem',
+        }}>
+          {t('title')}
+        </h1>
 
         {error && (
           <div style={{
-            background: '#fff2f2',
-            border: '1px solid #ffcdd2',
-            borderRadius: '12px',
-            padding: '0.875rem 1rem',
-            color: '#c62828',
-            fontSize: '0.875rem',
-            marginBottom: '1.25rem',
+            background: 'rgba(239,68,68,0.08)',
+            border: '1px solid rgba(239,68,68,0.25)',
+            borderRadius: '4px',
+            padding: '0.75rem 1rem',
+            color: '#f87171',
+            fontSize: '0.8rem',
+            marginBottom: '1.5rem',
+            letterSpacing: '0.02em',
           }}>
             {decodeURIComponent(error)}
           </div>
         )}
 
-        <form action={registerAction} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <form action={registerAction} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <input
             type="text"
             name="name"
@@ -78,14 +97,15 @@ export default async function RegisterPage({
             required
             style={{
               width: '100%',
-              padding: '0.875rem 1rem',
-              borderRadius: '12px',
-              border: '1px solid #d2d2d7',
-              background: '#fff',
-              color: '#1d1d1f',
-              fontSize: '1rem',
+              padding: '0.75rem 0',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: '1px solid #333',
+              color: '#fff',
+              fontSize: '0.95rem',
               outline: 'none',
               boxSizing: 'border-box',
+              letterSpacing: '0.03em',
             }}
           />
           <input
@@ -95,14 +115,15 @@ export default async function RegisterPage({
             required
             style={{
               width: '100%',
-              padding: '0.875rem 1rem',
-              borderRadius: '12px',
-              border: '1px solid #d2d2d7',
-              background: '#fff',
-              color: '#1d1d1f',
-              fontSize: '1rem',
+              padding: '0.75rem 0',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: '1px solid #333',
+              color: '#fff',
+              fontSize: '0.95rem',
               outline: 'none',
               boxSizing: 'border-box',
+              letterSpacing: '0.03em',
             }}
           />
           <input
@@ -113,14 +134,15 @@ export default async function RegisterPage({
             minLength={6}
             style={{
               width: '100%',
-              padding: '0.875rem 1rem',
-              borderRadius: '12px',
-              border: '1px solid #d2d2d7',
-              background: '#fff',
-              color: '#1d1d1f',
-              fontSize: '1rem',
+              padding: '0.75rem 0',
+              background: 'transparent',
+              border: 'none',
+              borderBottom: '1px solid #333',
+              color: '#fff',
+              fontSize: '0.95rem',
               outline: 'none',
               boxSizing: 'border-box',
+              letterSpacing: '0.03em',
             }}
           />
 
@@ -128,25 +150,25 @@ export default async function RegisterPage({
             type="submit"
             style={{
               width: '100%',
-              padding: '0.9375rem',
-              borderRadius: '12px',
+              padding: '0.9rem',
               background: '#39e600',
-              color: '#0a1a00',
-              fontWeight: 700,
-              fontSize: '1rem',
+              color: '#000',
+              fontWeight: 600,
+              fontSize: '0.75rem',
               border: 'none',
               cursor: 'pointer',
-              letterSpacing: '-0.01em',
-              marginTop: '0.25rem',
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+              marginTop: '0.5rem',
             }}
           >
             {t('submit')}
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', color: '#86868b', fontSize: '0.875rem', marginTop: '1.75rem' }}>
+        <p style={{ textAlign: 'center', color: '#444', fontSize: '0.75rem', marginTop: '2.5rem', letterSpacing: '0.05em' }}>
           {t('hasAccount')}{' '}
-          <Link href="/login" style={{ color: '#2979ff', fontWeight: 600, textDecoration: 'none' }}>
+          <Link href="/login" style={{ color: '#39e600', fontWeight: 500, textDecoration: 'none' }}>
             {t('loginLink')}
           </Link>
         </p>
