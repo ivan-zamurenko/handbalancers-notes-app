@@ -1,5 +1,9 @@
 'use client'
 // Pattern: Smart Component — відображає список логів з можливістю редагування
+
+// Час (в мс) протягом якого збережений статус "Збережено" видно у списку логів
+const SAVE_SUCCESS_DISPLAY_MS = 2000
+
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import type { WorkoutLogWithExercise } from '@/types'
@@ -101,7 +105,7 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
     setSaving(false)
     setSavedId(editing.logId)
     setEditing(null)
-    setTimeout(() => setSavedId(null), 2000)
+    setTimeout(() => setSavedId(null), SAVE_SUCCESS_DISPLAY_MS)
   }
 
   return (

@@ -40,6 +40,42 @@ export async function getProgramById(id: string): Promise<Program | null> {
   return data
 }
 
+/** Повертає програму за slug або null якщо не знайдено. */
+export async function getProgramBySlug(slug: string): Promise<Program | null> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('programs')
+    .select('*')
+    .eq('slug', slug)
+    .single()
+
+  if (error) return null
+  return data
+}
+
+/** Перевіряє чи користувач вже записаний на програму. */
+export async function isEnrolled(userId: string, programId: string): Promise<boolean> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('user_programs')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('program_id', programId)
+    .single()
+
+  return !!data
+}
+
+/** Записує користувача на програму. Ігнорує дублікат (idempotent). */
+export async function enrollProgram(userId: string, programId: string): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('user_programs')
+    .upsert({ user_id: userId, program_id: programId }, { onConflict: 'user_id,program_id' })
+
+  if (error) throw error
+}
+
 /** Повертає всі тижні програми, відсортовані за полем order. */
 export async function getWeeksByProgram(programId: string): Promise<Week[]> {
   const supabase = await createClient()

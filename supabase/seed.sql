@@ -44,9 +44,10 @@ INSERT INTO categories (id, slug, title_ua, title_en, description_ua, descriptio
 
 
 -- PROGRAMS
-INSERT INTO programs (id, category_id, title_ua, title_en, description_ua, description_en, level, is_free, "order") VALUES
+INSERT INTO programs (id, slug, category_id, title_ua, title_en, description_ua, description_en, level, is_free, "order") VALUES
   (
     '00000000-0000-0000-0001-000000000001',
+    'handstand-beginners',
     '00000000-0000-0000-0000-000000000001',
     'Стійка для початківців',
     'Handstand for Beginners',
@@ -56,6 +57,7 @@ INSERT INTO programs (id, category_id, title_ua, title_en, description_ua, descr
   ),
   (
     '00000000-0000-0000-0001-000000000002',
+    'freestanding-handstand',
     '00000000-0000-0000-0000-000000000001',
     'Вільна стійка',
     'Freestanding Handstand',
@@ -65,6 +67,7 @@ INSERT INTO programs (id, category_id, title_ua, title_en, description_ua, descr
   ),
   (
     '00000000-0000-0000-0001-000000000003',
+    'basic-flexibility',
     '00000000-0000-0000-0000-000000000002',
     'Базова гнучкість',
     'Basic Flexibility',

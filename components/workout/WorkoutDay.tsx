@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import type { Exercise } from '@/types'
 import ExerciseCard from './ExerciseCard'
 import { saveLog, toggleFavoriteAction } from './actions'
+import { SETS_STORAGE_KEY_PREFIX } from './LogForm'
 
 type Props = {
   dayId: string
@@ -37,10 +38,10 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale }: Pr
     setError(null)
     try {
       await saveLog({ exercise_id: exerciseId, ...data })
-      sessionStorage.removeItem(`workout_sets_${exerciseId}`)
+      sessionStorage.removeItem(`${SETS_STORAGE_KEY_PREFIX}${exerciseId}`)
       setLogged(prev => new Set([...prev, exerciseId]))
     } catch {
-      setError('Не вдалося зберегти. Спробуй ще раз.')
+      setError(t('saveError'))
     }
   }
 

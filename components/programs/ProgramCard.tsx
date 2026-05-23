@@ -24,7 +24,7 @@ export default function ProgramCard({ program, locale }: Props) {
       {description && <p style={{ color: '#666', margin: '0.5rem 0' }}>{description}</p>}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
         <span style={{ fontSize: '0.875rem', color: '#888' }}>{levelLabel}</span>
-        <Link href={`/programs/${program.id}`}>{t('view')} →</Link>
+        <Link href={`/programs/${program.slug}`}>{t('view')} →</Link>
       </div>
     </div>
   )

@@ -50,7 +50,9 @@
     "noPrograms": "No programs available",
     "nextDay": "Next workout",
     "completed": "Completed",
-    "startProgram": "Start"
+    "startProgram": "Start",
+    "loading": "Loading...",
+    "upgrade": "Get Premium"
   },
   "tracking": {
     "title": "Progress Tracking",
@@ -105,7 +107,8 @@
     "reps": "reps",
     "allDone": "Day complete! 🎉",
     "favorite": "Add to favorites",
-    "unfavorite": "Remove from favorites"
+    "unfavorite": "Remove from favorites",
+    "saveError": "Could not save. Please try again."
   },
   "stats": {
     "title": "Average Stats",

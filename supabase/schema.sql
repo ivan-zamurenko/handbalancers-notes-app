@@ -35,6 +35,7 @@ CREATE TABLE categories (
 -- Програма всередині категорії
 CREATE TABLE programs (
   id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug           text NOT NULL UNIQUE,          -- 'handstand-beginners', 'basic-flexibility', тощо
   category_id    uuid NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
   title_ua       text NOT NULL,
   title_en       text NOT NULL,

@@ -1,25 +1,26 @@
 import { redirect, notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { createClient } from '@/lib/supabase-server'
-import { getProgramById, getWeeksByProgram, getDaysByWeek } from '@/lib/db/programs'
+import { getUser } from '@/lib/db/auth'
+import { getProgramBySlug, getWeeksByProgram, getDaysByWeek, isEnrolled } from '@/lib/db/programs'
 import { getNextDay, getCompletedDayIds } from '@/lib/db/dayProgress'
+import { hasActiveAccess } from '@/lib/db/subscriptions'
+import StartProgramButton from '@/components/programs/StartProgramButton'
 
 export default async function ProgramDetailPage({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>
+  params: Promise<{ locale: string; slug: string }>
 }) {
-  const { locale, id } = await params
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { locale, slug } = await params
+  const user = await getUser()
   if (!user) redirect(`/${locale}/login`)
 
   const t = await getTranslations('programs')
-  const program = await getProgramById(id)
+  const program = await getProgramBySlug(slug)
   if (!program) notFound()
 
-  const weeks = await getWeeksByProgram(id)
+  const weeks = await getWeeksByProgram(program.id)
   const weeksWithDays = await Promise.all(
     weeks.map(async week => ({
       week,
@@ -27,9 +28,11 @@ export default async function ProgramDetailPage({
     }))
   )
 
-  const [completedIds, nextDay] = await Promise.all([
-    getCompletedDayIds(user.id, id),
-    getNextDay(user.id, id),
+  const [completedIds, nextDay, enrolled, canAccess] = await Promise.all([
+    getCompletedDayIds(user.id, program.id),
+    getNextDay(user.id, program.id),
+    isEnrolled(user.id, program.id),
+    program.is_free ? Promise.resolve(true) : hasActiveAccess(user.id),
   ])
 
   const title = locale === 'en' ? program.title_en : program.title_ua
@@ -42,6 +45,27 @@ export default async function ProgramDetailPage({
       <p style={{ fontSize: '0.875rem' }}>
         {t(program.level as 'beginner' | 'intermediate' | 'advanced')} · {program.is_free ? t('free') : t('paid')}
       </p>
+
+      {!enrolled && canAccess && (
+        <StartProgramButton programId={program.id} isFree={program.is_free} slug={slug} />
+      )}
+      {!enrolled && !canAccess && (
+        <Link
+          href="/billing"
+          style={{
+            display: 'inline-block',
+            marginTop: '1rem',
+            padding: '0.75rem 2rem',
+            background: '#f59e0b',
+            color: '#fff',
+            borderRadius: '8px',
+            fontWeight: 600,
+            textDecoration: 'none',
+          }}
+        >
+          {t('upgrade')}
+        </Link>
+      )}
 
       {weeksWithDays.map(({ week, days }) => {
         const weekTitle = locale === 'en' ? week.title_en : week.title_ua

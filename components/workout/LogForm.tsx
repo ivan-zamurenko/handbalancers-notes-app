@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import Timer from './Timer'
 
+/** Ключ sessionStorage для збереження підходів вправи між ремаунтами */
+export const SETS_STORAGE_KEY_PREFIX = 'workout_sets_'
+
 type LogData = { hold_sets?: number[]; reps_sets?: number[]; video_url?: string; note?: string }
 
 type Props = {
@@ -64,7 +67,7 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
 
 export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Props) {
   const t = useTranslations('workout')
-  const setsKey = `workout_sets_${exerciseId}`
+  const setsKey = `${SETS_STORAGE_KEY_PREFIX}${exerciseId}`
 
   // Відновлюємо підходи після перемикання мови
   const [sets, setSets] = useState<(number | undefined)[]>(() => {

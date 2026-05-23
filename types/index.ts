@@ -27,6 +27,7 @@ export type Category = {
 
 export type Program = {
   id: string
+  slug: string
   category_id: string
   title_ua: string
   title_en: string

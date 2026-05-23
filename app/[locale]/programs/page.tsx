@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
-import { createClient } from '@/lib/supabase-server'
+import { getUser } from '@/lib/db/auth'
 import { getCategories } from '@/lib/db/categories'
 import { getAllPrograms } from '@/lib/db/programs'
 import ProgramCard from '@/components/programs/ProgramCard'
@@ -11,8 +11,7 @@ export default async function ProgramsPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
   if (!user) redirect(`/${locale}/login`)
 
   const t = await getTranslations('programs')
