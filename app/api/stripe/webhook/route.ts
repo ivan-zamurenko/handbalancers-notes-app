@@ -25,22 +25,29 @@ export async function POST(req: NextRequest) {
     const userId = session.metadata?.userId
     if (userId && session.subscription) {
       const sub = await stripe.subscriptions.retrieve(session.subscription as string)
+      // В API 2025-07-30.basil current_period_end переміщено в items.data[0]
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const item0 = sub.items.data[0] as any
+      const periodEnd = (item0?.current_period_end ?? sub.current_period_end) as number
       await upsertSubscription({
         user_id: userId,
         stripe_customer_id: sub.customer as string,
         stripe_subscription_id: sub.id,
         status: sub.status as SubscriptionStatus,
-        current_period_end: new Date((sub.current_period_end as number) * 1000).toISOString(),
+        current_period_end: new Date(periodEnd * 1000).toISOString(),
       })
     }
   }
 
   if (event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted') {
     const sub = event.data.object as Stripe.Subscription
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const item0 = sub.items.data[0] as any
+    const periodEnd = (item0?.current_period_end ?? sub.current_period_end) as number
     await updateSubscriptionStatus(
       sub.id,
       sub.status as SubscriptionStatus,
-      new Date((sub.current_period_end as number) * 1000).toISOString(),
+      new Date(periodEnd * 1000).toISOString(),
     )
   }
 

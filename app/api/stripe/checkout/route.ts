@@ -26,7 +26,9 @@ export async function POST(req: NextRequest) {
       metadata: { userId: user.id },
     })
     return NextResponse.json({ url: session.url })
-  } catch {
-    return NextResponse.json({ error: 'Stripe error' }, { status: 500 })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[stripe/checkout]', msg)
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }

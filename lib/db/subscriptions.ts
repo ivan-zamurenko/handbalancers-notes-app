@@ -1,5 +1,6 @@
 // Pattern: Repository — ізолює всі запити до subscriptions від решти коду
 import { createClient } from '@/lib/supabase-server'
+import { createAdminClient } from '@/lib/supabase-admin'
 import type { Subscription } from '@/types'
 /** Повертає підписку користувача або null якщо її немає. */
 export async function getSubscription(userId: string): Promise<Subscription | null> {
@@ -24,7 +25,7 @@ type UpsertPayload = {
 
 /** Вставляє або оновлює підписку після успішного Stripe checkout. */
 export async function upsertSubscription(payload: UpsertPayload): Promise<void> {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { error } = await supabase
     .from('subscriptions')
     .upsert(payload, { onConflict: 'stripe_subscription_id' })
@@ -37,7 +38,7 @@ export async function updateSubscriptionStatus(
   status: 'active' | 'canceled' | 'trialing' | 'past_due',
   currentPeriodEnd: string,
 ): Promise<void> {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { error } = await supabase
     .from('subscriptions')
     .update({ status, current_period_end: currentPeriodEnd })
