@@ -22,43 +22,14 @@ export default async function RegisterPage({
     }}>
       <div style={{ width: '100%', maxWidth: '320px' }}>
 
-        {/* Монограма */}
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <div style={{
-            fontSize: '2.25rem',
-            fontWeight: 200,
-            letterSpacing: '0.25em',
-            color: '#fff',
-            lineHeight: 1,
-          }}>
-            H
-            <span style={{
-              display: 'inline-block',
-              borderLeft: '1px solid #fff',
-              height: '1.6rem',
-              verticalAlign: 'middle',
-              margin: '0 0.35em',
-            }} />
-            N
-          </div>
-          <div style={{
-            fontSize: '0.55rem',
-            letterSpacing: '0.35em',
-            color: '#555',
-            textTransform: 'uppercase',
-            marginTop: '0.75rem',
-          }}>
-            HANDBALANCER&apos;S NOTES
-          </div>
-          <div style={{
-            fontSize: '0.85rem',
-            fontStyle: 'italic',
-            color: '#444',
-            marginTop: '0.2rem',
-            fontWeight: 300,
-          }}>
-            by Ivan
-          </div>
+        {/* Лого */}
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/hnLogo.png"
+            alt="Handbalancer's Notes"
+            style={{ width: '160px', height: '160px', objectFit: 'contain' }}
+          />
         </div>
 
         {/* Заголовок */}
