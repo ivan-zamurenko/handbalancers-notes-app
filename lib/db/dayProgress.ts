@@ -1,6 +1,6 @@
 // Pattern: Repository — ізолює всі запити до user_day_progress від решти коду
 import { createClient } from '@/lib/supabase-server'
-import type { Day, DayWithWeek } from '@/types'
+import type { Day, DayWithWeek, DayFullContext } from '@/types'
 
 /** Позначає день як виконаний. Ігнорує дублікат (якщо вже відмічено). */
 export async function markDayComplete(userId: string, dayId: string): Promise<void> {
@@ -75,6 +75,20 @@ export async function getTotalDaysInProgram(programId: string): Promise<number> 
 
   if (error) throw error
   return count ?? 0
+}
+
+/** Повертає день з контекстом тижня і програми (для celebration screen). */
+export async function getDayContext(dayId: string): Promise<DayFullContext | null> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('days')
+    .select('*, weeks!inner(order, title_ua, title_en, programs!inner(id, title_ua, title_en))')
+    .eq('id', dayId)
+    .single()
+
+  if (error?.code === 'PGRST116') return null
+  if (error) throw error
+  return data as unknown as DayFullContext
 }
 
 /** Повертає дати (ISO-рядки) всіх виконаних днів користувача, відсортованих від новішого. */

@@ -114,6 +114,9 @@
     "sets": "sets",
     "reps": "reps",
     "allDone": "Day complete! 🎉",
+    "completionTitle": "Day Complete!",
+    "completionSubtitle": "Great work, keep it up!",
+    "backHome": "Back to Home",
     "favorite": "Add to favorites",
     "unfavorite": "Remove from favorites",
     "saveError": "Could not save. Please try again."

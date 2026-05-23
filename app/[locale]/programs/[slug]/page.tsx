@@ -77,6 +77,63 @@ export default async function ProgramDetailPage({
                 const dayTitle = locale === 'en' ? day.title_en : day.title_ua
                 const isCompleted = completedIds.has(day.id)
                 const isNext = nextDay?.id === day.id
+                const isLocked = !canAccess
+
+                // Locked день — веде на білінг
+                if (isLocked) {
+                  return (
+                    <Link
+                      key={day.id}
+                      href="/billing"
+                      style={{
+                        position: 'relative',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '0.75rem 1rem',
+                        borderRadius: '8px',
+                        border: '1px solid #f3f4f6',
+                        background: '#fafafa',
+                        textDecoration: 'none',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {/* Розмитий текст — видно але недосяжно */}
+                      <span style={{
+                        filter: 'blur(3.5px)',
+                        userSelect: 'none',
+                        color: '#6b7280',
+                        fontSize: '0.95rem',
+                        pointerEvents: 'none',
+                      }}>
+                        {dayTitle}
+                      </span>
+                      <span style={{ fontSize: '1rem', flexShrink: 0, marginLeft: '0.5rem' }}>🔒</span>
+                      {/* Напівпрозорий overlay з підказкою */}
+                      <div style={{
+                        position: 'absolute',
+                        inset: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'rgba(249,250,251,0.7)',
+                      }}>
+                        <span style={{
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          color: '#f59e0b',
+                          background: '#fffbeb',
+                          border: '1px solid #fde68a',
+                          borderRadius: '999px',
+                          padding: '2px 10px',
+                          letterSpacing: '0.03em',
+                        }}>
+                          {t('paid')}
+                        </span>
+                      </div>
+                    </Link>
+                  )
+                }
 
                 return (
                   <Link

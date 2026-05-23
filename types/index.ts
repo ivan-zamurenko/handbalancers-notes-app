@@ -105,6 +105,16 @@ export type DayWithWeek = Day & {
   weeks: { order: number; title_ua: string; title_en: string }
 }
 
+// День з повним контекстом: тиждень + програма (для celebration screen)
+export type DayFullContext = Day & {
+  weeks: {
+    order: number
+    title_ua: string
+    title_en: string
+    programs: { id: string; title_ua: string; title_en: string }
+  }
+}
+
 export type Subscription = {
   id: string
   user_id: string

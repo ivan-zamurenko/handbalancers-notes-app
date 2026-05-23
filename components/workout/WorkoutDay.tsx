@@ -2,6 +2,7 @@
 // Pattern: Facade — один компонент керує станом всього дня (логи, улюблені, таймер)
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
+import { useRouter } from '@/i18n/navigation'
 import type { Exercise } from '@/types'
 import ExerciseCard from './ExerciseCard'
 import { saveLog, toggleFavoriteAction } from './actions'
@@ -16,6 +17,7 @@ type Props = {
 
 export default function WorkoutDay({ dayId, exercises, favoriteIds, locale }: Props) {
   const t = useTranslations('workout')
+  const router = useRouter()
   const loggedKey = `workout_logged_${dayId}`
 
   // Відновлюємо стан після перемикання мови (sessionStorage переживає remount)
@@ -39,7 +41,12 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale }: Pr
     try {
       await saveLog({ exercise_id: exerciseId, ...data })
       sessionStorage.removeItem(`${SETS_STORAGE_KEY_PREFIX}${exerciseId}`)
-      setLogged(prev => new Set([...prev, exerciseId]))
+      const newLogged = new Set([...logged, exerciseId])
+      setLogged(newLogged)
+      // Якщо всі вправи залоговані — переходимо на celebration screen
+      if (exercises.every(e => newLogged.has(e.id))) {
+        setTimeout(() => router.push(`/workout/${dayId}/complete`), 600)
+      }
     } catch {
       setError(t('saveError'))
     }
