@@ -1,6 +1,6 @@
 // Pattern: Repository — ізолює всі запити до user_day_progress від решти коду
 import { createClient } from '@/lib/supabase-server'
-import type { Day } from '@/types'
+import type { Day, DayWithWeek } from '@/types'
 
 /** Позначає день як виконаний. Ігнорує дублікат (якщо вже відмічено). */
 export async function markDayComplete(userId: string, dayId: string): Promise<void> {
@@ -39,17 +39,17 @@ export async function getCompletedDayIds(userId: string, programId: string): Pro
 }
 
 /**
- * Повертає наступний невиконаний день у програмі (за порядком тижнів і днів).
+ * Повертає наступний невиконаний день у програмі з даними тижня (для Home screen).
  * Якщо всі дні виконані — повертає null.
  */
-export async function getNextDay(userId: string, programId: string): Promise<Day | null> {
+export async function getNextDay(userId: string, programId: string): Promise<DayWithWeek | null> {
   const supabase = await createClient()
 
   const completedIds = await getCompletedDayIds(userId, programId)
 
   const query = supabase
     .from('days')
-    .select('*, weeks!inner(program_id, order)')
+    .select('*, weeks!inner(program_id, order, title_ua, title_en)')
     .eq('weeks.program_id', programId)
     .order('order', { referencedTable: 'weeks', ascending: true })
     .order('order', { ascending: true })
@@ -62,7 +62,19 @@ export async function getNextDay(userId: string, programId: string): Promise<Day
 
   if (error?.code === 'PGRST116') return null  // не знайдено — всі виконані
   if (error) throw error
-  return data as Day
+  return data as DayWithWeek
+}
+
+/** Повертає загальну кількість днів у програмі. Використовується для відображення прогресу "N з M". */
+export async function getTotalDaysInProgram(programId: string): Promise<number> {
+  const supabase = await createClient()
+  const { count, error } = await supabase
+    .from('days')
+    .select('id, weeks!inner(program_id)', { count: 'exact', head: true })
+    .eq('weeks.program_id', programId)
+
+  if (error) throw error
+  return count ?? 0
 }
 
 /** Повертає дати (ISO-рядки) всіх виконаних днів користувача, відсортованих від новішого. */

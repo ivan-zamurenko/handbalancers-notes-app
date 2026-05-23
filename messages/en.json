@@ -1,6 +1,6 @@
 {
   "nav": {
-    "dashboard": "Dashboard",
+    "dashboard": "Today",
     "programs": "Programs",
     "tracking": "Tracking",
     "billing": "Billing",
@@ -30,10 +30,18 @@
     "subtitle": "Train. Track progress. Achieve results."
   },
   "dashboard": {
-    "title": "Dashboard",
+    "title": "Today",
     "streak": "{count, plural, one {# day streak} other {# day streak}}",
     "streakZero": "No streak yet",
-    "noFavorites": "Star an exercise to track your progress here."
+    "noFavorites": "Star an exercise to track your progress here.",
+    "dayLabel": "Day {n}",
+    "weekLabel": "Week {n}",
+    "ofTotal": "of {total}",
+    "startWorkout": "Start workout",
+    "continueWorkout": "Continue",
+    "noProgram": "You haven't chosen a program yet",
+    "browsePrograms": "Browse programs",
+    "programDone": "Program complete! 🎉"
   },
   "programs": {
     "title": "Training Programs",

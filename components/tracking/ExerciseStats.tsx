@@ -102,7 +102,7 @@ export default function ExerciseStats({ favorites, logs, locale }: Props) {
               background: '#fff',
             }}>
               <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                {isFav ? '⭐' : '·'} {name}
+                {isFav ? '⭐ ' : ''}{name}
               </div>
               <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.9rem', color: '#64748b' }}>
                 <span>📅 {t('total')}: <b>{totalSessions}</b></span>

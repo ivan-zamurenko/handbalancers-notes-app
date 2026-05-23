@@ -96,7 +96,13 @@ export type UserProgram = {
   id: string
   user_id: string
   program_id: string
+  start_date: string
   purchased_at: string
+}
+
+// День з вкладеними даними тижня (для Home screen)
+export type DayWithWeek = Day & {
+  weeks: { order: number; title_ua: string; title_en: string }
 }
 
 export type Subscription = {

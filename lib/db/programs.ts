@@ -49,7 +49,8 @@ export async function getProgramBySlug(slug: string): Promise<Program | null> {
     .eq('slug', slug)
     .single()
 
-  if (error) return null
+  if (error?.code === 'PGRST116') return null  // рядок не знайдено
+  if (error) throw error                        // будь-яка інша помилка — видима
   return data
 }
 
@@ -66,14 +67,36 @@ export async function isEnrolled(userId: string, programId: string): Promise<boo
   return !!data
 }
 
-/** Записує користувача на програму. Ігнорує дублікат (idempotent). */
+/** Записує користувача на програму. Зберігає start_date при першому записі (упсерт idempotent). */
 export async function enrollProgram(userId: string, programId: string): Promise<void> {
   const supabase = await createClient()
   const { error } = await supabase
     .from('user_programs')
-    .upsert({ user_id: userId, program_id: programId }, { onConflict: 'user_id,program_id' })
+    .upsert(
+      { user_id: userId, program_id: programId, start_date: new Date().toISOString() },
+      { onConflict: 'user_id,program_id', ignoreDuplicates: true },  // не перезаписує start_date якщо вже є
+    )
 
   if (error) throw error
+}
+
+/**
+ * Повертає найновішу активну програму користувача (найостання за датою запису).
+ * Використовується на Home screen для блоку "Сьогодні".
+ */
+export async function getActiveEnrollment(userId: string): Promise<{ program: Program; startDate: string } | null> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('user_programs')
+    .select('start_date, programs(*)')
+    .eq('user_id', userId)
+    .order('start_date', { ascending: false })
+    .limit(1)
+    .single()
+
+  if (error?.code === 'PGRST116') return null
+  if (error) throw error
+  return { program: data.programs as unknown as Program, startDate: data.start_date }
 }
 
 /** Повертає всі тижні програми, відсортовані за полем order. */

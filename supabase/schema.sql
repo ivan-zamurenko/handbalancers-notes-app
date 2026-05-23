@@ -110,6 +110,7 @@ CREATE TABLE user_programs (
   id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id      uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   program_id   uuid NOT NULL REFERENCES programs(id) ON DELETE CASCADE,
+  start_date   timestamptz NOT NULL DEFAULT now(),
   purchased_at timestamptz DEFAULT now(),
   UNIQUE (user_id, program_id)
 );
