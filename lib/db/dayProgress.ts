@@ -64,3 +64,16 @@ export async function getNextDay(userId: string, programId: string): Promise<Day
   if (error) throw error
   return data as Day
 }
+
+/** Повертає дати (ISO-рядки) всіх виконаних днів користувача, відсортованих від новішого. */
+export async function getCompletedDates(userId: string): Promise<string[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('user_day_progress')
+    .select('completed_at')
+    .eq('user_id', userId)
+    .order('completed_at', { ascending: false })
+
+  if (error) throw error
+  return (data ?? []).map(r => r.completed_at)
+}

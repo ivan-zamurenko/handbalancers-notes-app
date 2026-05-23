@@ -1,6 +1,6 @@
+// Pattern: Repository — ізолює всі запити до bookings від решти коду
 import { createClient } from '@/lib/supabase-server'
 import type { Booking } from '@/types'
-
 /** Повертає всі бронювання (Google Meet сесії) користувача, від найновішого. */
 export async function getBookingsByUser(userId: string): Promise<Booking[]> {
   const supabase = await createClient()

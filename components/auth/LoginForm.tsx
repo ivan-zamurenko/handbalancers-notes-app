@@ -2,20 +2,29 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { getLocale } from 'next-intl/server'
-import { createClient } from '@/lib/supabase-server'
+import { signIn, signOut } from '@/lib/db/auth'
 
 export async function loginAction(formData: FormData) {
-  const supabase = await createClient()
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  })
-
   const locale = await getLocale()
+  let authError: string | null = null
 
-  if (error) redirect(`/${locale}/login?error=` + encodeURIComponent(error.message))
+  try {
+    await signIn(
+      formData.get('email') as string,
+      formData.get('password') as string,
+    )
+  } catch (err: unknown) {
+    authError = err instanceof Error ? err.message : 'Login failed'
+  }
+
+  if (authError) redirect(`/${locale}/login?error=` + encodeURIComponent(authError))
 
   revalidatePath('/', 'layout')
   redirect(`/${locale}/dashboard`)
+}
+
+export async function logoutAction(): Promise<void> {
+  await signOut()
+  revalidatePath('/', 'layout')
+  redirect('/')
 }

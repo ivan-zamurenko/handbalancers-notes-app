@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
-import { createClient } from '@/lib/supabase-server'
+import { getUser } from '@/lib/db/auth'
 import { getStreak } from '@/lib/services/training'
 import { getChartData } from '@/lib/db/workoutLogs'
 import { getFavoriteExercises } from '@/lib/db/favorites'
@@ -13,9 +13,7 @@ export default async function DashboardPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
+  const user = await getUser()
   if (!user) redirect(`/${locale}/login`)
 
   const [streak, favorites] = await Promise.all([

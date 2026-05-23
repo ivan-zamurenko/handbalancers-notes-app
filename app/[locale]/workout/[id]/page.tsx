@@ -1,5 +1,5 @@
 import { redirect, notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase-server'
+import { getUser } from '@/lib/db/auth'
 import { getExercisesByDay } from '@/lib/db/exercises'
 import { getFavoriteExercises } from '@/lib/db/favorites'
 import WorkoutDay from '@/components/workout/WorkoutDay'
@@ -10,8 +10,7 @@ export default async function WorkoutSessionPage({
   params: Promise<{ locale: string; id: string }>
 }) {
   const { locale, id: dayId } = await params
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
   if (!user) redirect(`/${locale}/login`)
 
   const exercises = await getExercisesByDay(dayId)

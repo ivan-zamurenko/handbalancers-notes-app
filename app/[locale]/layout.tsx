@@ -2,7 +2,7 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { notFound } from 'next/navigation'
 import { getMessages } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
-import { createClient } from '@/lib/supabase-server'
+import { getUser } from '@/lib/db/auth'
 import Navbar from '@/components/layout/Navbar'
 
 export default async function LocaleLayout({
@@ -17,8 +17,7 @@ export default async function LocaleLayout({
 
   const messages = await getMessages()
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
 
   return (
     <NextIntlClientProvider messages={messages}>

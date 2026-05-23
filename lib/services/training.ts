@@ -1,8 +1,8 @@
 // Pattern: Service Layer — бізнес-логіка тренувань (streak, авто-відмітка дня)
 // Використовує Repository (lib/db/) для доступу до даних
-import { createClient } from '@/lib/supabase-server'
-import { createLog, type CreateLogInput } from '@/lib/db/workoutLogs'
-import { markDayComplete } from '@/lib/db/dayProgress'
+import { createLog, getLogsByExercisesToday, type CreateLogInput } from '@/lib/db/workoutLogs'
+import { getCompletedDates, markDayComplete } from '@/lib/db/dayProgress'
+import { getExerciseById, getExercisesByDay } from '@/lib/db/exercises'
 import type { WorkoutLog } from '@/types'
 
 const DAY_MS = 86_400_000
@@ -12,16 +12,10 @@ const DAY_MS = 86_400_000
  * Рахується по таблиці user_day_progress.
  */
 export async function getStreak(userId: string): Promise<number> {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('user_day_progress')
-    .select('completed_at')
-    .eq('user_id', userId)
-    .order('completed_at', { ascending: false })
+  const rawDates = await getCompletedDates(userId)
+  if (!rawDates.length) return 0
 
-  if (!data?.length) return 0
-
-  const dates = [...new Set(data.map(r => r.completed_at.slice(0, 10)))]
+  const dates = [...new Set(rawDates.map(d => d.slice(0, 10)))]
   const today = new Date().toISOString().slice(0, 10)
   const yesterday = new Date(Date.now() - DAY_MS).toISOString().slice(0, 10)
 
@@ -43,35 +37,19 @@ export async function getStreak(userId: string): Promise<number> {
 export async function saveExerciseLog(userId: string, input: CreateLogInput): Promise<WorkoutLog> {
   const log = await createLog(userId, input)
 
-  const supabase = await createClient()
-  const { data: exercise } = await supabase
-    .from('exercises')
-    .select('day_id')
-    .eq('id', input.exercise_id)
-    .single()
+  const exercise = await getExerciseById(input.exercise_id)
+  if (!exercise?.day_id) return log
 
-  if (exercise?.day_id) {
-    const { data: allExercises } = await supabase
-      .from('exercises')
-      .select('id')
-      .eq('day_id', exercise.day_id)
+  const allExercises = await getExercisesByDay(exercise.day_id)
+  if (!allExercises.length) return log
 
-    if (allExercises?.length) {
-      const exerciseIds = allExercises.map(e => e.id)
-      const todayStart = new Date().toISOString().slice(0, 10) + 'T00:00:00.000Z'
+  const exerciseIds = allExercises.map(e => e.id)
+  const since = new Date().toISOString().slice(0, 10) + 'T00:00:00.000Z'
+  const todayLogs = await getLogsByExercisesToday(userId, exerciseIds, since)
 
-      const { data: logs } = await supabase
-        .from('workout_logs')
-        .select('exercise_id')
-        .eq('user_id', userId)
-        .in('exercise_id', exerciseIds)
-        .gte('logged_at', todayStart)
-
-      const loggedIds = new Set(logs?.map(l => l.exercise_id))
-      const allDone = exerciseIds.every(id => loggedIds.has(id))
-      if (allDone) await markDayComplete(userId, exercise.day_id)
-    }
-  }
+  const loggedIds = new Set(todayLogs.map(l => l.exercise_id))
+  const allDone = exerciseIds.every(id => loggedIds.has(id))
+  if (allDone) await markDayComplete(userId, exercise.day_id)
 
   return log
 }

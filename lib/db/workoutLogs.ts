@@ -119,3 +119,21 @@ export async function updateLog(logId: string, userId: string, input: UpdateLogI
 
   if (error) throw error
 }
+
+/** Повертає exercise_id логів вказаних вправ, залогованих після вказаного часу (ISO-рядок). */
+export async function getLogsByExercisesToday(
+  userId: string,
+  exerciseIds: string[],
+  since: string,
+): Promise<{ exercise_id: string }[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('workout_logs')
+    .select('exercise_id')
+    .eq('user_id', userId)
+    .in('exercise_id', exerciseIds)
+    .gte('logged_at', since)
+
+  if (error) throw error
+  return data ?? []
+}

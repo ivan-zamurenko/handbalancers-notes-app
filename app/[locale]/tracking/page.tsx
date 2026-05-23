@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
-import { createClient } from '@/lib/supabase-server'
+import { getUser } from '@/lib/db/auth'
 import { getLogsByUser } from '@/lib/db/workoutLogs'
 import { getFavoriteExercises } from '@/lib/db/favorites'
 import TrackingClient from '@/components/tracking/TrackingClient'
@@ -11,8 +11,7 @@ export default async function TrackingPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
   if (!user) redirect(`/${locale}/login`)
 
   const t = await getTranslations('tracking')

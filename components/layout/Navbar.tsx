@@ -1,7 +1,7 @@
 'use client'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link, useRouter, usePathname } from '@/i18n/navigation'
-import { createClient } from '@/lib/supabase'
+import { logoutAction } from '@/components/auth/LoginForm'
 
 export default function Navbar() {
   const t = useTranslations('nav')
@@ -10,10 +10,7 @@ export default function Navbar() {
   const locale = useLocale()
 
   async function handleLogout() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/')
-    router.refresh()
+    await logoutAction()
   }
 
   function switchLocale(next: string) {

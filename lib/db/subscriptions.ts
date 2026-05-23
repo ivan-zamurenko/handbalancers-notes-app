@@ -1,6 +1,6 @@
+// Pattern: Repository — ізолює всі запити до subscriptions від решти коду
 import { createClient } from '@/lib/supabase-server'
 import type { Subscription } from '@/types'
-
 /** Повертає підписку користувача або null якщо її немає. */
 export async function getSubscription(userId: string): Promise<Subscription | null> {
   const supabase = await createClient()
