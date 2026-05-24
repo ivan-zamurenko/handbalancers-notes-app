@@ -63,9 +63,9 @@ export default async function DashboardPage({
           locale={locale}
         />
       ) : (
-        <div style={{ padding: '1.5rem', borderRadius: '16px', background: '#f9fafb', border: '1px solid #e5e7eb', marginBottom: '1.5rem' }}>
-          <p style={{ color: '#6b7280', marginBottom: '0.75rem' }}>{t('noProgram')}</p>
-          <Link href="/programs" style={{ color: '#3b82f6', fontWeight: 500 }}>
+        <div style={{ padding: '1.5rem', borderRadius: '16px', background: '#141414', border: '1px solid #1e1e1e', marginBottom: '1.5rem' }}>
+          <p style={{ color: '#888', marginBottom: '0.75rem' }}>{t('noProgram')}</p>
+          <Link href="/programs" style={{ color: '#2979ff', fontWeight: 500 }}>
             {t('browsePrograms')} →
           </Link>
         </div>

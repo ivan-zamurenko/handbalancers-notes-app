@@ -18,10 +18,10 @@ export default function TodayCard({ program, todayDay, dayNumber, totalDays, loc
   // Програму завершено
   if (!todayDay) {
     return (
-      <div style={{ padding: '1.5rem', borderRadius: '16px', background: '#f0fdf4', border: '1px solid #bbf7d0', marginBottom: '1.5rem' }}>
-        <p style={{ fontSize: '1.1rem', fontWeight: 600, color: '#16a34a' }}>{t('programDone')}</p>
-        <p style={{ color: '#555', marginTop: '0.25rem' }}>{programTitle}</p>
-        <Link href="/programs" style={{ display: 'inline-block', marginTop: '1rem', color: '#3b82f6', fontWeight: 500 }}>
+      <div style={{ padding: '1.5rem', borderRadius: '16px', background: 'rgba(57, 230, 0, 0.06)', border: '1px solid rgba(57, 230, 0, 0.15)', marginBottom: '1.5rem' }}>
+        <p style={{ fontSize: '1.1rem', fontWeight: 600, color: '#39e600' }}>{t('programDone')}</p>
+        <p style={{ color: '#888', marginTop: '0.25rem' }}>{programTitle}</p>
+        <Link href="/programs" style={{ display: 'inline-block', marginTop: '1rem', color: '#2979ff', fontWeight: 500 }}>
           {t('browsePrograms')} →
         </Link>
       </div>
@@ -33,17 +33,17 @@ export default function TodayCard({ program, todayDay, dayNumber, totalDays, loc
   const isStarted = dayNumber > 1
 
   return (
-    <div style={{ padding: '1.5rem', borderRadius: '16px', background: '#eff6ff', border: '2px solid #bfdbfe', marginBottom: '1.5rem' }}>
-      <p style={{ fontSize: '0.8rem', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>
+    <div style={{ padding: '1.5rem', borderRadius: '16px', background: '#141414', border: '1px solid #1e1e1e', marginBottom: '1.5rem' }}>
+      <p style={{ fontSize: '0.8rem', color: '#555', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>
         {programTitle}
       </p>
-      <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: '0 0 0.25rem' }}>
+      <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: '0 0 0.25rem', color: '#fff' }}>
         {t('dayLabel', { n: dayNumber })} · {t('weekLabel', { n: weekNumber })}
       </h2>
-      <p style={{ color: '#6b7280', fontSize: '0.9rem', margin: '0 0 0.1rem' }}>
+      <p style={{ color: '#888', fontSize: '0.9rem', margin: '0 0 0.1rem' }}>
         {weekTitle}
       </p>
-      <p style={{ color: '#9ca3af', fontSize: '0.8rem', marginBottom: '1.25rem' }}>
+      <p style={{ color: '#555', fontSize: '0.8rem', marginBottom: '1.25rem' }}>
         {t('ofTotal', { total: totalDays })}
       </p>
       <Link
@@ -51,10 +51,10 @@ export default function TodayCard({ program, todayDay, dayNumber, totalDays, loc
         style={{
           display: 'inline-block',
           padding: '0.75rem 2rem',
-          background: '#3b82f6',
-          color: '#fff',
+          background: '#39e600',
+          color: '#000',
           borderRadius: '10px',
-          fontWeight: 600,
+          fontWeight: 700,
           fontSize: '1rem',
           textDecoration: 'none',
         }}

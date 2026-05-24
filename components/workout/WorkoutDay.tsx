@@ -66,13 +66,13 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale }: Pr
       <h1>{t('title')}</h1>
 
       {error && (
-        <div style={{ background: '#fee2e2', color: '#dc2626', padding: '0.75rem', borderRadius: '8px', marginBottom: '1rem' }}>
+        <div style={{ background: 'rgba(239, 68, 68, 0.08)', color: '#f87171', padding: '0.75rem', borderRadius: '8px', marginBottom: '1rem' }}>
           {error}
         </div>
       )}
 
       {allDone && (
-        <div style={{ background: '#dcfce7', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', textAlign: 'center', fontWeight: 'bold' }}>
+        <div style={{ background: 'rgba(57, 230, 0, 0.07)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', textAlign: 'center', fontWeight: 'bold', color: '#39e600' }}>
           {t('allDone')}
         </div>
       )}

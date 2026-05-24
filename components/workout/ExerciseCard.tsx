@@ -29,10 +29,10 @@ export default function ExerciseCard({ exercise, locale, isLogged, isFavorite, o
 
   return (
     <div style={{
-      border: isLogged ? '2px solid #16a34a' : '1px solid #eee',
+      border: isLogged ? '2px solid #39e600' : '1px solid #1e1e1e',
       borderRadius: '12px',
       padding: '1rem',
-      background: isLogged ? '#f0fdf4' : '#fff',
+      background: isLogged ? 'rgba(57, 230, 0, 0.06)' : '#141414',
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>{name}</h2>
@@ -45,7 +45,7 @@ export default function ExerciseCard({ exercise, locale, isLogged, isFavorite, o
         </button>
       </div>
 
-      {description && <p style={{ color: '#666', margin: '0.5rem 0' }}>{description}</p>}
+      {description && <p style={{ color: '#888', margin: '0.5rem 0' }}>{description}</p>}
 
       <p style={{ fontSize: '0.875rem', color: '#888', margin: '0.25rem 0' }}>
         {t('target')}: {isHold
@@ -58,7 +58,7 @@ export default function ExerciseCard({ exercise, locale, isLogged, isFavorite, o
         <div style={{ margin: '0.5rem 0' }}>
           <button
             onClick={() => setVideoOpen(v => !v)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#3b82f6', fontSize: '0.875rem', padding: 0 }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#2979ff', fontSize: '0.875rem', padding: 0 }}
           >
             {videoOpen ? t('hideVideo') : t('watchVideo')}
           </button>
@@ -78,7 +78,7 @@ export default function ExerciseCard({ exercise, locale, isLogged, isFavorite, o
       )}
 
       {isLogged ? (
-        <p style={{ color: '#16a34a', fontWeight: 'bold', margin: '0.5rem 0' }}>{t('saved')}</p>
+        <p style={{ color: '#39e600', fontWeight: 'bold', margin: '0.5rem 0' }}>{t('saved')}</p>
       ) : (
         <LogForm isHold={isHold} targetSets={exercise.target_sets ?? 1} exerciseId={exercise.id} onSubmit={onLog} />
       )}

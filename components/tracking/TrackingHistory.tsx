@@ -120,28 +120,28 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
 
           return (
             <div key={log.id} style={{
-              border: '1px solid #e2e8f0',
+              border: '1px solid #1e1e1e',
               borderRadius: '10px',
               padding: '0.875rem',
-              background: '#fff',
+              background: '#141414',
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
-                  <div style={{ fontWeight: 'bold', fontSize: '0.95rem' }}>{exerciseName}</div>
-                  <div style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '0.15rem' }}>
+                  <div style={{ fontWeight: 600, fontSize: '0.95rem', color: '#fff' }}>{exerciseName}</div>
+                  <div style={{ color: '#888', fontSize: '0.9rem', marginTop: '0.15rem' }}>
                     {formatSets(log)}
                     {record && <span style={{ marginLeft: '0.4rem', color: '#f59e0b', fontWeight: 'bold' }}>🏆</span>}
                   </div>
-                  <div style={{ color: '#94a3b8', fontSize: '0.8rem', marginTop: '0.2rem' }}>
+                  <div style={{ color: '#555', fontSize: '0.8rem', marginTop: '0.2rem' }}>
                     {formatDate(log.logged_at)}
                   </div>
                 </div>
                 {!isEditing && (
                   wasSaved
-                    ? <span style={{ color: '#16a34a', fontSize: '0.85rem' }}>{t('updated')}</span>
+                    ? <span style={{ color: '#39e600', fontSize: '0.85rem' }}>{t('updated')}</span>
                     : <button
                         onClick={() => startEdit(log)}
-                        style={{ background: 'none', border: '1px solid #e2e8f0', borderRadius: '6px', padding: '0.25rem 0.6rem', cursor: 'pointer', fontSize: '0.8rem', color: '#64748b' }}
+                        style={{ background: 'none', border: '1px solid #2a2a2a', borderRadius: '6px', padding: '0.25rem 0.6rem', cursor: 'pointer', fontSize: '0.8rem', color: '#888' }}
                       >
                         ✎ {t('edit')}
                       </button>
@@ -149,14 +149,14 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
               </div>
 
               {log.note && !isEditing && (
-                <p style={{ margin: '0.4rem 0 0', color: '#64748b', fontSize: '0.85rem' }}>
+                <p style={{ margin: '0.4rem 0 0', color: '#888', fontSize: '0.85rem' }}>
                   📝 {log.note}
                 </p>
               )}
 
               {log.video_url && !isEditing && (
                 <a href={log.video_url} target="_blank" rel="noopener noreferrer"
-                  style={{ display: 'block', marginTop: '0.3rem', color: '#3b82f6', fontSize: '0.85rem' }}>
+                  style={{ display: 'block', marginTop: '0.3rem', color: '#2979ff', fontSize: '0.85rem' }}>
                   🎥 {t('video')}
                 </a>
               )}
@@ -164,7 +164,7 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
               {isEditing && editing && (
                 <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <div>
-                    <label style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                    <label style={{ fontSize: '0.8rem', color: '#888' }}>
                       {log.hold_sets?.length ? `${t('sets')} (сек)` : `${t('sets')} (повт)`}
                     </label>
                     <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
@@ -177,7 +177,7 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
                             ...prev,
                             sets: prev.sets.map((s, idx) => idx === i ? e.target.value : s)
                           } : prev)}
-                          style={{ width: '4rem', padding: '0.3rem', borderRadius: '6px', border: '1px solid #ddd', textAlign: 'center' }}
+                          style={{ width: '4rem', padding: '0.3rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', textAlign: 'center' }}
                         />
                       ))}
                     </div>
@@ -188,7 +188,7 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
                     placeholder={t('note')}
                     value={editing.note}
                     onChange={e => setEditing(prev => prev ? { ...prev, note: e.target.value } : prev)}
-                    style={{ padding: '0.4rem', borderRadius: '6px', border: '1px solid #ddd', fontSize: '0.9rem' }}
+                    style={{ padding: '0.4rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', fontSize: '0.9rem' }}
                   />
 
                   <input
@@ -196,20 +196,20 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
                     placeholder={t('video')}
                     value={editing.video}
                     onChange={e => setEditing(prev => prev ? { ...prev, video: e.target.value } : prev)}
-                    style={{ padding: '0.4rem', borderRadius: '6px', border: '1px solid #ddd', fontSize: '0.9rem' }}
+                    style={{ padding: '0.4rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', fontSize: '0.9rem' }}
                   />
 
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <button
                       onClick={() => handleUpdate(log)}
                       disabled={saving}
-                      style={{ flex: 1, padding: '0.5rem', borderRadius: '6px', background: '#3b82f6', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+                      style={{ flex: 1, padding: '0.5rem', borderRadius: '6px', background: '#39e600', color: '#000', border: 'none', cursor: 'pointer', fontWeight: 700 }}
                     >
                       {saving ? '...' : t('update')}
                     </button>
                     <button
                       onClick={cancelEdit}
-                      style={{ padding: '0.5rem 0.75rem', borderRadius: '6px', border: '1px solid #ddd', background: '#fff', cursor: 'pointer', color: '#64748b' }}
+                      style={{ padding: '0.5rem 0.75rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: 'transparent', cursor: 'pointer', color: '#888' }}
                     >
                       {t('cancel')}
                     </button>

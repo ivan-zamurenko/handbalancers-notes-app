@@ -29,21 +29,21 @@ export default function PricingCard({ priceId, locale }: Props) {
 
   return (
     <div style={{
-      background: '#fff',
-      border: '2px solid #e5e7eb',
+      background: '#141414',
+      border: '1px solid #1e1e1e',
       borderRadius: '16px',
       padding: '2rem',
       maxWidth: '360px',
     }}>
-      <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>
+      <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem', color: '#fff' }}>
         {t('proName')}
       </h3>
-      <p style={{ fontSize: '2rem', fontWeight: 800, color: '#111', marginBottom: '0.25rem' }}>
+      <p style={{ fontSize: '2rem', fontWeight: 800, color: '#fff', marginBottom: '0.25rem' }}>
         {t('priceLabel')}
-        <span style={{ fontSize: '1rem', fontWeight: 400, color: '#6b7280' }}> {t('perMonth')}</span>
+        <span style={{ fontSize: '1rem', fontWeight: 400, color: '#888' }}> {t('perMonth')}</span>
       </p>
 
-      <ul style={{ margin: '1rem 0 1.5rem', padding: '0 0 0 1.25rem', color: '#374151', lineHeight: '1.9' }}>
+      <ul style={{ margin: '1rem 0 1.5rem', padding: '0 0 0 1.25rem', color: '#aaa', lineHeight: '1.9' }}>
         {(t.raw('featuresList') as string[]).map((f: string) => (
           <li key={f}>{f}</li>
         ))}
@@ -59,8 +59,8 @@ export default function PricingCard({ priceId, locale }: Props) {
         style={{
           width: '100%',
           padding: '0.875rem',
-          background: loading ? '#9ca3af' : '#16a34a',
-          color: '#fff',
+          background: loading ? '#2a2a2a' : '#39e600',
+          color: loading ? '#555' : '#000',
           border: 'none',
           borderRadius: '10px',
           fontWeight: 700,

@@ -32,22 +32,22 @@ export default async function BillingPage({
 
       {success && (
         <div style={{
-          background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '10px',
-          padding: '0.875rem 1rem', marginBottom: '1.5rem', color: '#15803d', fontWeight: 500,
+          background: 'rgba(57, 230, 0, 0.07)', border: '1px solid rgba(57, 230, 0, 0.2)', borderRadius: '10px',
+          padding: '0.875rem 1rem', marginBottom: '1.5rem', color: '#39e600', fontWeight: 500,
         }}>
           ✅ {t('successMessage')}
         </div>
       )}
       {canceled && (
         <div style={{
-          background: '#fef9c3', border: '1px solid #fde68a', borderRadius: '10px',
-          padding: '0.875rem 1rem', marginBottom: '1.5rem', color: '#92400e',
+          background: 'rgba(255, 200, 0, 0.06)', border: '1px solid rgba(255, 200, 0, 0.15)', borderRadius: '10px',
+          padding: '0.875rem 1rem', marginBottom: '1.5rem', color: '#f5a623',
         }}>
           {t('canceledMessage')}
         </div>
       )}
 
-      <h2 style={{ fontSize: '1rem', fontWeight: 600, color: '#374151', marginBottom: '0.75rem' }}>
+      <h2 style={{ fontSize: '1rem', fontWeight: 600, color: '#888', marginBottom: '0.75rem' }}>
         {t('subscriptionTitle')}
       </h2>
       <SubscriptionStatus subscription={subscription} locale={locale} />

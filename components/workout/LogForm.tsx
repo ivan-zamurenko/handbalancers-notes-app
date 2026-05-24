@@ -28,7 +28,7 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 0' }}>
-      <span style={{ color: '#666', minWidth: '5rem' }}>{t('set')} {index + 1}</span>
+      <span style={{ color: '#888', minWidth: '5rem' }}>{t('set')} {index + 1}</span>
       {editing ? (
         <>
           <input
@@ -38,24 +38,24 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
             onKeyDown={e => e.key === 'Enter' && confirm()}
             placeholder={t('repsPlaceholder')}
             autoFocus
-            style={{ width: '6rem', padding: '0.35rem 0.5rem', borderRadius: '6px', border: '1px solid #94a3b8', fontSize: '1rem' }}
+            style={{ width: '6rem', padding: '0.35rem 0.5rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', fontSize: '1rem' }}
           />
           <button
             type="button"
             onClick={confirm}
             disabled={!input || Number(input) <= 0}
-            style={{ padding: '0.35rem 0.75rem', borderRadius: '6px', border: 'none', background: '#22c55e', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}
+            style={{ padding: '0.35rem 0.75rem', borderRadius: '6px', border: 'none', background: '#39e600', color: '#000', cursor: 'pointer', fontWeight: 'bold' }}
           >
             ✓
           </button>
         </>
       ) : (
         <>
-          <span style={{ fontWeight: 'bold', color: '#16a34a' }}>{saved} {t('reps')}</span>
+          <span style={{ fontWeight: 'bold', color: '#39e600' }}>{saved} {t('reps')}</span>
           <button
             type="button"
             onClick={() => { setInput(String(saved)); setEditing(true) }}
-            style={{ padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid #ddd', background: '#fff', color: '#666', cursor: 'pointer', fontSize: '0.8rem' }}
+            style={{ padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: 'transparent', color: '#888', cursor: 'pointer', fontSize: '0.8rem' }}
           >
             ✎
           </button>
@@ -106,7 +106,7 @@ export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Pr
 
   return (
     <form onSubmit={handleSubmit} style={{ marginTop: '0.75rem' }}>
-      <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '0.5rem 0.75rem', marginBottom: '0.5rem' }}>
+      <div style={{ background: '#1a1a1a', borderRadius: '8px', padding: '0.5rem 0.75rem', marginBottom: '0.5rem' }}>
         {sets.map((val, i) => (
           isHold ? (
             <Timer
@@ -132,7 +132,7 @@ export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Pr
         placeholder={t('videoPlaceholder')}
         value={videoUrl}
         onChange={e => setVideoUrl(e.target.value)}
-        style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ddd', marginBottom: '0.5rem', boxSizing: 'border-box', fontSize: '0.9rem' }}
+        style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', marginBottom: '0.5rem', boxSizing: 'border-box', fontSize: '0.9rem' }}
       />
 
       <textarea
@@ -140,7 +140,7 @@ export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Pr
         value={note}
         onChange={e => setNote(e.target.value)}
         rows={2}
-        style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #ddd', resize: 'none', marginBottom: '0.5rem', boxSizing: 'border-box' }}
+        style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', resize: 'none', marginBottom: '0.5rem', boxSizing: 'border-box' }}
       />
 
       <button
@@ -148,8 +148,8 @@ export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Pr
         disabled={!anyFilled}
         style={{
           width: '100%', padding: '0.75rem', borderRadius: '8px',
-          background: anyFilled ? '#3b82f6' : '#cbd5e1',
-          color: '#fff', border: 'none',
+          background: anyFilled ? '#39e600' : '#1e1e1e',
+          color: anyFilled ? '#000' : '#555', border: 'none',
           cursor: anyFilled ? 'pointer' : 'not-allowed',
           fontWeight: 'bold', fontSize: '1rem',
         }}

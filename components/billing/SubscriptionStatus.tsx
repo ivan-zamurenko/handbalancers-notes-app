@@ -2,10 +2,10 @@ import { getTranslations } from 'next-intl/server'
 import type { Subscription, SubscriptionStatus } from '@/types'
 
 const STATUS_COLOR: Record<SubscriptionStatus, string> = {
-  active: '#16a34a',
-  trialing: '#2563eb',
-  canceled: '#9ca3af',
-  past_due: '#dc2626',
+  active: '#39e600',
+  trialing: '#2979ff',
+  canceled: '#555',
+  past_due: '#f87171',
 }
 
 function formatDate(iso: string, locale: string) {
@@ -25,7 +25,7 @@ export default async function SubscriptionStatus({
 
   if (!subscription) {
     return (
-      <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>{t('noSubscription')}</p>
+      <p style={{ color: '#888', marginBottom: '1.5rem' }}>{t('noSubscription')}</p>
     )
   }
 
@@ -34,8 +34,8 @@ export default async function SubscriptionStatus({
 
   return (
     <div style={{
-      background: '#f9fafb',
-      border: '1px solid #e5e7eb',
+      background: '#141414',
+      border: '1px solid #1e1e1e',
       borderRadius: '12px',
       padding: '1rem 1.25rem',
       marginBottom: '1.5rem',
@@ -53,7 +53,7 @@ export default async function SubscriptionStatus({
       }}>
         {t(statusKey)}
       </span>
-      <span style={{ fontSize: '0.9rem', color: '#4b5563' }}>
+      <span style={{ fontSize: '0.9rem', color: '#888' }}>
         {t('validUntil')}: {formatDate(subscription.current_period_end, locale)}
       </span>
     </div>

@@ -70,13 +70,13 @@ export default function ExerciseStats({ favorites, logs, locale }: Props) {
       {/* Handstand-лічильник за сьогодні */}
       {handstandSec > 0 && (
         <div style={{
-          background: '#f0fdf4',
-          border: '1px solid #bbf7d0',
+          background: 'rgba(57, 230, 0, 0.07)',
+          border: '1px solid rgba(57, 230, 0, 0.2)',
           borderRadius: '10px',
           padding: '0.75rem 1rem',
           marginBottom: '1rem',
           fontWeight: 'bold',
-          color: '#15803d',
+          color: '#39e600',
         }}>
           🤸 {t('handstandToday')}: {handstandMin > 0 ? `${handstandMin} ${t('min')} ` : ''}{handstandRemSec} {t('sec')}
         </div>
@@ -96,15 +96,15 @@ export default function ExerciseStats({ favorites, logs, locale }: Props) {
 
           return (
             <div key={ex.id} style={{
-              border: '1px solid #e2e8f0',
+              border: '1px solid #1e1e1e',
               borderRadius: '10px',
               padding: '0.875rem',
-              background: '#fff',
+              background: '#141414',
             }}>
-              <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
+              <div style={{ fontWeight: 600, marginBottom: '0.5rem', color: '#fff' }}>
                 {isFav ? '⭐ ' : ''}{name}
               </div>
-              <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.9rem', color: '#64748b' }}>
+              <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.9rem', color: '#888' }}>
                 <span>📅 {t('total')}: <b>{totalSessions}</b></span>
                 {isHold && bestHold !== null && (
                   <span>🏆 {t('best')}: <b>{bestHold} {t('sec')}</b></span>
