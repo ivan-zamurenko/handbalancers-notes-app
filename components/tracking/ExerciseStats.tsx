@@ -33,32 +33,6 @@ function computeHandstandToday(logs: WorkoutLogWithExercise[]): number {
 
 export default function ExerciseStats({ favorites, logs, locale }: Props) {
   const t = useTranslations('tracking')
-
-  // Унікальні вправи з логів — favorites першими, потім решта
-  const favoriteIds = new Set(favorites.map(f => f.id))
-  const allExercises: { id: string; name_ua: string; name_en: string; target_hold: number | null }[] = []
-  const seen = new Set<string>()
-
-  // 1. Улюблені першими (зберігаємо порядок)
-  for (const fav of favorites) {
-    if (!seen.has(fav.id)) {
-      allExercises.push(fav)
-      seen.add(fav.id)
-    }
-  }
-  // 2. Решта — з логів
-  for (const log of logs) {
-    if (!seen.has(log.exercise_id)) {
-      allExercises.push({
-        id: log.exercise_id,
-        name_ua: log.exercises.name_ua,
-        name_en: log.exercises.name_en,
-        target_hold: log.hold_sets?.length ? 1 : null,  // визначаємо тип по наявності hold_sets
-      })
-      seen.add(log.exercise_id)
-    }
-  }
-
   const handstandSec = computeHandstandToday(logs)
   const handstandMin = Math.floor(handstandSec / 60)
   const handstandRemSec = handstandSec % 60
@@ -82,17 +56,16 @@ export default function ExerciseStats({ favorites, logs, locale }: Props) {
         </div>
       )}
 
-      {!allExercises.length && (
+      {!favorites.length && (
         <p style={{ color: '#888' }}>{t('noStats')}</p>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {allExercises.map(ex => {
+        {favorites.map(ex => {
           const name = locale === 'en' ? ex.name_en : ex.name_ua
           const { totalSessions, bestHold, avgReps } = computeStats(ex.id, logs)
           if (totalSessions === 0) return null
           const isHold = ex.target_hold !== null
-          const isFav = favoriteIds.has(ex.id)
 
           return (
             <div key={ex.id} style={{
@@ -102,7 +75,7 @@ export default function ExerciseStats({ favorites, logs, locale }: Props) {
               background: '#141414',
             }}>
               <div style={{ fontWeight: 600, marginBottom: '0.5rem', color: '#fff' }}>
-                {isFav ? '⭐ ' : ''}{name}
+                ⭐ {name}
               </div>
               <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.9rem', color: '#888' }}>
                 <span>📅 {t('total')}: <b>{totalSessions}</b></span>
