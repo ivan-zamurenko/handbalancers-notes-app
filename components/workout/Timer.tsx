@@ -29,12 +29,12 @@ export default function Timer({ label, savedValue, onSave, onEdit }: Props) {
   if (savedValue !== undefined) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 0' }}>
-        <span style={{ color: '#666', minWidth: '5rem' }}>{label}</span>
-        <span style={{ fontWeight: 'bold', color: '#16a34a' }}>{savedValue}s</span>
+        <span style={{ color: '#888', minWidth: '5rem' }}>{label}</span>
+        <span style={{ fontWeight: 'bold', color: '#39e600' }}>{savedValue}s</span>
         <button
           type="button"
           onClick={onEdit}
-          style={{ padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid #ddd', background: '#fff', color: '#666', cursor: 'pointer', fontSize: '0.8rem' }}
+          style={{ padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: 'transparent', color: '#888', cursor: 'pointer', fontSize: '0.8rem' }}
         >
           ✎
         </button>
@@ -43,8 +43,8 @@ export default function Timer({ label, savedValue, onSave, onEdit }: Props) {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 0', borderBottom: '1px solid #f1f5f9' }}>
-      <span style={{ color: '#666', minWidth: '5rem' }}>{label}</span>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 0', borderBottom: '1px solid #1a1a1a' }}>
+      <span style={{ color: '#888', minWidth: '5rem' }}>{label}</span>
 
       <span style={{ fontWeight: 'bold', fontSize: '1.25rem', minWidth: '3.5rem' }}>
         {seconds}s
@@ -53,7 +53,7 @@ export default function Timer({ label, savedValue, onSave, onEdit }: Props) {
       {state === 'idle' && (
         <button
           onClick={() => setState('running')}
-          style={{ padding: '0.4rem 1rem', borderRadius: '6px', border: 'none', background: '#22c55e', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}
+          style={{ padding: '0.4rem 1rem', borderRadius: '6px', border: 'none', background: '#39e600', color: '#000', cursor: 'pointer', fontWeight: 'bold' }}
         >
           {t('start')}
         </button>
@@ -72,13 +72,13 @@ export default function Timer({ label, savedValue, onSave, onEdit }: Props) {
         <>
           <button
             onClick={() => onSave(seconds)}
-            style={{ padding: '0.4rem 1rem', borderRadius: '6px', border: 'none', background: '#3b82f6', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}
+            style={{ padding: '0.4rem 1rem', borderRadius: '6px', border: 'none', background: '#2979ff', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}
           >
             {t('saveSet')}
           </button>
           <button
             onClick={() => { setSeconds(0); setState('idle') }}
-            style={{ padding: '0.4rem 0.75rem', borderRadius: '6px', border: '1px solid #ddd', background: '#fff', cursor: 'pointer', color: '#666' }}
+            style={{ padding: '0.4rem 0.75rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: 'transparent', cursor: 'pointer', color: '#888' }}
           >
             {t('again')}
           </button>
