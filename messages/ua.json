@@ -22,7 +22,12 @@
       "password": "Пароль",
       "submit": "Зареєструватись",
       "hasAccount": "Вже є акаунт?",
-      "loginLink": "Увійти"
+      "loginLink": "Увійти",
+      "errorNameRequired": "Введіть ім'я",
+      "errorEmailRequired": "Введіть email",
+      "errorEmailInvalid": "Невірний формат email",
+      "errorPasswordRequired": "Введіть пароль",
+      "errorPasswordShort": "Пароль має бути не менше 6 символів"
     }
   },
   "home": {

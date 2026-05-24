@@ -22,7 +22,12 @@
       "password": "Password",
       "submit": "Register",
       "hasAccount": "Already have an account?",
-      "loginLink": "Sign in"
+      "loginLink": "Sign in",
+      "errorNameRequired": "Please enter your name",
+      "errorEmailRequired": "Please enter your email",
+      "errorEmailInvalid": "Invalid email format",
+      "errorPasswordRequired": "Please enter a password",
+      "errorPasswordShort": "Password must be at least 6 characters"
     }
   },
   "home": {
