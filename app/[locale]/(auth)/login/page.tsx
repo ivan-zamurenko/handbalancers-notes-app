@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { loginAction } from '@/components/auth/LoginForm'
+import LocaleSwitcher from '@/components/layout/LocaleSwitcher'
 
 export default async function LoginPage({
   searchParams,
@@ -19,7 +20,11 @@ export default async function LoginPage({
       justifyContent: 'flex-start',
       background: '#0d0d0d',
       padding: '3.5rem 1.5rem 2.5rem',
+      position: 'relative',
     }}>
+      <div style={{ position: 'absolute', top: '1.25rem', right: '1.25rem' }}>
+        <LocaleSwitcher />
+      </div>
       <div style={{ width: '100%', maxWidth: '320px' }}>
 
         {/* Лого */}
