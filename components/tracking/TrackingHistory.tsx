@@ -75,11 +75,31 @@ function isRecord(log: WorkoutLogWithExercise, allLogs: WorkoutLogWithExercise[]
   return logMax > prevBest
 }
 
+/** Дати що відкриті за замовчуванням — сьогодні і вчора */
+function defaultOpenDates(groups: { dateStr: string }[]): Set<string> {
+  const now = new Date()
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const todayStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
+  const yest = new Date(now); yest.setDate(now.getDate() - 1)
+  const yesterdayStr = `${yest.getFullYear()}-${pad(yest.getMonth() + 1)}-${pad(yest.getDate())}`
+  return new Set(groups.map(g => g.dateStr).filter(d => d === todayStr || d === yesterdayStr))
+}
+
 export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
   const t = useTranslations('tracking')
   const [editing, setEditing] = useState<EditState | null>(null)
   const [saving, setSaving] = useState(false)
   const [savedId, setSavedId] = useState<string | null>(null)
+  const groups = groupByDate(logs)
+  const [openDates, setOpenDates] = useState<Set<string>>(() => defaultOpenDates(groups))
+
+  function toggleDate(dateStr: string) {
+    setOpenDates(prev => {
+      const next = new Set(prev)
+      next.has(dateStr) ? next.delete(dateStr) : next.add(dateStr)
+      return next
+    })
+  }
 
   if (!logs.length) {
     return (
@@ -131,26 +151,48 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
   return (
     <div style={{ marginTop: '2rem' }}>
       <h2>{t('historyTitle')}</h2>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-        {groups.map(({ dateStr, dayLogs }) => (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        {groups.map(({ dateStr, dayLogs }) => {
+          const isOpen = openDates.has(dateStr)
+          return (
           <div key={dateStr}>
-            {/* Заголовок дати */}
-            <div style={{
-              fontSize: '0.72rem',
-              fontWeight: 700,
-              color: '#444',
-              textTransform: 'uppercase',
-              letterSpacing: '0.12em',
-              paddingBottom: '0.4rem',
-              marginBottom: '0.35rem',
-              borderBottom: '1px solid #1a1a1a',
-            }}>
-              {formatDateLabel(dateStr, locale)}
-            </div>
+            {/* Заголовок-акордеон */}
+            <button
+              onClick={() => toggleDate(dateStr)}
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '0.5rem 0.25rem',
+                background: 'none',
+                border: 'none',
+                borderBottom: '1px solid #1a1a1a',
+                cursor: 'pointer',
+                marginBottom: isOpen ? '0.35rem' : 0,
+              }}
+            >
+              <span style={{
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                color: isOpen ? '#888' : '#444',
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+              }}>
+                {formatDateLabel(dateStr, locale)}
+                <span style={{ marginLeft: '0.4rem', color: '#333', fontWeight: 400 }}>
+                  ({dayLogs.length})
+                </span>
+              </span>
+              <span style={{ color: '#333', fontSize: '0.7rem', transition: 'transform 0.15s' }}>
+                {isOpen ? '▾' : '▸'}
+              </span>
+            </button>
 
-            {/* Компактні рядки */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-              {dayLogs.map(log => {
+            {/* Компактні рядки — видимі тільки якщо відкрито */}
+            {isOpen && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', marginBottom: '0.5rem' }}>
+                {dayLogs.map(log => {
                 const isEditing = editing?.logId === log.id
                 const wasSaved = savedId === log.id
                 const exerciseName = locale === 'en' ? log.exercises.name_en : log.exercises.name_ua
@@ -265,8 +307,10 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
                 )
               })}
             </div>
+            )}
           </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )
