@@ -99,6 +99,22 @@ export async function getActiveEnrollment(userId: string): Promise<{ program: Pr
   return { program: data.programs as unknown as Program, startDate: data.start_date }
 }
 
+/** Повертає всі активні програми користувача (для дашборду з кількома програмами). */
+export async function getAllEnrollments(userId: string): Promise<{ program: Program; startDate: string }[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('user_programs')
+    .select('start_date, programs(*)')
+    .eq('user_id', userId)
+    .order('start_date', { ascending: false })
+
+  if (error) throw error
+  return (data ?? []).map(row => ({
+    program: row.programs as unknown as Program,
+    startDate: row.start_date,
+  }))
+}
+
 /** Повертає всі тижні програми, відсортовані за полем order. */
 export async function getWeeksByProgram(programId: string): Promise<Week[]> {
   const supabase = await createClient()

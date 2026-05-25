@@ -4,7 +4,7 @@ import { getUser } from '@/lib/db/auth'
 import { getStreak } from '@/lib/services/training'
 import { getChartData } from '@/lib/db/workoutLogs'
 import { getFavoriteExercises } from '@/lib/db/favorites'
-import { getActiveEnrollment } from '@/lib/db/programs'
+import { getAllEnrollments } from '@/lib/db/programs'
 import { getNextDay, getTotalDaysInProgram, getCompletedDayIds, getCompletedDates } from '@/lib/db/dayProgress'
 import StreakBadge from '@/components/dashboard/StreakBadge'
 import ProgressChart from '@/components/dashboard/ProgressChart'
@@ -23,24 +23,24 @@ export default async function DashboardPage({
 
   const t = await getTranslations('dashboard')
 
-  const [streak, favorites, enrollment, completedDates] = await Promise.all([
+  const [streak, favorites, enrollments, completedDates] = await Promise.all([
     getStreak(user.id),
     getFavoriteExercises(user.id),
-    getActiveEnrollment(user.id),
+    getAllEnrollments(user.id),
     getCompletedDates(user.id),
   ])
 
-  // Дані активної програми — завантажуємо тільки якщо юзер записаний
-  const programData = enrollment
-    ? await (async () => {
-        const [todayDay, completedIds, totalDays] = await Promise.all([
-          getNextDay(user.id, enrollment.program.id),
-          getCompletedDayIds(user.id, enrollment.program.id),
-          getTotalDaysInProgram(enrollment.program.id),
-        ])
-        return { todayDay, dayNumber: completedIds.size + 1, totalDays }
-      })()
-    : null
+  // Дані всіх активних програм — завантажуємо паралельно
+  const programsData = await Promise.all(
+    enrollments.map(async (enrollment) => {
+      const [todayDay, completedIds, totalDays] = await Promise.all([
+        getNextDay(user.id, enrollment.program.id),
+        getCompletedDayIds(user.id, enrollment.program.id),
+        getTotalDaysInProgram(enrollment.program.id),
+      ])
+      return { enrollment, todayDay, dayNumber: completedIds.size + 1, totalDays }
+    })
+  )
 
   const chartDataPerExercise = await Promise.all(
     favorites.map(ex => getChartData(user.id, ex.id).then(data => ({ exercise: ex, data })))
@@ -55,14 +55,17 @@ export default async function DashboardPage({
 
       <WeekCalendar completedDates={completedDates} />
 
-      {enrollment && programData ? (
-        <TodayCard
-          program={enrollment.program}
-          todayDay={programData.todayDay}
-          dayNumber={programData.dayNumber}
-          totalDays={programData.totalDays}
-          locale={locale}
-        />
+      {programsData.length > 0 ? (
+        programsData.map(({ enrollment, todayDay, dayNumber, totalDays }) => (
+          <TodayCard
+            key={enrollment.program.id}
+            program={enrollment.program}
+            todayDay={todayDay}
+            dayNumber={dayNumber}
+            totalDays={totalDays}
+            locale={locale}
+          />
+        ))
       ) : (
         <div style={{ padding: '1.5rem', borderRadius: '16px', background: '#141414', border: '1px solid #1e1e1e', marginBottom: '1.5rem' }}>
           <p style={{ color: '#888', marginBottom: '0.75rem' }}>{t('noProgram')}</p>
