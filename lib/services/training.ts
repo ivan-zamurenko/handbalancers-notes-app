@@ -1,6 +1,6 @@
 // Pattern: Service Layer — бізнес-логіка тренувань (streak, авто-відмітка дня)
 // Використовує Repository (lib/db/) для доступу до даних
-import { createLog, getLogsByExercisesToday, type CreateLogInput } from '@/lib/db/workoutLogs'
+import { createLog, getLogsByExercisesToday, getLogsSummaryToday, type CreateLogInput } from '@/lib/db/workoutLogs'
 import { getCompletedDates, markDayComplete } from '@/lib/db/dayProgress'
 import { getExerciseById, getExercisesByDay } from '@/lib/db/exercises'
 import type { WorkoutLog } from '@/types'
@@ -52,4 +52,22 @@ export async function saveExerciseLog(userId: string, input: CreateLogInput): Pr
   if (allDone) await markDayComplete(userId, exercise.day_id)
 
   return log
+}
+
+/**
+ * Повертає статистику виконання дня: кількість залогованих вправ і загальний час hold за сьогодні.
+ * Використовується на completion-екрані.
+ */
+export async function getDayCompletionStats(userId: string, dayId: string): Promise<{ exercisesLogged: number; totalHoldSec: number }> {
+  const allExercises = await getExercisesByDay(dayId)
+  if (!allExercises.length) return { exercisesLogged: 0, totalHoldSec: 0 }
+
+  const exerciseIds = allExercises.map(e => e.id)
+  const since = new Date().toISOString().slice(0, 10) + 'T00:00:00.000Z'
+  const logs = await getLogsSummaryToday(userId, exerciseIds, since)
+
+  const exercisesLogged = new Set(logs.map(l => l.exercise_id)).size
+  const totalHoldSec = logs.flatMap(l => l.hold_sets ?? []).reduce((sum, s) => sum + s, 0)
+
+  return { exercisesLogged, totalHoldSec }
 }

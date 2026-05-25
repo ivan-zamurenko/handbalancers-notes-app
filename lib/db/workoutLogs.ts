@@ -137,3 +137,21 @@ export async function getLogsByExercisesToday(
   if (error) throw error
   return data ?? []
 }
+
+/** Повертає exercise_id і hold_sets логів вказаних вправ за сьогодні. Використовується для статистики на completion-екрані. */
+export async function getLogsSummaryToday(
+  userId: string,
+  exerciseIds: string[],
+  since: string,
+): Promise<{ exercise_id: string; hold_sets: number[] | null }[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('workout_logs')
+    .select('exercise_id, hold_sets')
+    .eq('user_id', userId)
+    .in('exercise_id', exerciseIds)
+    .gte('logged_at', since)
+
+  if (error) throw error
+  return data ?? []
+}
