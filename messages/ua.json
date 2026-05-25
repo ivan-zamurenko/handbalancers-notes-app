@@ -42,6 +42,7 @@
     "dayLabel": "День {n}",
     "weekLabel": "Тиждень {n}",
     "ofTotal": "з {total}",
+    "progressDays": "{current} з {total} днів",
     "startWorkout": "Розпочати тренування",
     "continueWorkout": "Продовжити",
     "noProgram": "Ти ще не обрав програму",
@@ -85,6 +86,8 @@
     "note": "Нотатка",
     "video": "Відео",
     "noStats": "Немає даних для відображення",
+    "noStatsDesc": "Познач вправу зірочкою під час тренування, щоб бачити свій прогрес тут",
+    "noStatsCta": "Перейти до тренування →",
     "handstandToday": "Сьогодні на руках",
     "min": "хв",
     "sec": "сек"

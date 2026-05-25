@@ -1,6 +1,7 @@
 'use client'
 // Pattern: Pure Component — статистика без мутацій, обраховується з переданих даних
 import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import type { Exercise, WorkoutLogWithExercise } from '@/types'
 
 type Props = {
@@ -57,7 +58,20 @@ export default function ExerciseStats({ favorites, logs, locale }: Props) {
       )}
 
       {!favorites.length && (
-        <p style={{ color: '#888' }}>{t('noStats')}</p>
+        <div style={{
+          border: '1px solid #1e1e1e',
+          borderRadius: '12px',
+          padding: '2rem 1.5rem',
+          textAlign: 'center',
+          background: '#0f0f0f',
+        }}>
+          <div style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>⭐</div>
+          <p style={{ color: '#fff', fontWeight: 600, marginBottom: '0.35rem', fontSize: '0.95rem' }}>{t('noStats')}</p>
+          <p style={{ color: '#555', fontSize: '0.85rem', marginBottom: '1.25rem', lineHeight: 1.5 }}>{t('noStatsDesc')}</p>
+          <Link href="/dashboard" style={{ color: '#39e600', fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none' }}>
+            {t('noStatsCta')}
+          </Link>
+        </div>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>

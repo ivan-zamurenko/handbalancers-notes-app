@@ -40,12 +40,19 @@ export default function TodayCard({ program, todayDay, dayNumber, totalDays, loc
       <h2 style={{ fontSize: '1.25rem', fontWeight: 700, margin: '0 0 0.25rem', color: '#fff' }}>
         {t('dayLabel', { n: dayNumber })} · {t('weekLabel', { n: weekNumber })}
       </h2>
-      <p style={{ color: '#888', fontSize: '0.9rem', margin: '0 0 0.1rem' }}>
+      <p style={{ color: '#888', fontSize: '0.9rem', margin: '0 0 1rem' }}>
         {weekTitle}
       </p>
-      <p style={{ color: '#555', fontSize: '0.8rem', marginBottom: '1.25rem' }}>
-        {t('ofTotal', { total: totalDays })}
-      </p>
+      {/* Progress bar */}
+      <div style={{ marginBottom: '1.25rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+          <span style={{ fontSize: '0.75rem', color: '#555' }}>{t('progressDays', { current: dayNumber, total: totalDays })}</span>
+          <span style={{ fontSize: '0.75rem', color: '#39e600', fontWeight: 600 }}>{Math.round((dayNumber / totalDays) * 100)}%</span>
+        </div>
+        <div style={{ height: '4px', borderRadius: '99px', background: '#1e1e1e', overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${(dayNumber / totalDays) * 100}%`, background: '#39e600', borderRadius: '99px', transition: 'width 0.4s ease' }} />
+        </div>
+      </div>
       <Link
         href={`/workout/${todayDay.id}`}
         style={{

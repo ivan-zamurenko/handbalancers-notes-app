@@ -5,6 +5,7 @@
 body {
   background: #0d0d0d;
   color: #fff;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
 }
 
 * {
