@@ -146,8 +146,6 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
     setTimeout(() => setSavedId(null), SAVE_SUCCESS_DISPLAY_MS)
   }
 
-  const groups = groupByDate(logs)
-
   return (
     <div style={{ marginTop: '2rem' }}>
       <h2>{t('historyTitle')}</h2>
