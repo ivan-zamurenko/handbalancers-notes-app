@@ -47,10 +47,11 @@ export default async function DashboardPage({
   )
 
   return (
-    <main style={{ padding: '1rem', maxWidth: '480px', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem' }}>{t('title')}</h1>
-
-      <StreakBadge streak={streak} />
+    <main style={{ padding: '1.5rem 1rem', maxWidth: '480px', margin: '0 auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>{t('title')}</h1>
+        <StreakBadge streak={streak} />
+      </div>
 
       <WeekCalendar completedDates={completedDates} />
 
