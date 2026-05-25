@@ -47,6 +47,28 @@ function formatDateLabel(dateStr: string, locale: string): string {
   )
 }
 
+function getProgramName(log: WorkoutLogWithExercise, locale: string): string | null {
+  const p = log.exercises.days?.weeks?.programs
+  if (!p) return null
+  return locale === 'en' ? p.title_en : p.title_ua
+}
+
+function groupByProgram(
+  dayLogs: WorkoutLogWithExercise[],
+  locale: string,
+): { programName: string | null; logs: WorkoutLogWithExercise[] }[] {
+  const map = new Map<string, WorkoutLogWithExercise[]>()
+  for (const log of dayLogs) {
+    const key = getProgramName(log, locale) ?? '__unknown__'
+    if (!map.has(key)) map.set(key, [])
+    map.get(key)!.push(log)
+  }
+  return [...map.entries()].map(([key, logs]) => ({
+    programName: key === '__unknown__' ? null : key,
+    logs,
+  }))
+}
+
 function groupByDate(logs: WorkoutLogWithExercise[]): { dateStr: string; dayLogs: WorkoutLogWithExercise[] }[] {
   const map = new Map<string, WorkoutLogWithExercise[]>()
   for (const log of logs) {
@@ -190,7 +212,17 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
             {/* Компактні рядки — видимі тільки якщо відкрито */}
             {isOpen && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', marginBottom: '0.5rem' }}>
-                {dayLogs.map(log => {
+                {(() => {
+                  const programGroups = groupByProgram(dayLogs, locale)
+                  const multiProgram = programGroups.length > 1
+                  return programGroups.map(({ programName, logs: groupLogs }) => (
+                    <div key={programName ?? '__unknown__'}>
+                      {multiProgram && programName && (
+                        <div style={{ fontSize: '0.65rem', color: '#444', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 700, padding: '0.4rem 0.6rem 0.05rem', marginTop: '0.15rem' }}>
+                          {programName}
+                        </div>
+                      )}
+                      {groupLogs.map(log => {
                 const isEditing = editing?.logId === log.id
                 const wasSaved = savedId === log.id
                 const exerciseName = locale === 'en' ? log.exercises.name_en : log.exercises.name_ua
@@ -304,6 +336,9 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
                   </div>
                 )
               })}
+                    </div>
+                  ))
+                })()}
             </div>
             )}
           </div>

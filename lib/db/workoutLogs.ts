@@ -58,7 +58,7 @@ export async function getLogsByUser(userId: string): Promise<WorkoutLogWithExerc
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('workout_logs')
-    .select('*, exercises(name_ua, name_en, is_handstand)')
+    .select('*, exercises(name_ua, name_en, is_handstand, days(weeks(programs(title_ua, title_en))))')
     .eq('user_id', userId)
     .order('logged_at', { ascending: false })
 

@@ -89,6 +89,11 @@ export type WorkoutLogWithExercise = WorkoutLog & {
     name_ua: string
     name_en: string
     is_handstand: boolean
+    days: {
+      weeks: {
+        programs: { title_ua: string; title_en: string } | null
+      } | null
+    } | null
   }
 }
 
