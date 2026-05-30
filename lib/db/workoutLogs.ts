@@ -138,6 +138,41 @@ export async function getLogsByExercisesToday(
   return data ?? []
 }
 
+/**
+ * Повертає особистий рекорд користувача для конкретної вправи.
+ * Hold: максимальне утримання одного підходу за всю історію.
+ * Reps: максимум повторень в одному підході за всю історію.
+ */
+export async function getPersonalBest(
+  userId: string,
+  exerciseId: string,
+): Promise<{ bestHold: number | null; bestReps: number | null }> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('workout_logs')
+    .select('hold_sets, reps_sets')
+    .eq('user_id', userId)
+    .eq('exercise_id', exerciseId)
+
+  if (!data?.length) return { bestHold: null, bestReps: null }
+
+  let bestHold: number | null = null
+  let bestReps: number | null = null
+
+  for (const row of data) {
+    if (row.hold_sets?.length) {
+      const m = Math.max(...row.hold_sets)
+      if (bestHold === null || m > bestHold) bestHold = m
+    }
+    if (row.reps_sets?.length) {
+      const m = Math.max(...row.reps_sets)
+      if (bestReps === null || m > bestReps) bestReps = m
+    }
+  }
+
+  return { bestHold, bestReps }
+}
+
 /** Повертає exercise_id і hold_sets логів вказаних вправ за сьогодні. Використовується для статистики на completion-екрані. */
 export async function getLogsSummaryToday(
   userId: string,

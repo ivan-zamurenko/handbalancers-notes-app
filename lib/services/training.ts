@@ -1,6 +1,6 @@
 // Pattern: Service Layer — бізнес-логіка тренувань (streak, авто-відмітка дня)
 // Використовує Repository (lib/db/) для доступу до даних
-import { createLog, getLogsByExercisesToday, getLogsSummaryToday, type CreateLogInput } from '@/lib/db/workoutLogs'
+import { createLog, getLogsByExercisesToday, getLogsSummaryToday, getPersonalBest, type CreateLogInput } from '@/lib/db/workoutLogs'
 import { getCompletedDates, markDayComplete } from '@/lib/db/dayProgress'
 import { getExerciseById, getExercisesByDay } from '@/lib/db/exercises'
 import type { WorkoutLog } from '@/types'
@@ -33,15 +33,29 @@ export async function getStreak(userId: string): Promise<number> {
 /**
  * Зберігає результат тренування.
  * Якщо всі вправи дня залоговані сьогодні — автоматично відмічає день як виконаний.
+ * Повертає { log, isNewRecord } — true якщо побитий особистий рекорд.
  */
-export async function saveExerciseLog(userId: string, input: CreateLogInput): Promise<WorkoutLog> {
+export async function saveExerciseLog(userId: string, input: CreateLogInput): Promise<{ log: WorkoutLog; isNewRecord: boolean }> {
+  // Отримуємо PR до збереження, щоб коректно порівняти
+  const { bestHold, bestReps } = await getPersonalBest(userId, input.exercise_id)
+
   const log = await createLog(userId, input)
 
+  // Визначаємо: чи побитий рекорд?
+  let isNewRecord = false
+  if (input.hold_sets?.length) {
+    const newBest = Math.max(...input.hold_sets)
+    isNewRecord = bestHold === null || newBest > bestHold
+  } else if (input.reps_sets?.length) {
+    const newBest = Math.max(...input.reps_sets)
+    isNewRecord = bestReps === null || newBest > bestReps
+  }
+
   const exercise = await getExerciseById(input.exercise_id)
-  if (!exercise?.day_id) return log
+  if (!exercise?.day_id) return { log, isNewRecord }
 
   const allExercises = await getExercisesByDay(exercise.day_id)
-  if (!allExercises.length) return log
+  if (!allExercises.length) return { log, isNewRecord }
 
   const exerciseIds = allExercises.map(e => e.id)
   const since = new Date().toISOString().slice(0, 10) + 'T00:00:00.000Z'
@@ -51,7 +65,7 @@ export async function saveExerciseLog(userId: string, input: CreateLogInput): Pr
   const allDone = exerciseIds.every(id => loggedIds.has(id))
   if (allDone) await markDayComplete(userId, exercise.day_id)
 
-  return log
+  return { log, isNewRecord }
 }
 
 /**

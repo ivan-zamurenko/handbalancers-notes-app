@@ -27,6 +27,8 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale }: Pr
     return stored ? new Set(JSON.parse(stored)) : new Set()
   })
   const [favorites, setFavorites] = useState<Set<string>>(new Set(favoriteIds))
+  const [newRecords, setNewRecords] = useState<Set<string>>(new Set())
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     sessionStorage.setItem(loggedKey, JSON.stringify([...logged]))
@@ -34,15 +36,16 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale }: Pr
 
   const allDone = exercises.every(e => logged.has(e.id))
 
-  const [error, setError] = useState<string | null>(null)
-
   async function handleLog(exerciseId: string, data: { hold_sets?: number[]; reps_sets?: number[]; video_url?: string; note?: string }) {
     setError(null)
     try {
-      await saveLog({ exercise_id: exerciseId, ...data })
+      const { isNewRecord } = await saveLog({ exercise_id: exerciseId, ...data })
       sessionStorage.removeItem(`${SETS_STORAGE_KEY_PREFIX}${exerciseId}`)
       const newLogged = new Set([...logged, exerciseId])
       setLogged(newLogged)
+      if (isNewRecord) {
+        setNewRecords(prev => new Set([...prev, exerciseId]))
+      }
       // Якщо всі вправи залоговані — переходимо на celebration screen
       if (exercises.every(e => newLogged.has(e.id))) {
         setTimeout(() => router.push(`/workout/${dayId}/complete`), 600)
@@ -84,6 +87,7 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale }: Pr
             exercise={exercise}
             locale={locale}
             isLogged={logged.has(exercise.id)}
+            isNewRecord={newRecords.has(exercise.id)}
             isFavorite={favorites.has(exercise.id)}
             onLog={(data) => handleLog(exercise.id, data)}
             onToggleFavorite={() => handleToggleFavorite(exercise.id)}

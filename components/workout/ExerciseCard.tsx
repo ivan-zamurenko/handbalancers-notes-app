@@ -14,12 +14,13 @@ type Props = {
   exercise: Exercise
   locale: string
   isLogged: boolean
+  isNewRecord?: boolean
   isFavorite: boolean
   onLog: (data: { hold_sets?: number[]; reps_sets?: number[]; video_url?: string; note?: string }) => void
   onToggleFavorite: () => void
 }
 
-export default function ExerciseCard({ exercise, locale, isLogged, isFavorite, onLog, onToggleFavorite }: Props) {
+export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, isFavorite, onLog, onToggleFavorite }: Props) {
   const t = useTranslations('workout')
   const [videoOpen, setVideoOpen] = useState(false)
   const name = locale === 'en' ? exercise.name_en : exercise.name_ua
@@ -78,7 +79,28 @@ export default function ExerciseCard({ exercise, locale, isLogged, isFavorite, o
       )}
 
       {isLogged ? (
-        <p style={{ color: '#39e600', fontWeight: 'bold', margin: '0.5rem 0' }}>{t('saved')}</p>
+        <div style={{ margin: '0.5rem 0' }}>
+          {isNewRecord && (
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              background: 'rgba(255, 200, 0, 0.1)',
+              border: '1px solid rgba(255, 200, 0, 0.4)',
+              borderRadius: '999px',
+              padding: '0.25rem 0.75rem',
+              marginBottom: '0.5rem',
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              color: '#ffc800',
+              animation: 'prPop 0.4s ease',
+            }}>
+              <span>🏆</span>
+              <span>{t('newRecord')}</span>
+            </div>
+          )}
+          <p style={{ color: '#39e600', fontWeight: 'bold', margin: 0 }}>{t('saved')}</p>
+        </div>
       ) : (
         <LogForm isHold={isHold} targetSets={exercise.target_sets ?? 1} exerciseId={exercise.id} onSubmit={onLog} />
       )}

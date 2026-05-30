@@ -6,10 +6,11 @@ import { toggleFavorite } from '@/lib/db/favorites'
 import { updateLog, type CreateLogInput, type UpdateLogInput } from '@/lib/db/workoutLogs'
 
 /** Зберігає результат вправи. userId береться з сесії — клієнту не довіряємо. */
-export async function saveLog(input: Omit<CreateLogInput, 'user_id'>) {
+export async function saveLog(input: Omit<CreateLogInput, 'user_id'>): Promise<{ isNewRecord: boolean }> {
   const user = await getUser()
   if (!user) throw new Error('Unauthorized')
-  await saveExerciseLog(user.id, input)
+  const { isNewRecord } = await saveExerciseLog(user.id, input)
+  return { isNewRecord }
 }
 
 /** Оновлює існуючий запис тренування. */
