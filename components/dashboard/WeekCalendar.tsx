@@ -53,7 +53,7 @@ export default function WeekCalendar({ completedDates }: Props) {
               gap: '0.35rem',
             }}
           >
-            <span style={{ fontSize: '0.7rem', color: isToday ? '#39e600' : '#555', fontWeight: isToday ? 700 : 400 }}>
+            <span style={{ fontSize: '0.7rem', color: isToday ? '#fff' : '#555', fontWeight: isToday ? 700 : 400 }}>
               {WEEKDAY_SHORT[i]}
             </span>
             <div
@@ -65,9 +65,9 @@ export default function WeekCalendar({ completedDates }: Props) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '0.9rem',
-                background: isDone ? '#39e600' : isToday ? 'rgba(57, 230, 0, 0.1)' : 'transparent',
-                border: isToday ? '2px solid #39e600' : isDone ? 'none' : isPast ? '1px solid #2a2a2a' : '1px dashed #333',
-                color: isDone ? '#000' : isToday ? '#39e600' : '#333',
+                background: isDone ? '#39e600' : 'transparent',
+                border: isDone ? 'none' : isToday ? '2px solid #fff' : isPast ? '1px solid #2a2a2a' : '1px dashed #333',
+                color: isDone ? '#000' : isToday ? '#fff' : '#333',
               }}
             >
               {isDone ? '✓' : ''}

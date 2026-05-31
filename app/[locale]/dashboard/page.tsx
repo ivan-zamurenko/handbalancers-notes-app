@@ -2,12 +2,9 @@ import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { getUser } from '@/lib/db/auth'
 import { getStreak } from '@/lib/services/training'
-import { getChartData } from '@/lib/db/workoutLogs'
-import { getFavoriteExercises } from '@/lib/db/favorites'
 import { getAllEnrollments } from '@/lib/db/programs'
 import { getNextDay, getTotalDaysInProgram, getCompletedDayIds, getCompletedDates } from '@/lib/db/dayProgress'
 import StreakBadge from '@/components/dashboard/StreakBadge'
-import ProgressChart from '@/components/dashboard/ProgressChart'
 import TodayCard from '@/components/dashboard/TodayCard'
 import WeekCalendar from '@/components/dashboard/WeekCalendar'
 import { Link } from '@/i18n/navigation'
@@ -23,15 +20,14 @@ export default async function DashboardPage({
 
   const t = await getTranslations('dashboard')
 
-  const [streak, favorites, enrollments, completedDates] = await Promise.all([
+  const [streak, enrollments, completedDates] = await Promise.all([
     getStreak(user.id),
-    getFavoriteExercises(user.id),
     getAllEnrollments(user.id),
     getCompletedDates(user.id),
   ])
 
-  // Дані всіх активних програм — завантажуємо паралельно
-  const programsData = await Promise.all(
+  // Завантажуємо дані лише активних (незавершених) програм
+  const allProgramsData = await Promise.all(
     enrollments.map(async (enrollment) => {
       const [todayDay, completedIds, totalDays] = await Promise.all([
         getNextDay(user.id, enrollment.program.id),
@@ -42,9 +38,11 @@ export default async function DashboardPage({
     })
   )
 
-  const chartDataPerExercise = await Promise.all(
-    favorites.map(ex => getChartData(user.id, ex.id).then(data => ({ exercise: ex, data })))
+  // На Home показуємо тільки програми з активним наступним днем
+  const activePrograms = allProgramsData.filter(
+    (d): d is typeof d & { todayDay: NonNullable<typeof d.todayDay> } => d.todayDay !== null
   )
+  const hasEnrollments = enrollments.length > 0
 
   return (
     <main style={{ padding: '1.5rem 1rem', maxWidth: '480px', margin: '0 auto' }}>
@@ -55,8 +53,8 @@ export default async function DashboardPage({
 
       <WeekCalendar completedDates={completedDates} />
 
-      {programsData.length > 0 ? (
-        programsData.map(({ enrollment, todayDay, dayNumber, totalDays }) => (
+      {activePrograms.length > 0 ? (
+        activePrograms.map(({ enrollment, todayDay, dayNumber, totalDays }) => (
           <TodayCard
             key={enrollment.program.id}
             program={enrollment.program}
@@ -66,26 +64,32 @@ export default async function DashboardPage({
             locale={locale}
           />
         ))
-      ) : (
-        <div style={{ padding: '1.5rem', borderRadius: '16px', background: '#141414', border: '1px solid #1e1e1e', marginBottom: '1.5rem' }}>
-          <p style={{ color: '#888', marginBottom: '0.75rem' }}>{t('noProgram')}</p>
-          <Link href="/programs" style={{ color: '#2979ff', fontWeight: 500 }}>
+      ) : hasEnrollments ? (
+        // Є enrollment-и, але всі програми завершено
+        <div style={{ padding: '2rem 1.5rem', borderRadius: '16px', background: '#141414', border: '1px solid #1e1e1e', textAlign: 'center' }}>
+          <p style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🎉</p>
+          <p style={{ color: '#fff', fontWeight: 600, marginBottom: '0.4rem' }}>{t('allProgramsDone')}</p>
+          <p style={{ color: '#555', fontSize: '0.875rem', marginBottom: '1.25rem' }}>{t('allProgramsDoneSub')}</p>
+          <Link
+            href="/programs"
+            style={{ display: 'inline-block', padding: '0.75rem 1.5rem', background: '#39e600', color: '#000', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', textDecoration: 'none' }}
+          >
             {t('browsePrograms')} →
           </Link>
         </div>
-      )}
-
-      {favorites.length > 0 && (
-        <section>
-          {chartDataPerExercise.map(({ exercise, data }) => (
-            <div key={exercise.id} style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.5rem' }}>
-                ⭐ {locale === 'en' ? exercise.name_en : exercise.name_ua}
-              </h3>
-              <ProgressChart data={data} />
-            </div>
-          ))}
-        </section>
+      ) : (
+        // Новий юзер — ще не обирав програму
+        <div style={{ padding: '2rem 1.5rem', borderRadius: '16px', background: '#141414', border: '1px solid #1e1e1e', textAlign: 'center' }}>
+          <p style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>👋</p>
+          <p style={{ color: '#fff', fontWeight: 600, marginBottom: '0.4rem' }}>{t('welcomeNew')}</p>
+          <p style={{ color: '#555', fontSize: '0.875rem', marginBottom: '1.25rem' }}>{t('welcomeNewSub')}</p>
+          <Link
+            href="/programs"
+            style={{ display: 'inline-block', padding: '0.75rem 1.5rem', background: '#39e600', color: '#000', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', textDecoration: 'none' }}
+          >
+            {t('browsePrograms')} →
+          </Link>
+        </div>
       )}
     </main>
   )

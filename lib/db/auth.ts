@@ -1,5 +1,6 @@
 // Pattern: Repository — ізолює всі Supabase auth виклики від решти коду
 import { createClient } from '@/lib/supabase-server'
+import type { Profile } from '@/types'
 
 /** Авторизує користувача за email та паролем. Кидає помилку якщо невірні дані. */
 export async function signIn(email: string, password: string): Promise<void> {
@@ -31,4 +32,15 @@ export async function getUser() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   return user
+}
+
+/** Повертає профіль користувача (trial_ends_at тощо) або null. */
+export async function getProfile(userId: string): Promise<Profile | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single()
+  return data ?? null
 }

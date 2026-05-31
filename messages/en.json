@@ -47,7 +47,11 @@
     "continueWorkout": "Continue",
     "noProgram": "You haven't chosen a program yet",
     "browsePrograms": "Browse programs",
-    "programDone": "Program complete! 🎉"
+    "programDone": "Program complete! 🎉",
+    "allProgramsDone": "All programs complete!",
+    "allProgramsDoneSub": "Pick a new program and keep training",
+    "welcomeNew": "Welcome!",
+    "welcomeNewSub": "Pick a program and start your first workout"
   },
   "programs": {
     "title": "Training Programs",
@@ -145,6 +149,7 @@
     "completionExercises": "{count} exercises",
     "completionHoldMin": "{min}m {sec}s",
     "completionHoldSec": "{sec}s",
+    "redirectingIn": "Redirecting home in {sec}s",
     "backHome": "Back to Home",
     "favorite": "Add to favorites",
     "unfavorite": "Remove from favorites",
@@ -157,5 +162,11 @@
     "avgReps": "avg reps",
     "seconds": "sec",
     "reps": "reps"
+  },
+  "trial": {
+    "warning": "Trial ends in {days} day(s).",
+    "subscribeCta": "Subscribe",
+    "expiredTitle": "Your trial has ended",
+    "expiredSub": "Subscribe to continue your training"
   }
 }

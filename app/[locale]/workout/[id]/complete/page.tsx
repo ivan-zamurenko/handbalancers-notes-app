@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation'
 import { getUser } from '@/lib/db/auth'
 import { getDayContext } from '@/lib/db/dayProgress'
 import { getStreak, getDayCompletionStats } from '@/lib/services/training'
+import AutoRedirect from '@/components/workout/AutoRedirect'
 
 export default async function WorkoutCompletePage({
   params,
@@ -185,6 +186,7 @@ export default async function WorkoutCompletePage({
             >
               {t('backHome')}
             </Link>
+            <AutoRedirect />
           </div>
 
         </div>

@@ -50,6 +50,9 @@ export async function proxy(request: NextRequest) {
   // Run next-intl locale routing
   const intlResponse = intlMiddleware(request)
 
+  // Forward current path so layout can read it for trial checks
+  intlResponse.headers.set('x-pathname', path)
+
   // Forward any refreshed Supabase cookies to the intl response
   supabaseResponse.cookies.getAll().forEach(({ name, value }) => {
     intlResponse.cookies.set(name, value)

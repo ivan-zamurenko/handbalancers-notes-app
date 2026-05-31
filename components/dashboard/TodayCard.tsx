@@ -5,7 +5,7 @@ import type { DayWithWeek, Program } from '@/types'
 
 type Props = {
   program: Program
-  todayDay: DayWithWeek | null   // null = програму завершено
+  todayDay: DayWithWeek         // завжди активний день (null-case обробляє dashboard)
   dayNumber: number              // 1-based номер поточного дня
   totalDays: number
   locale: string
@@ -14,20 +14,6 @@ type Props = {
 export default function TodayCard({ program, todayDay, dayNumber, totalDays, locale }: Props) {
   const t = useTranslations('dashboard')
   const programTitle = locale === 'en' ? program.title_en : program.title_ua
-
-  // Програму завершено
-  if (!todayDay) {
-    return (
-      <div style={{ padding: '1.5rem', borderRadius: '16px', background: 'rgba(57, 230, 0, 0.06)', border: '1px solid rgba(57, 230, 0, 0.15)', marginBottom: '1.5rem' }}>
-        <p style={{ fontSize: '1.1rem', fontWeight: 600, color: '#39e600' }}>{t('programDone')}</p>
-        <p style={{ color: '#888', marginTop: '0.25rem' }}>{programTitle}</p>
-        <Link href="/programs" style={{ display: 'inline-block', marginTop: '1rem', color: '#2979ff', fontWeight: 500 }}>
-          {t('browsePrograms')} →
-        </Link>
-      </div>
-    )
-  }
-
   const weekTitle = locale === 'en' ? todayDay.weeks.title_en : todayDay.weeks.title_ua
   const weekNumber = todayDay.weeks.order  // order — 1-based в БД
   const isStarted = dayNumber > 1

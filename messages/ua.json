@@ -47,7 +47,11 @@
     "continueWorkout": "Продовжити",
     "noProgram": "Ти ще не обрав програму",
     "browsePrograms": "Переглянути програми",
-    "programDone": "Програму завершено! 🎉"
+    "programDone": "Програму завершено! 🎉",
+    "allProgramsDone": "Усі програми виконано!",
+    "allProgramsDoneSub": "Обери нову програму і продовжуй тренуватись",
+    "welcomeNew": "Ласкаво просимо!",
+    "welcomeNewSub": "Обери програму і розпочни своє перше тренування"
   },
   "programs": {
     "title": "Програми тренувань",
@@ -145,6 +149,7 @@
     "completionExercises": "{count} вправ",
     "completionHoldMin": "{min} хв {sec} сек",
     "completionHoldSec": "{sec} сек",
+    "redirectingIn": "На головну через {sec} сек",
     "backHome": "На головну",
     "favorite": "Додати в обрані",
     "unfavorite": "Видалити з обраних",
@@ -157,5 +162,11 @@
     "avgReps": "середні повторення",
     "seconds": "сек",
     "reps": "повт"
+  },
+  "trial": {
+    "warning": "Trial закінчується через {days} дн.",
+    "subscribeCta": "Оформити підписку",
+    "expiredTitle": "Пробний період закінчився",
+    "expiredSub": "Оформи підписку щоб продовжити тренуватись"
   }
 }

@@ -1,5 +1,6 @@
 'use server'
 // Pattern: Service Layer — Server Actions як точка входу для мутацій
+import { revalidatePath } from 'next/cache'
 import { getUser } from '@/lib/db/auth'
 import { saveExerciseLog } from '@/lib/services/training'
 import { toggleFavorite } from '@/lib/db/favorites'
@@ -10,6 +11,8 @@ export async function saveLog(input: Omit<CreateLogInput, 'user_id'>): Promise<{
   const user = await getUser()
   if (!user) throw new Error('Unauthorized')
   const { isNewRecord } = await saveExerciseLog(user.id, input)
+  // Інвалідуємо кеш — дашборд покаже оновлений стрік після повернення
+  revalidatePath('/', 'layout')
   return { isNewRecord }
 }
 
