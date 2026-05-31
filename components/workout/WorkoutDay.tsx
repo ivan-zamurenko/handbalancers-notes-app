@@ -2,8 +2,8 @@
 // Pattern: Facade — один компонент керує станом всього дня (логи, улюблені, таймер)
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
-import { useRouter } from '@/i18n/navigation'
-import type { Exercise } from '@/types'
+import { useRouter, Link } from '@/i18n/navigation'
+import type { Exercise, DayFullContext } from '@/types'
 import ExerciseCard from './ExerciseCard'
 import { saveLog, toggleFavoriteAction } from './actions'
 import { SETS_STORAGE_KEY_PREFIX } from './LogForm'
@@ -13,14 +13,14 @@ type Props = {
   exercises: Exercise[]
   favoriteIds: string[]
   locale: string
+  dayContext: DayFullContext | null
 }
 
-export default function WorkoutDay({ dayId, exercises, favoriteIds, locale }: Props) {
+export default function WorkoutDay({ dayId, exercises, favoriteIds, locale, dayContext }: Props) {
   const t = useTranslations('workout')
   const router = useRouter()
   const loggedKey = `workout_logged_${dayId}`
 
-  // Відновлюємо стан після перемикання мови (sessionStorage переживає remount)
   const [logged, setLogged] = useState<Set<string>>(() => {
     if (typeof window === 'undefined') return new Set()
     const stored = sessionStorage.getItem(loggedKey)
@@ -35,6 +35,7 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale }: Pr
   }, [logged, loggedKey])
 
   const allDone = exercises.every(e => logged.has(e.id))
+  const doneCount = exercises.filter(e => logged.has(e.id)).length
 
   async function handleLog(exerciseId: string, data: { hold_sets?: number[]; reps_sets?: number[]; video_url?: string; note?: string }) {
     setError(null)
@@ -46,7 +47,6 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale }: Pr
       if (isNewRecord) {
         setNewRecords(prev => new Set([...prev, exerciseId]))
       }
-      // Якщо всі вправи залоговані — переходимо на celebration screen
       if (exercises.every(e => newLogged.has(e.id))) {
         setTimeout(() => router.push(`/workout/${dayId}/complete`), 600)
       }
@@ -65,8 +65,52 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale }: Pr
   }
 
   return (
-    <div>
-      <h1>{t('title')}</h1>
+    <div style={{ maxWidth: '560px', margin: '0 auto' }}>
+      {/* Breadcrumb */}
+      {dayContext && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+          <Link
+            href={`/programs/${dayContext.weeks.programs.slug}`}
+            style={{ fontSize: '0.75rem', color: '#555', textDecoration: 'none', transition: 'color 0.15s' }}
+          >
+            {locale === 'en' ? dayContext.weeks.programs.title_en : dayContext.weeks.programs.title_ua}
+          </Link>
+          <span style={{ color: '#333', fontSize: '0.75rem' }}>›</span>
+          <Link
+            href={`/programs/${dayContext.weeks.programs.slug}`}
+            style={{ fontSize: '0.75rem', color: '#555', textDecoration: 'none', transition: 'color 0.15s' }}
+          >
+            {locale === 'en' ? dayContext.weeks.title_en : dayContext.weeks.title_ua}
+          </Link>
+          <span style={{ color: '#333', fontSize: '0.75rem' }}>›</span>
+          <span style={{ fontSize: '0.75rem', color: '#888', fontWeight: 500 }}>
+            {locale === 'en' ? dayContext.title_en : dayContext.title_ua}
+          </span>
+        </div>
+      )}
+
+      {/* Header: title + progress */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
+        <h1 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 700, lineHeight: 1.2 }}>
+          {dayContext ? (locale === 'en' ? dayContext.title_en : dayContext.title_ua) : t('title')}
+        </h1>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.4rem',
+          background: allDone ? 'rgba(57,230,0,0.1)' : '#1a1a1a',
+          border: `1px solid ${allDone ? 'rgba(57,230,0,0.3)' : '#2a2a2a'}`,
+          borderRadius: '99px',
+          padding: '0.3rem 0.75rem',
+          flexShrink: 0,
+          marginLeft: '1rem',
+          transition: 'all 0.3s ease',
+        }}>
+          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: allDone ? '#39e600' : '#888' }}>
+            {doneCount}/{exercises.length}
+          </span>
+        </div>
+      </div>
 
       {error && (
         <div style={{ background: 'rgba(239, 68, 68, 0.08)', color: '#f87171', padding: '0.75rem', borderRadius: '8px', marginBottom: '1rem' }}>
@@ -74,13 +118,7 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale }: Pr
         </div>
       )}
 
-      {allDone && (
-        <div style={{ background: 'rgba(57, 230, 0, 0.07)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', textAlign: 'center', fontWeight: 'bold', color: '#39e600' }}>
-          {t('allDone')}
-        </div>
-      )}
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {exercises.map(exercise => (
           <ExerciseCard
             key={exercise.id}

@@ -6,14 +6,49 @@ body {
   background: #0d0d0d;
   color: #fff;
   font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 * {
   box-sizing: border-box;
 }
 
+/* Desktop: hide mobile bottom nav; Mobile: hide desktop nav links */
+@media (min-width: 640px) {
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+  main {
+    padding-bottom: 1rem !important;
+  }
+}
+
+@media (max-width: 639px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  main {
+    padding-bottom: 4.5rem;
+  }
+}
+
+/* Animations */
 @keyframes prPop {
   0% { opacity: 0; transform: scale(0.7); }
   60% { transform: scale(1.1); }
   100% { opacity: 1; transform: scale(1); }
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Smooth link transitions */
+a { transition: opacity 0.15s ease; }
+a:hover { opacity: 0.8; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 99px; }

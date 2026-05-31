@@ -116,7 +116,7 @@ export type DayFullContext = Day & {
     order: number
     title_ua: string
     title_en: string
-    programs: { id: string; title_ua: string; title_en: string }
+    programs: { id: string; slug: string; title_ua: string; title_en: string }
   }
 }
 

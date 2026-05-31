@@ -1,8 +1,10 @@
 // Supabase клієнт для серверних компонентів і middleware
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { cache } from 'react'
 
-export async function createClient() {
+// cache() гарантує один екземпляр клієнта на запит — усі DB-функції шарять одне з'єднання
+export const createClient = cache(async () => {
   const cookieStore = await cookies()
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -22,4 +24,4 @@ export async function createClient() {
       },
     }
   )
-}
+})

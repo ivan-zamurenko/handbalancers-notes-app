@@ -15,6 +15,17 @@ export async function getExercisesByDay(dayId: string): Promise<Exercise[]> {
   return data
 }
 
+/** Повертає кількість вправ у дні. */
+export async function getExerciseCount(dayId: string): Promise<number> {
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from('exercises')
+    .select('*', { count: 'exact', head: true })
+    .eq('day_id', dayId)
+
+  return count ?? 0
+}
+
 /** Повертає вправу за ID або null якщо не знайдено. */
 export async function getExerciseById(id: string): Promise<Exercise | null> {
   const supabase = await createClient()

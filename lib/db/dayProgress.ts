@@ -1,5 +1,6 @@
 // Pattern: Repository — ізолює всі запити до user_day_progress від решти коду
 import { createClient } from '@/lib/supabase-server'
+import { cache } from 'react'
 import type { Day, DayWithWeek, DayFullContext } from '@/types'
 
 /** Позначає день як виконаний. Ігнорує дублікат (якщо вже відмічено). */
@@ -26,7 +27,7 @@ export async function isDayComplete(userId: string, dayId: string): Promise<bool
 }
 
 /** Повертає set із id виконаних днів користувача для конкретної програми. */
-export async function getCompletedDayIds(userId: string, programId: string): Promise<Set<string>> {
+export const getCompletedDayIds = cache(async (userId: string, programId: string): Promise<Set<string>> => {
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('user_day_progress')
@@ -36,7 +37,7 @@ export async function getCompletedDayIds(userId: string, programId: string): Pro
 
   if (error) throw error
   return new Set((data ?? []).map(r => r.day_id))
-}
+})
 
 /**
  * Повертає наступний невиконаний день у програмі з даними тижня (для Home screen).
@@ -82,7 +83,7 @@ export async function getDayContext(dayId: string): Promise<DayFullContext | nul
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('days')
-    .select('*, weeks!inner(order, title_ua, title_en, programs!inner(id, title_ua, title_en))')
+    .select('*, weeks!inner(order, title_ua, title_en, programs!inner(id, slug, title_ua, title_en))')
     .eq('id', dayId)
     .single()
 

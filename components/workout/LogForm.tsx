@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import Timer from './Timer'
 
-/** Ключ sessionStorage для збереження підходів вправи між ремаунтами */
 export const SETS_STORAGE_KEY_PREFIX = 'workout_sets_'
 
 type LogData = { hold_sets?: number[]; reps_sets?: number[]; video_url?: string; note?: string }
@@ -15,7 +14,6 @@ type Props = {
   onSubmit: (data: LogData) => void
 }
 
-/** Окремий компонент для одного підходу reps — власний стан вводу, підтримує редагування */
 function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; onSave: (v: number) => void }) {
   const t = useTranslations('workout')
   const [editing, setEditing] = useState(saved === undefined)
@@ -27,8 +25,10 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 0' }}>
-      <span style={{ color: '#888', minWidth: '5rem' }}>{t('set')} {index + 1}</span>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minHeight: '58px', borderBottom: '1px solid #1e1e1e' }}>
+      <span style={{ color: '#555', width: '4.5rem', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', flexShrink: 0 }}>
+        {t('set')} {index + 1}
+      </span>
       {editing ? (
         <>
           <input
@@ -36,29 +36,46 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && confirm()}
-            placeholder={t('repsPlaceholder')}
+            onBlur={confirm}
+            placeholder="—"
             autoFocus
-            style={{ width: '6rem', padding: '0.35rem 0.5rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', fontSize: '1rem' }}
+            style={{
+              flex: 1, padding: '0.55rem 0.75rem', borderRadius: '10px',
+              border: '1px solid #2e2e2e', background: '#0d0d0d',
+              color: '#fff', fontSize: '1.1rem', fontWeight: 600,
+              textAlign: 'center', outline: 'none',
+            }}
           />
           <button
             type="button"
             onClick={confirm}
             disabled={!input || Number(input) <= 0}
-            style={{ padding: '0.35rem 0.75rem', borderRadius: '6px', border: 'none', background: '#39e600', color: '#000', cursor: 'pointer', fontWeight: 'bold' }}
-          >
-            ✓
-          </button>
+            style={{
+              width: '44px', height: '44px', borderRadius: '50%', border: 'none', flexShrink: 0,
+              background: (!input || Number(input) <= 0) ? '#1e1e1e' : '#39e600',
+              color: (!input || Number(input) <= 0) ? '#333' : '#000',
+              cursor: (!input || Number(input) <= 0) ? 'not-allowed' : 'pointer',
+              fontWeight: 700, fontSize: '1.1rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'background 0.15s',
+            }}
+          >✓</button>
         </>
       ) : (
         <>
-          <span style={{ fontWeight: 'bold', color: '#39e600' }}>{saved} {t('reps')}</span>
+          <span style={{ flex: 1, fontWeight: 700, color: '#39e600', fontSize: '1.1rem', textAlign: 'center' }}>
+            {saved} <span style={{ fontSize: '0.78rem', fontWeight: 500, opacity: 0.7 }}>{t('reps')}</span>
+          </span>
           <button
             type="button"
             onClick={() => { setInput(String(saved)); setEditing(true) }}
-            style={{ padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: 'transparent', color: '#888', cursor: 'pointer', fontSize: '0.8rem' }}
-          >
-            ✎
-          </button>
+            style={{
+              width: '44px', height: '44px', borderRadius: '50%', flexShrink: 0,
+              border: '1px solid #2a2a2a', background: 'transparent',
+              color: '#555', cursor: 'pointer', fontSize: '0.9rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >✎</button>
         </>
       )}
     </div>
@@ -68,14 +85,13 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
 export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Props) {
   const t = useTranslations('workout')
   const setsKey = `${SETS_STORAGE_KEY_PREFIX}${exerciseId}`
+  const [extraOpen, setExtraOpen] = useState(false)
 
-  // Відновлюємо підходи після перемикання мови
   const [sets, setSets] = useState<(number | undefined)[]>(() => {
     if (typeof window === 'undefined') return Array(targetSets).fill(undefined)
     const stored = sessionStorage.getItem(setsKey)
     if (stored) {
       const parsed: (number | null)[] = JSON.parse(stored)
-      // null → undefined для сумісності з типом
       return parsed.map(v => v ?? undefined)
     }
     return Array(targetSets).fill(undefined)
@@ -91,7 +107,9 @@ export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Pr
     setSets(prev => prev.map((v, i) => i === index ? value : v))
   }
 
-  const anyFilled = sets.some(v => v !== undefined)
+  const filledCount = sets.filter(v => v !== undefined).length
+  const anyFilled = filledCount > 0
+  const allFilled = filledCount === sets.length
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -105,8 +123,9 @@ export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Pr
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: '0.75rem' }}>
-      <div style={{ background: '#1a1a1a', borderRadius: '8px', padding: '0.5rem 0.75rem', marginBottom: '0.5rem' }}>
+    <form onSubmit={handleSubmit} style={{ marginTop: '0.5rem' }}>
+      {/* Sets */}
+      <div style={{ background: '#1a1a1a', borderRadius: '10px', padding: '0 0.75rem', marginBottom: '0.75rem' }}>
         {sets.map((val, i) => (
           isHold ? (
             <Timer
@@ -117,44 +136,67 @@ export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Pr
               onEdit={() => saveSet(i, undefined)}
             />
           ) : (
-            <RepsSetRow
-              key={i}
-              index={i}
-              saved={val}
-              onSave={(v) => saveSet(i, v)}
-            />
+            <RepsSetRow key={i} index={i} saved={val} onSave={(v) => saveSet(i, v)} />
           )
         ))}
       </div>
 
-      <input
-        type="url"
-        placeholder={t('videoPlaceholder')}
-        value={videoUrl}
-        onChange={e => setVideoUrl(e.target.value)}
-        style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', marginBottom: '0.5rem', boxSizing: 'border-box', fontSize: '0.9rem' }}
-      />
+      {/* Extra: video + note (collapsed by default) */}
+      <button
+        type="button"
+        onClick={() => setExtraOpen(v => !v)}
+        style={{
+          width: '100%', background: 'none', border: 'none', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '0.6rem 0', color: '#aaa', fontSize: '0.85rem',
+        }}
+      >
+        <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ fontSize: '0.95rem' }}>📋</span>
+          {extraOpen ? t('hideExtra') : t('addNote')}
+        </span>
+        <span style={{
+          display: 'inline-block', fontSize: '0.8rem', color: '#444',
+          transform: extraOpen ? 'rotate(90deg)' : 'rotate(0)',
+          transition: 'transform 0.2s',
+        }}>›</span>
+      </button>
 
-      <textarea
-        placeholder={t('notePlaceholder')}
-        value={note}
-        onChange={e => setNote(e.target.value)}
-        rows={2}
-        style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', resize: 'none', marginBottom: '0.5rem', boxSizing: 'border-box' }}
-      />
+      {extraOpen && (
+        <div style={{ marginBottom: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <input
+            type="url"
+            placeholder={t('videoPlaceholder')}
+            value={videoUrl}
+            onChange={e => setVideoUrl(e.target.value)}
+            style={{ width: '100%', padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', boxSizing: 'border-box', fontSize: '0.875rem' }}
+          />
+          <textarea
+            placeholder={t('notePlaceholder')}
+            value={note}
+            onChange={e => setNote(e.target.value)}
+            rows={2}
+            style={{ width: '100%', padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', resize: 'none', boxSizing: 'border-box', fontSize: '0.875rem' }}
+          />
+        </div>
+      )}
 
+      {/* Submit button */}
       <button
         type="submit"
         disabled={!anyFilled}
         style={{
-          width: '100%', padding: '0.75rem', borderRadius: '8px',
-          background: anyFilled ? '#39e600' : '#1e1e1e',
-          color: anyFilled ? '#000' : '#555', border: 'none',
+          width: '100%', padding: '1rem', borderRadius: '12px',
+          background: allFilled ? '#39e600' : anyFilled ? 'rgba(57,230,0,0.55)' : '#1a1a1a',
+          color: anyFilled ? '#000' : '#444',
+          border: 'none',
           cursor: anyFilled ? 'pointer' : 'not-allowed',
-          fontWeight: 'bold', fontSize: '1rem',
+          fontWeight: 700, fontSize: '1rem',
+          transition: 'background 0.2s ease, color 0.2s ease',
+          letterSpacing: '0.01em',
         }}
       >
-        {t('done')}
+        {allFilled ? `✓ ${t('done')}` : anyFilled ? `${t('done')} (${filledCount}/${sets.length})` : t('done')}
       </button>
     </form>
   )

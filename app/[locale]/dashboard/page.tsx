@@ -4,6 +4,7 @@ import { getUser } from '@/lib/db/auth'
 import { getStreak } from '@/lib/services/training'
 import { getAllEnrollments } from '@/lib/db/programs'
 import { getNextDay, getTotalDaysInProgram, getCompletedDayIds, getCompletedDates } from '@/lib/db/dayProgress'
+import { getExerciseCount } from '@/lib/db/exercises'
 import StreakBadge from '@/components/dashboard/StreakBadge'
 import TodayCard from '@/components/dashboard/TodayCard'
 import WeekCalendar from '@/components/dashboard/WeekCalendar'
@@ -34,7 +35,8 @@ export default async function DashboardPage({
         getCompletedDayIds(user.id, enrollment.program.id),
         getTotalDaysInProgram(enrollment.program.id),
       ])
-      return { enrollment, todayDay, dayNumber: completedIds.size + 1, totalDays }
+      const exerciseCount = todayDay ? await getExerciseCount(todayDay.id) : 0
+      return { enrollment, todayDay, dayNumber: completedIds.size + 1, totalDays, exerciseCount }
     })
   )
 
@@ -54,13 +56,14 @@ export default async function DashboardPage({
       <WeekCalendar completedDates={completedDates} />
 
       {activePrograms.length > 0 ? (
-        activePrograms.map(({ enrollment, todayDay, dayNumber, totalDays }) => (
+        activePrograms.map(({ enrollment, todayDay, dayNumber, totalDays, exerciseCount }) => (
           <TodayCard
             key={enrollment.program.id}
             program={enrollment.program}
             todayDay={todayDay}
             dayNumber={dayNumber}
             totalDays={totalDays}
+            exerciseCount={exerciseCount}
             locale={locale}
           />
         ))

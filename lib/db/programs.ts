@@ -115,6 +115,50 @@ export async function getAllEnrollments(userId: string): Promise<{ program: Prog
   }))
 }
 
+/**
+ * Повертає Set із program_id тих програм, де користувач виконав усі дні.
+ * Один batch-запит замість N×getNextDay на сторінці програм.
+ */
+export async function getCompletedProgramIds(userId: string, programIds: string[]): Promise<Set<string>> {
+  if (!programIds.length) return new Set()
+
+  const supabase = await createClient()
+
+  // Всі дні цих програм
+  const { data: days, error: daysErr } = await supabase
+    .from('days')
+    .select('id, weeks!inner(program_id)')
+    .in('weeks.program_id', programIds)
+
+  if (daysErr) throw daysErr
+  if (!days?.length) return new Set()
+
+  // Які з них виконав користувач
+  const { data: done, error: doneErr } = await supabase
+    .from('user_day_progress')
+    .select('day_id')
+    .eq('user_id', userId)
+    .in('day_id', days.map(d => d.id))
+
+  if (doneErr) throw doneErr
+
+  const doneSet = new Set((done ?? []).map(r => r.day_id))
+
+  // Групуємо по програмі, перевіряємо 100% завершення
+  const programDays = new Map<string, string[]>()
+  for (const day of days) {
+    const pid = (day.weeks as unknown as { program_id: string }).program_id
+    if (!programDays.has(pid)) programDays.set(pid, [])
+    programDays.get(pid)!.push(day.id)
+  }
+
+  const result = new Set<string>()
+  for (const [pid, dayIds] of programDays) {
+    if (dayIds.every(id => doneSet.has(id))) result.add(pid)
+  }
+  return result
+}
+
 /** Повертає всі тижні програми, відсортовані за полем order. */
 export async function getWeeksByProgram(programId: string): Promise<Week[]> {
   const supabase = await createClient()
