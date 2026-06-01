@@ -90,23 +90,12 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale, dayC
       )}
 
       {/* Header: title + progress */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
-        <h1 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 700, lineHeight: 1.2 }}>
+      <div style={{ marginBottom: '1.25rem' }}>
+        <h1 style={{ margin: '0 0 0.25rem', fontSize: '1.4rem', fontWeight: 700, lineHeight: 1.2 }}>
           {dayContext ? (locale === 'en' ? dayContext.title_en : dayContext.title_ua) : t('title')}
         </h1>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.4rem',
-          background: allDone ? 'rgba(57,230,0,0.1)' : '#1a1a1a',
-          border: `1px solid ${allDone ? 'rgba(57,230,0,0.3)' : '#2a2a2a'}`,
-          borderRadius: '99px',
-          padding: '0.3rem 0.75rem',
-          flexShrink: 0,
-          marginLeft: '1rem',
-          transition: 'all 0.3s ease',
-        }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: allDone ? '#39e600' : '#888' }}>
+        <div>
+          <span style={{ fontSize: '0.8rem', color: allDone ? '#39e600' : '#555', fontWeight: 500, transition: 'color 0.3s ease' }}>
             {doneCount}/{exercises.length}
           </span>
         </div>
