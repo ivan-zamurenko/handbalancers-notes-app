@@ -112,7 +112,7 @@ export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, 
                 {t('newRecord')}
               </p>
             )}
-            <p style={{ color: '#39e600', fontWeight: 600, margin: 0, fontSize: '0.9rem' }}>✓ {t('saved')}</p>
+            <p style={{ color: '#39e600', fontWeight: 600, margin: 0, fontSize: '0.9rem' }}>{t('saved')} ✓</p>
           </div>
         ) : (
           <LogForm isHold={isHold} targetSets={exercise.target_sets ?? 1} exerciseId={exercise.id} onSubmit={onLog} />
