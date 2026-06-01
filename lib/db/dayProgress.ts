@@ -78,20 +78,6 @@ export async function getTotalDaysInProgram(programId: string): Promise<number> 
   return count ?? 0
 }
 
-/** Повертає день з контекстом тижня і програми (для celebration screen). */
-export async function getDayContext(dayId: string): Promise<DayFullContext | null> {
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('days')
-    .select('*, weeks!inner(order, title_ua, title_en, programs!inner(id, slug, title_ua, title_en))')
-    .eq('id', dayId)
-    .single()
-
-  if (error?.code === 'PGRST116') return null
-  if (error) throw error
-  return data as unknown as DayFullContext
-}
-
 /** Повертає день за людським шляхом (program slug + week order + day order). */
 export async function getDayByPath(
   slug: string,
@@ -99,17 +85,17 @@ export async function getDayByPath(
   dayOrder: number,
 ): Promise<DayFullContext | null> {
   const supabase = await createClient()
+  // `order` — зарезервоване слово в PostgREST, тому фільтруємо order вже в JS.
   const { data, error } = await supabase
     .from('days')
     .select('*, weeks!inner(order, title_ua, title_en, programs!inner(id, slug, title_ua, title_en))')
-    .eq('order', dayOrder)
-    .eq('weeks.order', weekOrder)
     .eq('weeks.programs.slug', slug)
-    .single()
 
-  if (error?.code === 'PGRST116') return null
   if (error) throw error
-  return data as unknown as DayFullContext
+  const day = (data ?? []).find(
+    d => d.order === dayOrder && (d.weeks as unknown as { order: number }).order === weekOrder,
+  )
+  return (day as unknown as DayFullContext) ?? null
 }
 
 /** Повертає дати (ISO-рядки) всіх виконаних днів користувача, відсортованих від новішого. */
