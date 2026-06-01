@@ -44,16 +44,24 @@ export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, 
           </div>
           <button
             onClick={onToggleFavorite}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', padding: '0.1rem', flexShrink: 0 }}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              fontSize: '1.4rem', padding: '0.25rem',
+              color: isFavorite ? '#ffc800' : '#444',
+              flexShrink: 0,
+              lineHeight: 1,
+              transition: 'color 0.15s',
+            }}
+            title={isFavorite ? t('unfavorite') : t('favorite')}
           >
-            {isFavorite ? '⭐' : '☆'}
+            {isFavorite ? '★' : '☆'}
           </button>
         </div>
 
         {/* Target + video toggle row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.6rem' }}>
           <span style={{
-            fontSize: '0.75rem', fontWeight: 600, color: '#555',
+            fontSize: '0.8rem', fontWeight: 600, color: '#888',
           }}>
             {isHold
               ? `${exercise.target_hold} ${t('sec')}`
@@ -67,10 +75,10 @@ export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, 
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                color: videoOpen ? '#39e600' : '#555',
-                fontSize: '0.8rem', fontWeight: 500,
+                color: videoOpen ? '#39e600' : '#aaa',
+                fontSize: '0.82rem', fontWeight: 500,
                 padding: 0,
-                display: 'flex', alignItems: 'center', gap: '0.3rem',
+                display: 'flex', alignItems: 'center', gap: '0.35rem',
               }}
             >
               <span style={{ fontSize: '0.7rem' }}>{videoOpen ? '⏸' : '▶'}</span>

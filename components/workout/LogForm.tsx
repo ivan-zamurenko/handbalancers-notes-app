@@ -25,7 +25,7 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minHeight: '58px', borderBottom: '1px solid #1e1e1e' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minHeight: '56px', borderBottom: '1px solid #1e1e1e' }}>
       <span style={{ color: '#555', width: '4.5rem', fontSize: '0.75rem', fontWeight: 500, flexShrink: 0 }}>
         {t('set')} {index + 1}
       </span>
@@ -37,12 +37,14 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && confirm()}
             onBlur={confirm}
-            placeholder="—"
+            placeholder="0"
             autoFocus
             style={{
-              flex: 1, padding: '0.55rem 0.75rem', borderRadius: '10px',
-              border: '1px solid #2e2e2e', background: '#0d0d0d',
-              color: '#fff', fontSize: '1.1rem', fontWeight: 600,
+              flex: 1, padding: '0.55rem 0',
+              border: 'none',
+              borderBottom: '2px solid #39e600',
+              background: 'transparent',
+              color: '#fff', fontSize: '1.3rem', fontWeight: 700,
               textAlign: 'center', outline: 'none',
             }}
           />
@@ -148,13 +150,10 @@ export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Pr
         style={{
           width: '100%', background: 'none', border: 'none', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '0.6rem 0', color: '#aaa', fontSize: '0.85rem',
+          padding: '0.6rem 0', color: '#555', fontSize: '0.82rem',
         }}
       >
-        <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ fontSize: '0.95rem' }}>📋</span>
-          {extraOpen ? t('hideExtra') : t('addNote')}
-        </span>
+        <span>{extraOpen ? t('hideExtra') : t('addNote')}</span>
         <span style={{
           display: 'inline-block', fontSize: '0.8rem', color: '#444',
           transform: extraOpen ? 'rotate(90deg)' : 'rotate(0)',
@@ -193,10 +192,9 @@ export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Pr
           cursor: anyFilled ? 'pointer' : 'not-allowed',
           fontWeight: 700, fontSize: '1rem',
           transition: 'background 0.2s ease, color 0.2s ease',
-          letterSpacing: '0.01em',
         }}
       >
-        {allFilled ? `✓ ${t('done')}` : anyFilled ? `${t('done')} (${filledCount}/${sets.length})` : t('done')}
+        {allFilled ? t('save') : anyFilled ? `${t('save')} (${filledCount}/${sets.length})` : t('save')}
       </button>
     </form>
   )
