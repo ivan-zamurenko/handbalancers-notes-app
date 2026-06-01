@@ -38,70 +38,105 @@ export default async function ProgramDetailPage({
 
   const title = locale === 'en' ? program.title_en : program.title_ua
   const description = locale === 'en' ? program.description_en : program.description_ua
-
-  const levelColor = program.level === 'beginner' ? '#39e600' : program.level === 'intermediate' ? '#f5a623' : '#f87171'
+  const isAllDone = enrolled && !nextDay && weeksWithDays.flatMap(w => w.days).length > 0
 
   return (
-    <main style={{ padding: '2.5rem 1.25rem 3rem', maxWidth: '480px', margin: '0 auto' }}>
-      <h1 style={{ color: '#fff', fontWeight: 800, margin: '0 0 0.625rem' }}>{title}</h1>
-      {description && (
-        <p style={{ color: '#666', margin: '0 0 1.125rem', fontSize: '0.85rem', lineHeight: 1.5 }}>{description}</p>
-      )}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2.25rem' }}>
-        <span style={{
-          fontSize: '0.7rem',
-          fontWeight: 700,
-          color: levelColor,
-          border: `1px solid ${levelColor}`,
-          borderRadius: '999px',
-          padding: '2px 9px',
-          letterSpacing: '0.06em',
-          textTransform: 'uppercase',
-        }}>
-          {t(program.level as 'beginner' | 'intermediate' | 'advanced')}
-        </span>
-        <span style={{ color: '#444', fontSize: '0.75rem' }}>
-          {program.is_free ? t('free') : t('paid')}
-        </span>
+    <main style={{ maxWidth: '480px', margin: '0 auto', paddingBottom: enrolled && nextDay ? '6rem' : '3rem' }}>
+
+      {/* Назад */}
+      <div style={{ padding: '1.25rem 1.25rem 0' }}>
+        <Link href="/programs" style={{ fontSize: '0.875rem', color: '#555', textDecoration: 'none' }}>
+          {t('back')}
+        </Link>
       </div>
 
-      {!enrolled && canAccess && (
-        <StartProgramButton programId={program.id} isFree={program.is_free} slug={slug} />
-      )}
-      {!enrolled && !canAccess && (
-        <Link
-          href="/billing"
-          style={{
-            display: 'inline-block',
-            marginBottom: '1.5rem',
-            padding: '0.75rem 2rem',
-            background: '#39e600',
-            color: '#000',
-            borderRadius: '12px',
-            fontWeight: 700,
-            fontSize: '0.85rem',
-            textDecoration: 'none',
-            textTransform: 'uppercase',
-            letterSpacing: '0.15em',
+      <div style={{ padding: '1.25rem 1.25rem 0' }}>
+        <h1 style={{ color: '#fff', fontWeight: 800, margin: '0 0 0.625rem' }}>{title}</h1>
+        {description && (
+          <p style={{ color: '#666', margin: '0 0 1.125rem', fontSize: '0.85rem', lineHeight: 1.5 }}>{description}</p>
+        )}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <span style={{ fontSize: '0.8rem', color: '#555' }}>
+            {t(program.level as 'beginner' | 'intermediate' | 'advanced')} · {program.is_free ? t('free') : t('paid')}
+          </span>
+        </div>
+
+        {!enrolled && canAccess && (
+          <StartProgramButton programId={program.id} isFree={program.is_free} slug={slug} />
+        )}
+        {!enrolled && !canAccess && (
+          <Link
+            href="/billing"
+            style={{
+              display: 'inline-block',
+              marginBottom: '1.5rem',
+              padding: '0.75rem 2rem',
+              background: '#39e600',
+              color: '#000',
+              borderRadius: '12px',
+              fontWeight: 700,
+              fontSize: '0.875rem',
+              textDecoration: 'none',
+            }}
+          >
+            {t('upgrade')}
+          </Link>
+        )}
+      </div>
+
+      <div style={{ padding: '0 1.25rem' }}>
+        <WeekAccordion
+          weeksWithDays={weeksWithDays}
+          completedIds={Array.from(completedIds)}
+          nextDayId={nextDay?.id ?? null}
+          canAccess={canAccess}
+          locale={locale}
+          labels={{
+            completed: t('completed'),
+            paid: t('paid'),
           }}
-        >
-          {t('upgrade')}
-        </Link>
+        />
+      </div>
+
+      {/* Completion state */}
+      {isAllDone && (
+        <p style={{ textAlign: 'center', color: '#39e600', fontSize: '0.875rem', marginTop: '2rem', padding: '0 1.25rem' }}>
+          ✓ {t('completed')}
+        </p>
       )}
 
-      <WeekAccordion
-        weeksWithDays={weeksWithDays}
-        completedIds={Array.from(completedIds)}
-        nextDayId={nextDay?.id ?? null}
-        canAccess={canAccess}
-        locale={locale}
-        labels={{
-          completed: t('completed'),
-          nextDay: t('nextDay'),
-          paid: t('paid'),
-        }}
-      />
+      {/* Sticky CTA — тільки якщо записаний і є наступний день */}
+      {enrolled && nextDay && (
+        <div style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: '1rem 1.25rem calc(1rem + env(safe-area-inset-bottom))',
+          background: 'linear-gradient(to top, #0d0d0d 60%, transparent)',
+          display: 'flex',
+          justifyContent: 'center',
+        }}>
+          <Link
+            href={`/workout/${nextDay.id}`}
+            style={{
+              display: 'block',
+              width: '100%',
+              maxWidth: '440px',
+              padding: '0.875rem',
+              background: '#39e600',
+              color: '#000',
+              borderRadius: '14px',
+              fontWeight: 700,
+              fontSize: '0.9rem',
+              textDecoration: 'none',
+              textAlign: 'center',
+            }}
+          >
+            {t('continueProgram')}
+          </Link>
+        </div>
+      )}
     </main>
   )
 }
-

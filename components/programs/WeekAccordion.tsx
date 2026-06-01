@@ -23,7 +23,6 @@ interface WeekAccordionProps {
   locale: string
   labels: {
     completed: string
-    nextDay: string
     paid: string
   }
 }
@@ -54,9 +53,8 @@ export default function WeekAccordion({
         const weekTitle = locale === 'en' ? week.title_en : week.title_ua
         const isOpen = openId === week.id
         const completedCount = days.filter(d => completedSet.has(d.id)).length
-        const isCurrentWeek = days.some(d => d.id === nextDayId)
         const allDone = completedCount === days.length
-        const progressColor = allDone ? '#39e600' : isCurrentWeek ? '#2979ff' : '#444'
+        const progressColor = allDone ? '#39e600' : '#555'
 
         return (
           <div key={week.id}>
@@ -79,19 +77,18 @@ export default function WeekAccordion({
               <span style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
                 <span style={{
                   color: '#555',
-                  fontSize: '0.55rem',
+                  fontSize: '1rem',
+                  lineHeight: 1,
                   display: 'inline-block',
                   transition: 'transform 0.18s ease',
                   transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
                 }}>
-                  ▶
+                  ›
                 </span>
                 <span style={{
                   color: '#888',
-                  fontSize: '0.75rem',
+                  fontSize: '0.875rem',
                   fontWeight: 600,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
                 }}>
                   {weekTitle}
                 </span>
@@ -113,7 +110,6 @@ export default function WeekAccordion({
                 {days.map((day, idx) => {
                   const dayTitle = locale === 'en' ? day.title_en : day.title_ua
                   const isCompleted = completedSet.has(day.id)
-                  const isNext = nextDayId === day.id
                   const borderTop = idx > 0 ? '1px solid #1a1a1a' : 'none'
 
                   if (!canAccess) {
@@ -147,12 +143,8 @@ export default function WeekAccordion({
                           <span style={{
                             fontSize: '0.68rem',
                             fontWeight: 700,
-                            color: '#f5a623',
-                            border: '1px solid #f5a623',
-                            borderRadius: '999px',
-                            padding: '2px 10px',
-                            letterSpacing: '0.08em',
-                            textTransform: 'uppercase',
+                            color: '#555',
+                            fontSize: '0.75rem',
                           }}>
                             {labels.paid}
                           </span>
@@ -173,21 +165,17 @@ export default function WeekAccordion({
                         borderTop,
                         textDecoration: 'none',
                         color: 'inherit',
-                        background: isNext ? 'rgba(41, 121, 255, 0.04)' : 'transparent',
+                        background: 'transparent',
                       }}
                     >
                       <span style={{ color: isCompleted ? '#555' : '#fff', fontSize: '0.92rem' }}>
                         {dayTitle}
                       </span>
-                      <span style={{
-                        fontSize: '0.78rem',
-                        fontWeight: 600,
-                        color: isCompleted ? '#39e600' : isNext ? '#2979ff' : 'transparent',
-                        flexShrink: 0,
-                        marginLeft: '0.75rem',
-                      }}>
-                        {isCompleted ? `✓ ${labels.completed}` : isNext ? `→ ${labels.nextDay}` : '–'}
-                      </span>
+                      {isCompleted && (
+                        <span style={{ fontSize: '0.78rem', color: '#39e600', flexShrink: 0, marginLeft: '0.75rem' }}>
+                          ✓
+                        </span>
+                      )}
                     </Link>
                   )
                 })}

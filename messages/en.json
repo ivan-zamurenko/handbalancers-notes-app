@@ -65,8 +65,10 @@
     "advanced": "Advanced",
     "weeks": "weeks",
     "days": "days",
+    "forYou": "For You",
+    "back": "← Programs",
+    "continueProgram": "Continue",
     "noPrograms": "No programs available",
-    "nextDay": "Next workout",
     "completed": "Completed",
     "startProgram": "Start",
     "loading": "Loading...",
@@ -170,5 +172,17 @@
     "subscribeCta": "Subscribe",
     "expiredTitle": "Your trial has ended",
     "expiredSub": "Subscribe to continue your training"
+  },
+  "notFound": {
+    "subtitle": "You went one step too far",
+    "description": "Looks like the link is outdated or this page never existed",
+    "backHome": "Go Home",
+    "browsePrograms": "Browse Programs"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "description": "An error occurred. Try again — it usually fixes the problem",
+    "retry": "Try again",
+    "backHome": "Go Home"
   }
 }

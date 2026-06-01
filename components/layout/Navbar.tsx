@@ -39,14 +39,20 @@ export default function Navbar() {
         top: 0,
         zIndex: 50,
       }}>
-        <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', color: '#fff', marginRight: '2.5rem', flexShrink: 0 }}>
+        <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', color: '#fff', marginRight: '2.5rem', flexShrink: 0 }}>
+          {/* Іконка HN — зелений квадрат */}
           <span style={{
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: '26px', height: '26px', borderRadius: '7px',
+            width: '28px', height: '28px', borderRadius: '7px',
             background: '#39e600', color: '#000',
-            fontSize: '0.6rem', fontWeight: 800, letterSpacing: '0.02em',
-          }}>HB</span>
-          <span style={{ fontSize: '0.875rem', fontWeight: 600, letterSpacing: '-0.02em' }}>Handbalancers</span>
+            fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.04em',
+          }}>
+            HN
+          </span>
+          {/* Повна назва одним рядком — читається миттєво */}
+          <span style={{ fontSize: '0.875rem', fontWeight: 600, letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
+            Handbalancer&apos;s Notes
+          </span>
         </Link>
 
         {/* Desktop nav links */}
@@ -65,8 +71,9 @@ export default function Navbar() {
                   fontWeight: isActive ? 600 : 400,
                   padding: '0.35rem 0.75rem',
                   borderRadius: '8px',
-                  background: isActive ? '#1a1a1a' : 'transparent',
-                  transition: 'all 0.15s ease',
+                  // Без pill — один індикатор: тільки підкреслення + білий текст
+                  background: 'transparent',
+                  transition: 'color 0.15s ease',
                   position: 'relative',
                 }}
               >
@@ -75,12 +82,13 @@ export default function Navbar() {
                   <span style={{
                     position: 'absolute',
                     bottom: '-1px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '16px',
+                    left: '0.75rem',
+                    right: '0.75rem',
                     height: '2px',
                     borderRadius: '99px',
                     background: '#39e600',
+                    transformOrigin: 'center',
+                    animation: 'navUnderline 0.2s ease',
                   }} />
                 )}
               </Link>
@@ -89,15 +97,20 @@ export default function Navbar() {
         </div>
 
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          {/* Plain text кнопки — Apple-стандарт для утиліт в navbar */}
           <button
             onClick={() => switchLocale(locale === 'ua' ? 'en' : 'ua')}
-            style={{ background: 'none', border: '1px solid #2a2a2a', borderRadius: '6px', padding: '0.2rem 0.5rem', cursor: 'pointer', color: '#888', fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.1em', transition: 'border-color 0.15s' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.05em', transition: 'color 0.15s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#666')}
           >
             {locale === 'ua' ? 'EN' : 'UA'}
           </button>
           <button
             onClick={handleLogout}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#555', fontSize: '0.8rem', letterSpacing: '0.03em', transition: 'color 0.15s' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', fontSize: '0.8rem', letterSpacing: '0.03em', transition: 'color 0.15s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#666')}
           >
             {t('logout')}
           </button>

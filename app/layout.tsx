@@ -9,7 +9,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Handbalancers — Training Platform',
+  title: "Handbalancer's Notes",
   description: 'Track your handstand, stretching and fitness progress',
 }
 

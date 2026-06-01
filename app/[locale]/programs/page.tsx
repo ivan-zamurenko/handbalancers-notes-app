@@ -4,6 +4,7 @@ import { getUser } from '@/lib/db/auth'
 import { getCategories } from '@/lib/db/categories'
 import { getAllPrograms, getAllEnrollments, getCompletedProgramIds } from '@/lib/db/programs'
 import ProgramCard from '@/components/programs/ProgramCard'
+import ProgramShelf from '@/components/programs/ProgramShelf'
 
 export default async function ProgramsPage({
   params,
@@ -25,24 +26,46 @@ export default async function ProgramsPage({
   const completedIds = await getCompletedProgramIds(user.id, enrolledProgramIds)
 
   return (
-    <main style={{ padding: '1rem', maxWidth: '480px', margin: '0 auto' }}>
-      <h1>{t('title')}</h1>
+    <main style={{ maxWidth: '480px', margin: '0 auto', paddingBottom: '2rem' }}>
+      <h1 style={{ padding: '1.25rem 1rem 0', margin: 0, fontSize: '1.5rem', fontWeight: 700, color: '#fff' }}>
+        {t('title')}
+      </h1>
+
+      {/* "Для тебе" — активні програми користувача */}
+      {enrollments.length > 0 && (
+        <section style={{ marginTop: '1.75rem' }}>
+          <p style={{ margin: '0 0 0.75rem', padding: '0 1rem', fontSize: '0.7rem', fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            {t('forYou')}
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '0 1rem' }}>
+            {enrollments.map(({ program }) => (
+              <ProgramCard
+                key={program.id}
+                program={program}
+                locale={locale}
+                isCompleted={completedIds.has(program.id)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Категорії — горизонтальний скрол (Apple shelf) */}
       {categories.map(category => {
         const categoryPrograms = programs.filter(p => p.category_id === category.id)
         if (!categoryPrograms.length) return null
-        const title = locale === 'en' ? category.title_en : category.title_ua
+        const categoryTitle = locale === 'en' ? category.title_en : category.title_ua
         return (
-          <section key={category.id} style={{ marginBottom: '2rem' }}>
-            <h2>{title}</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {categoryPrograms.map(program => (
-                <ProgramCard
-                  key={program.id}
-                  program={program}
-                  locale={locale}
-                  isCompleted={completedIds.has(program.id)}
-                />
-              ))}
+          <section key={category.id} style={{ marginTop: '2rem' }}>
+            <h2 style={{ margin: '0 0 0.75rem', padding: '0 1rem', fontSize: '1rem', fontWeight: 600, color: '#fff' }}>
+              {categoryTitle}
+            </h2>
+            <div style={{ paddingLeft: '1rem' }}>
+              <ProgramShelf
+                programs={categoryPrograms}
+                locale={locale}
+                completedIds={completedIds}
+              />
             </div>
           </section>
         )

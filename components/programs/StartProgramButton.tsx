@@ -28,16 +28,17 @@ export default function StartProgramButton({ programId, isFree, slug }: Props) {
       onClick={handleStart}
       disabled={isPending}
       style={{
-        marginTop: '1rem',
-        padding: '0.75rem 2rem',
-        background: '#3b82f6',
-        color: '#fff',
+        marginBottom: '1.5rem',
+        padding: '0.875rem 2rem',
+        background: '#39e600',
+        color: '#000',
         border: 'none',
-        borderRadius: '8px',
-        fontSize: '1rem',
-        fontWeight: 600,
+        borderRadius: '14px',
+        fontSize: '0.9rem',
+        fontWeight: 700,
         cursor: isPending ? 'wait' : 'pointer',
-        opacity: isPending ? 0.7 : 1,
+        opacity: isPending ? 0.6 : 1,
+        width: '100%',
       }}
     >
       {isPending ? t('loading') : t('startProgram')}

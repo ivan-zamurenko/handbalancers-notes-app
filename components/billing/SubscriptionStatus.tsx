@@ -45,11 +45,9 @@ export default async function SubscriptionStatus({
     }}>
       <span style={{
         display: 'inline-block',
-        fontSize: '0.8rem',
-        fontWeight: 700,
-        color: STATUS_COLOR[subscription.status] ?? '#374151',
-        textTransform: 'uppercase',
-        letterSpacing: '0.06em',
+        fontSize: '0.875rem',
+        fontWeight: 600,
+        color: STATUS_COLOR[subscription.status] ?? '#888',
       }}>
         {t(statusKey)}
       </span>

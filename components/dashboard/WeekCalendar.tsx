@@ -40,7 +40,6 @@ export default function WeekCalendar({ completedDates }: Props) {
         const dateStr = toLocalDate(date)
         const isToday = dateStr === today
         const isDone = completedSet.has(dateStr)
-        const isPast = dateStr < today
 
         return (
           <div
@@ -66,8 +65,8 @@ export default function WeekCalendar({ completedDates }: Props) {
                 justifyContent: 'center',
                 fontSize: '0.9rem',
                 background: isDone ? '#39e600' : 'transparent',
-                border: isDone ? 'none' : isToday ? '2px solid #fff' : isPast ? '1px solid #2a2a2a' : '1px dashed #333',
-                color: isDone ? '#000' : isToday ? '#fff' : '#333',
+                border: isDone ? 'none' : isToday ? '1px solid #fff' : '1px solid #2a2a2a',
+                color: isDone ? '#000' : isToday ? '#fff' : '#444',
               }}
             >
               {isDone ? '✓' : ''}
