@@ -71,7 +71,7 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
             onClick={() => { setInput(String(saved)); setEditing(true) }}
             style={{
               width: '44px', height: '44px', borderRadius: '50%', flexShrink: 0,
-              border: '1px solid #2a2a2a', background: 'transparent',
+              border: 'none', background: 'transparent',
               color: '#555', cursor: 'pointer', fontSize: '0.9rem',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}

@@ -118,51 +118,26 @@ export default async function WorkoutCompletePage({
           {/* Статистика дня */}
           <div className="fade-up fade-up-3" style={{
             display: 'flex',
-            gap: '0.6rem',
-            flexWrap: 'wrap',
+            gap: '1.5rem',
             justifyContent: 'center',
             marginBottom: '2.25rem',
           }}>
-            {/* Вправи */}
             {stats.exercisesLogged > 0 && (
-              <div style={{
-                background: '#141414',
-                border: '1px solid #1e1e1e',
-                borderRadius: '99px',
-                padding: '0.45rem 1.1rem',
-                fontSize: '0.88rem',
-                color: '#fff',
-                fontWeight: 600,
-              }}>
-                ✅ {t('completionExercises', { count: stats.exercisesLogged })}
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff' }}>{stats.exercisesLogged}</div>
+                <div style={{ fontSize: '0.7rem', color: '#555', marginTop: '0.2rem' }}>{t('completionExercisesLabel')}</div>
               </div>
             )}
-            {/* Hold-час */}
             {stats.totalHoldSec > 0 && (
-              <div style={{
-                background: '#141414',
-                border: '1px solid #1e1e1e',
-                borderRadius: '99px',
-                padding: '0.45rem 1.1rem',
-                fontSize: '0.88rem',
-                color: '#39e600',
-                fontWeight: 600,
-              }}>
-                ⏱ {holdLabel}
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#39e600' }}>{holdLabel}</div>
+                <div style={{ fontSize: '0.7rem', color: '#555', marginTop: '0.2rem' }}>{t('completionHoldLabel')}</div>
               </div>
             )}
-            {/* Стрік */}
             {streak > 0 && (
-              <div style={{
-                background: '#141414',
-                border: '1px solid #2a2a2a',
-                borderRadius: '99px',
-                padding: '0.45rem 1.1rem',
-                fontSize: '0.88rem',
-                color: '#fff',
-                fontWeight: 600,
-              }}>
-                🔥 {tDash('streak', { count: streak })}
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#fff' }}>{streak}</div>
+                <div style={{ fontSize: '0.7rem', color: '#555', marginTop: '0.2rem' }}>{tDash('streakLabel')}</div>
               </div>
             )}
           </div>

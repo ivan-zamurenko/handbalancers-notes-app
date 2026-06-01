@@ -34,7 +34,7 @@ export default function Timer({ label, savedValue, onSave, onEdit }: Props) {
         <button
           type="button"
           onClick={onEdit}
-          style={{ padding: '0.2rem 0.5rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: 'transparent', color: '#888', cursor: 'pointer', fontSize: '0.8rem' }}
+          style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: '0.85rem', padding: '0.2rem 0.4rem' }}
         >
           ✎
         </button>
@@ -78,7 +78,7 @@ export default function Timer({ label, savedValue, onSave, onEdit }: Props) {
           </button>
           <button
             onClick={() => { setSeconds(0); setState('idle') }}
-            style={{ padding: '0.4rem 0.75rem', borderRadius: '6px', border: '1px solid #2a2a2a', background: 'transparent', cursor: 'pointer', color: '#888' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#555', fontSize: '0.9rem', padding: '0.4rem 0.5rem' }}
           >
             {t('again')}
           </button>
