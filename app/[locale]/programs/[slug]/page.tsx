@@ -91,6 +91,7 @@ export default async function ProgramDetailPage({
           nextDayId={nextDay?.id ?? null}
           canAccess={canAccess}
           locale={locale}
+          programSlug={slug}
           labels={{
             completed: t('completed'),
             paid: t('paid'),
@@ -118,7 +119,7 @@ export default async function ProgramDetailPage({
           justifyContent: 'center',
         }}>
           <Link
-            href={`/workout/${nextDay.id}`}
+            href={`/programs/${slug}/w${nextDay.weeks.order}/d${nextDay.order}`}
             style={{
               display: 'block',
               width: '100%',

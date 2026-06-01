@@ -10,13 +10,14 @@ import { SETS_STORAGE_KEY_PREFIX } from './LogForm'
 
 type Props = {
   dayId: string
+  completeHref: string
   exercises: Exercise[]
   favoriteIds: string[]
   locale: string
   dayContext: DayFullContext | null
 }
 
-export default function WorkoutDay({ dayId, exercises, favoriteIds, locale, dayContext }: Props) {
+export default function WorkoutDay({ dayId, completeHref, exercises, favoriteIds, locale, dayContext }: Props) {
   const t = useTranslations('workout')
   const router = useRouter()
   const loggedKey = `workout_logged_${dayId}`
@@ -48,7 +49,7 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale, dayC
         setNewRecords(prev => new Set([...prev, exerciseId]))
       }
       if (exercises.every(e => newLogged.has(e.id))) {
-        setTimeout(() => router.push(`/workout/${dayId}/complete`), 600)
+        setTimeout(() => router.push(completeHref), 600)
       }
     } catch {
       setError(t('saveError'))

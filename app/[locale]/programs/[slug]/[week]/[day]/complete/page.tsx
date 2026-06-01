@@ -1,31 +1,43 @@
-import { redirect } from 'next/navigation'
+import { redirect, notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { getUser } from '@/lib/db/auth'
-import { getDayContext } from '@/lib/db/dayProgress'
+import { getDayByPath } from '@/lib/db/dayProgress'
 import { getStreak, getDayCompletionStats } from '@/lib/services/training'
 import AutoRedirect from '@/components/workout/AutoRedirect'
+
+function parsePart(str: string, prefix: 'w' | 'd'): number | null {
+  if (!str.startsWith(prefix)) return null
+  const n = Number(str.slice(1))
+  return Number.isInteger(n) && n > 0 ? n : null
+}
 
 export default async function WorkoutCompletePage({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>
+  params: Promise<{ locale: string; slug: string; week: string; day: string }>
 }) {
-  const { locale, id: dayId } = await params
+  const { locale, slug, week, day } = await params
+  const weekOrder = parsePart(week, 'w')
+  const dayOrder = parsePart(day, 'd')
+  if (!weekOrder || !dayOrder) notFound()
+
   const user = await getUser()
   if (!user) redirect(`/${locale}/login`)
 
   const t = await getTranslations('workout')
   const tDash = await getTranslations('dashboard')
 
-  const [day, streak, stats] = await Promise.all([
-    getDayContext(dayId),
+  const dayCtx = await getDayByPath(slug, weekOrder, dayOrder)
+  if (!dayCtx) notFound()
+
+  const [streak, stats] = await Promise.all([
     getStreak(user.id),
-    getDayCompletionStats(user.id, dayId),
+    getDayCompletionStats(user.id, dayCtx.id),
   ])
 
-  const dayTitle = day ? (locale === 'en' ? day.title_en : day.title_ua) : ''
-  const programTitle = day ? (locale === 'en' ? day.weeks.programs.title_en : day.weeks.programs.title_ua) : ''
+  const dayTitle = locale === 'en' ? dayCtx.title_en : dayCtx.title_ua
+  const programTitle = locale === 'en' ? dayCtx.weeks.programs.title_en : dayCtx.weeks.programs.title_ua
 
   const holdMin = Math.floor(stats.totalHoldSec / 60)
   const holdSec = stats.totalHoldSec % 60
@@ -66,7 +78,6 @@ export default async function WorkoutCompletePage({
       }}>
         <div style={{ maxWidth: '380px', width: '100%' }}>
 
-          {/* Check circle */}
           <div className="check-pop" style={{
             width: '76px',
             height: '76px',
@@ -83,7 +94,6 @@ export default async function WorkoutCompletePage({
             ✓
           </div>
 
-          {/* Заголовок */}
           <h1 className="fade-up fade-up-1" style={{
             fontSize: '1.75rem',
             fontWeight: 800,
@@ -94,28 +104,22 @@ export default async function WorkoutCompletePage({
             {t('completionTitle')}
           </h1>
 
-          {/* Назва дня + програма */}
-          {dayTitle && (
-            <p className="fade-up fade-up-2" style={{
-              fontSize: '0.95rem',
-              color: '#888',
-              margin: '0 0 0.2rem',
-              fontWeight: 500,
-            }}>
-              {dayTitle}
-            </p>
-          )}
-          {programTitle && (
-            <p className="fade-up fade-up-2" style={{
-              fontSize: '0.8rem',
-              color: '#444',
-              margin: '0 0 2rem',
-            }}>
-              {programTitle}
-            </p>
-          )}
+          <p className="fade-up fade-up-2" style={{
+            fontSize: '0.95rem',
+            color: '#888',
+            margin: '0 0 0.2rem',
+            fontWeight: 500,
+          }}>
+            {dayTitle}
+          </p>
+          <p className="fade-up fade-up-2" style={{
+            fontSize: '0.8rem',
+            color: '#444',
+            margin: '0 0 2rem',
+          }}>
+            {programTitle}
+          </p>
 
-          {/* Статистика дня */}
           <div className="fade-up fade-up-3" style={{
             display: 'flex',
             gap: '1.5rem',
@@ -142,7 +146,6 @@ export default async function WorkoutCompletePage({
             )}
           </div>
 
-          {/* Кнопка */}
           <div className="fade-up fade-up-4">
             <Link
               href="/dashboard"
@@ -167,4 +170,3 @@ export default async function WorkoutCompletePage({
     </>
   )
 }
-

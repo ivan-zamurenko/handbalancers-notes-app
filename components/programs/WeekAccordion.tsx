@@ -5,12 +5,14 @@ import { Link } from '@/i18n/navigation'
 
 interface Day {
   id: string
+  order: number
   title_ua: string
   title_en: string
 }
 
 interface Week {
   id: string
+  order: number
   title_ua: string
   title_en: string
 }
@@ -21,6 +23,7 @@ interface WeekAccordionProps {
   nextDayId: string | null
   canAccess: boolean
   locale: string
+  programSlug: string
   labels: {
     completed: string
     paid: string
@@ -33,6 +36,7 @@ export default function WeekAccordion({
   nextDayId,
   canAccess,
   locale,
+  programSlug,
   labels,
 }: WeekAccordionProps) {
   const completedSet = new Set(completedIds)
@@ -156,7 +160,7 @@ export default function WeekAccordion({
                   return (
                     <Link
                       key={day.id}
-                      href={`/workout/${day.id}`}
+                      href={`/programs/${programSlug}/w${week.order}/d${day.order}`}
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',

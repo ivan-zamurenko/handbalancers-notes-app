@@ -81,7 +81,7 @@ export default function TodayCard({ program, todayDay, dayNumber, totalDays, exe
         </div>
 
         <Link
-          href={`/workout/${todayDay.id}`}
+          href={`/programs/${program.slug}/w${weekNumber}/d${todayDay.order}`}
           style={{
             display: 'flex',
             alignItems: 'center',

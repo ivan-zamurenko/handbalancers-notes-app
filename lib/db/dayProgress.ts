@@ -92,6 +92,26 @@ export async function getDayContext(dayId: string): Promise<DayFullContext | nul
   return data as unknown as DayFullContext
 }
 
+/** Повертає день за людським шляхом (program slug + week order + day order). */
+export async function getDayByPath(
+  slug: string,
+  weekOrder: number,
+  dayOrder: number,
+): Promise<DayFullContext | null> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('days')
+    .select('*, weeks!inner(order, title_ua, title_en, programs!inner(id, slug, title_ua, title_en))')
+    .eq('order', dayOrder)
+    .eq('weeks.order', weekOrder)
+    .eq('weeks.programs.slug', slug)
+    .single()
+
+  if (error?.code === 'PGRST116') return null
+  if (error) throw error
+  return data as unknown as DayFullContext
+}
+
 /** Повертає дати (ISO-рядки) всіх виконаних днів користувача, відсортованих від новішого. */
 export async function getCompletedDates(userId: string): Promise<string[]> {
   const supabase = await createClient()
