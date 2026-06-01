@@ -53,9 +53,7 @@ export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, 
         {/* Target + video toggle row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.6rem' }}>
           <span style={{
-            fontSize: '0.75rem', fontWeight: 600, color: '#39e600',
-            background: 'rgba(57,230,0,0.08)', borderRadius: '6px',
-            padding: '0.2rem 0.5rem',
+            fontSize: '0.75rem', fontWeight: 600, color: '#555',
           }}>
             {isHold
               ? `${exercise.target_hold} ${t('sec')}`
@@ -66,14 +64,13 @@ export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, 
             <button
               onClick={() => setVideoOpen(v => !v)}
               style={{
-                background: videoOpen ? 'rgba(57,230,0,0.12)' : 'rgba(255,255,255,0.07)',
+                background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                color: videoOpen ? '#39e600' : '#d0d0d0',
-                fontSize: '0.8rem', fontWeight: 600,
-                padding: '0.3rem 0.65rem',
-                borderRadius: '8px', transition: 'all 0.15s',
-                display: 'flex', alignItems: 'center', gap: '0.35rem',
+                color: videoOpen ? '#39e600' : '#555',
+                fontSize: '0.8rem', fontWeight: 500,
+                padding: 0,
+                display: 'flex', alignItems: 'center', gap: '0.3rem',
               }}
             >
               <span style={{ fontSize: '0.7rem' }}>{videoOpen ? '⏸' : '▶'}</span>
@@ -100,16 +97,12 @@ export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, 
         {isLogged ? (
           <div style={{ paddingTop: '0.5rem' }}>
             {isNewRecord && (
-              <div style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                background: 'rgba(255, 200, 0, 0.1)', border: '1px solid rgba(255, 200, 0, 0.4)',
-                borderRadius: '999px', padding: '0.25rem 0.75rem',
-                marginBottom: '0.5rem', fontSize: '0.85rem', fontWeight: 700, color: '#ffc800',
-                animation: 'prPop 0.4s ease',
+              <p style={{
+                color: '#ffc800', fontWeight: 600, margin: '0 0 0.4rem',
+                fontSize: '0.85rem', animation: 'prPop 0.4s ease',
               }}>
-                <span>🏆</span>
-                <span>{t('newRecord')}</span>
-              </div>
+                {t('newRecord')}
+              </p>
             )}
             <p style={{ color: '#39e600', fontWeight: 600, margin: 0, fontSize: '0.9rem' }}>✓ {t('saved')}</p>
           </div>

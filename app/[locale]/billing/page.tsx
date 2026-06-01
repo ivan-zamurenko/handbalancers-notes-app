@@ -52,7 +52,21 @@ export default async function BillingPage({
       </h2>
       <SubscriptionStatus subscription={subscription} locale={locale} />
 
-      {!isActive && (
+      {isActive ? (
+        <div style={{ marginTop: '1.5rem' }}>
+          <p style={{ fontSize: '0.7rem', fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.75rem' }}>
+            {t('included')}
+          </p>
+          <ul style={{ padding: 0, margin: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+            {(t.raw('featuresList') as string[]).map((f: string) => (
+              <li key={f} style={{ fontSize: '0.875rem', color: '#888', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <span style={{ color: '#39e600', fontWeight: 700, flexShrink: 0 }}>✓</span>
+                {f}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
         <PricingCard priceId={priceId} locale={locale} />
       )}
     </main>

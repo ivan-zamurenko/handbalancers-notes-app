@@ -152,7 +152,7 @@ export default function Navbar() {
               }}
             >
               <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>{icon}</span>
-              <span style={{ fontSize: '0.6rem', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '0.6rem', fontWeight: 600 }}>
                 {t(labelKey)}
               </span>
             </Link>

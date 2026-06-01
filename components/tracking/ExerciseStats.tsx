@@ -53,7 +53,7 @@ export default function ExerciseStats({ favorites, logs, locale }: Props) {
           fontWeight: 'bold',
           color: '#39e600',
         }}>
-          🤸 {t('handstandToday')}: {handstandMin > 0 ? `${handstandMin} ${t('min')} ` : ''}{handstandRemSec} {t('sec')}
+          {t('handstandToday')}: {handstandMin > 0 ? `${handstandMin} ${t('min')} ` : ''}{handstandRemSec} {t('sec')}
         </div>
       )}
 
@@ -65,7 +65,7 @@ export default function ExerciseStats({ favorites, logs, locale }: Props) {
           textAlign: 'center',
           background: '#0f0f0f',
         }}>
-          <div style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>⭐</div>
+          <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>—</div>
           <p style={{ color: '#fff', fontWeight: 600, marginBottom: '0.35rem', fontSize: '0.95rem' }}>{t('noStats')}</p>
           <p style={{ color: '#555', fontSize: '0.85rem', marginBottom: '1.25rem', lineHeight: 1.5 }}>{t('noStatsDesc')}</p>
           <Link href="/dashboard" style={{ color: '#39e600', fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none' }}>
@@ -89,15 +89,15 @@ export default function ExerciseStats({ favorites, logs, locale }: Props) {
               background: '#141414',
             }}>
               <div style={{ fontWeight: 600, marginBottom: '0.5rem', color: '#fff' }}>
-                ⭐ {name}
+                {name}
               </div>
               <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.9rem', color: '#888' }}>
-                <span>📅 {t('total')}: <b>{totalSessions}</b></span>
+                <span>{t('total')}: <b>{totalSessions}</b></span>
                 {isHold && bestHold !== null && (
-                  <span>🏆 {t('best')}: <b>{bestHold} {t('sec')}</b></span>
+                  <span>{t('best')}: <b>{bestHold} {t('sec')}</b></span>
                 )}
                 {!isHold && avgReps !== null && (
-                  <span>📊 {t('avg')}: <b>{avgReps} {t('reps')}</b></span>
+                  <span>{t('avg')}: <b>{avgReps} {t('reps')}</b></span>
                 )}
               </div>
             </div>

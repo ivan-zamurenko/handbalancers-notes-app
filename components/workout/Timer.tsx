@@ -72,7 +72,7 @@ export default function Timer({ label, savedValue, onSave, onEdit }: Props) {
         <>
           <button
             onClick={() => onSave(seconds)}
-            style={{ padding: '0.4rem 1rem', borderRadius: '6px', border: 'none', background: '#2979ff', color: '#fff', cursor: 'pointer', fontWeight: 'bold' }}
+            style={{ padding: '0.4rem 1rem', borderRadius: '6px', border: 'none', background: '#39e600', color: '#000', cursor: 'pointer', fontWeight: 'bold' }}
           >
             {t('saveSet')}
           </button>

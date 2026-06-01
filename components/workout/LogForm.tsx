@@ -26,7 +26,7 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minHeight: '58px', borderBottom: '1px solid #1e1e1e' }}>
-      <span style={{ color: '#555', width: '4.5rem', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', flexShrink: 0 }}>
+      <span style={{ color: '#555', width: '4.5rem', fontSize: '0.75rem', fontWeight: 500, flexShrink: 0 }}>
         {t('set')} {index + 1}
       </span>
       {editing ? (

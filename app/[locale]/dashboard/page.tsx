@@ -77,7 +77,7 @@ export default async function DashboardPage({
             href="/programs"
             style={{ display: 'inline-block', padding: '0.75rem 1.5rem', background: '#39e600', color: '#000', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', textDecoration: 'none' }}
           >
-            {t('browsePrograms')} →
+            {t('browsePrograms')}
           </Link>
         </div>
       ) : (
@@ -90,7 +90,7 @@ export default async function DashboardPage({
             href="/programs"
             style={{ display: 'inline-block', padding: '0.75rem 1.5rem', background: '#39e600', color: '#000', borderRadius: '10px', fontWeight: 700, fontSize: '0.9rem', textDecoration: 'none' }}
           >
-            {t('browsePrograms')} →
+            {t('browsePrograms')}
           </Link>
         </div>
       )}

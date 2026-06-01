@@ -41,10 +41,10 @@ export default async function LoginPage({
         <h1 style={{
           color: '#fff',
           fontWeight: 300,
-          fontSize: '0.8rem',
-          letterSpacing: '0.3em',
+          fontSize: '0.85rem',
+          letterSpacing: '0.08em',
           textAlign: 'center',
-          textTransform: 'uppercase',
+          color: '#555',
           margin: '0 0 1.5rem',
         }}>
           {t('title')}
@@ -111,12 +111,10 @@ export default async function LoginPage({
               background: '#39e600',
               color: '#000',
               fontWeight: 600,
-              fontSize: '0.75rem',
+              fontSize: '1rem',
               border: 'none',
               borderRadius: '12px',
               cursor: 'pointer',
-              letterSpacing: '0.25em',
-              textTransform: 'uppercase',
               marginTop: '0.5rem',
             }}
           >

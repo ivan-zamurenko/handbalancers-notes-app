@@ -178,10 +178,8 @@ export default async function WorkoutCompletePage({
                 color: '#000',
                 borderRadius: '12px',
                 fontWeight: 700,
-                fontSize: '0.9rem',
+                fontSize: '1rem',
                 textDecoration: 'none',
-                textTransform: 'uppercase',
-                letterSpacing: '0.15em',
               }}
             >
               {t('backHome')}

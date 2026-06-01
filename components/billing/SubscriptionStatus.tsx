@@ -3,7 +3,7 @@ import type { Subscription, SubscriptionStatus } from '@/types'
 
 const STATUS_COLOR: Record<SubscriptionStatus, string> = {
   active: '#39e600',
-  trialing: '#2979ff',
+  trialing: '#aaa',
   canceled: '#555',
   past_due: '#f87171',
 }

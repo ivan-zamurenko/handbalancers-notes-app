@@ -193,11 +193,9 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
               }}
             >
               <span style={{
-                fontSize: '0.72rem',
-                fontWeight: 700,
+                fontSize: '0.75rem',
+                fontWeight: 600,
                 color: isOpen ? '#888' : '#444',
-                textTransform: 'uppercase',
-                letterSpacing: '0.12em',
               }}>
                 {formatDateLabel(dateStr, locale)}
                 <span style={{ marginLeft: '0.4rem', color: '#333', fontWeight: 400 }}>
@@ -218,7 +216,7 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
                   return programGroups.map(({ programName, logs: groupLogs }) => (
                     <div key={programName ?? '__unknown__'}>
                       {multiProgram && programName && (
-                        <div style={{ fontSize: '0.65rem', color: '#444', textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 700, padding: '0.4rem 0.6rem 0.05rem', marginTop: '0.15rem' }}>
+                        <div style={{ fontSize: '0.7rem', color: '#444', fontWeight: 500, padding: '0.4rem 0.6rem 0.05rem', marginTop: '0.15rem' }}>
                           {programName}
                         </div>
                       )}
@@ -255,7 +253,7 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
                         )}
                         {log.video_url && (
                           <a href={log.video_url} target="_blank" rel="noopener noreferrer"
-                            style={{ fontSize: '0.8rem', color: '#2979ff', textDecoration: 'none' }}>🎥</a>
+                            style={{ fontSize: '0.8rem', color: '#555', textDecoration: 'none' }}>🎥</a>
                         )}
                         {wasSaved
                           ? <span style={{ color: '#39e600', fontSize: '0.78rem', flexShrink: 0 }}>{t('updated')}</span>

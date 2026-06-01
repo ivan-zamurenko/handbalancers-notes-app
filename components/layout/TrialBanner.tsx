@@ -19,9 +19,9 @@ export default async function TrialBanner({ daysLeft, locale }: { daysLeft: numb
       <span>⚠️ {t('warning', { days: daysLeft })}</span>
       <Link
         href={`/${locale}/billing`}
-        style={{ color: '#2979FF', fontWeight: 600, textDecoration: 'none' }}
+        style={{ color: '#fff', fontWeight: 600, textDecoration: 'none' }}
       >
-        {t('subscribeCta')} →
+        {t('subscribeCta')}
       </Link>
     </div>
   )
