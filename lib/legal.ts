@@ -1,10 +1,10 @@
 export const LEGAL_PROFILE = {
   tradingName: "Handbalancer's Studio",
-  legalEntityName: '[INSERT LEGAL NAME], Sole Trader',
+  legalEntityName: 'Ivan Zamurenko, Sole Trader',
   country: 'Ireland',
   governingLaw: 'Ireland',
-  operatorAddress: '[INSERT BUSINESS ADDRESS], Ireland',
-  supportEmail: 'support@handbalancers.studio',
-  vatNumber: '[INSERT VAT NUMBER OR N/A]',
+  operatorAddress: "71 St. John's Park, Tralee, Co. Kerry, Ireland",
+  supportEmail: 'handbalancers.studio@gmail.com',
+  vatNumber: null,
   lastUpdatedIso: '2026-06-02',
 } as const

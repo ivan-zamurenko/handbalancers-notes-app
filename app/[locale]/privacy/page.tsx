@@ -83,7 +83,7 @@ function getUaSections(): Section[] {
         `Юридична форма: Sole Trader (${LEGAL_PROFILE.country}).`,
         `Оператор: ${LEGAL_PROFILE.legalEntityName}.`,
         `Адреса: ${LEGAL_PROFILE.operatorAddress}.`,
-        `VAT: ${LEGAL_PROFILE.vatNumber}.`,
+        ...(LEGAL_PROFILE.vatNumber ? [`VAT: ${LEGAL_PROFILE.vatNumber}.`] : []),
       ],
     },
   ]
@@ -167,7 +167,7 @@ function getEnSections(): Section[] {
         `Legal form: Sole Trader (${LEGAL_PROFILE.country}).`,
         `Operator: ${LEGAL_PROFILE.legalEntityName}.`,
         `Address: ${LEGAL_PROFILE.operatorAddress}.`,
-        `VAT: ${LEGAL_PROFILE.vatNumber}.`,
+        ...(LEGAL_PROFILE.vatNumber ? [`VAT: ${LEGAL_PROFILE.vatNumber}.`] : []),
       ],
     },
   ]

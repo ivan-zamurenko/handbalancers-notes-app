@@ -35,7 +35,7 @@ function getUaSections(): Section[] {
       body: [
         'Ви можете скасувати підписку у будь-який момент; скасування застосовується до наступного періоду.',
         'Повернення коштів розглядаються відповідно до застосовного споживчого законодавства та умов платіжного провайдера.',
-        'Для запиту повернення звертайтесь: support@handbalancers.studio.',
+        `Для запиту повернення звертайтесь: ${LEGAL_PROFILE.supportEmail}.`,
       ],
     },
     {
@@ -82,7 +82,7 @@ function getUaSections(): Section[] {
       body: [
         `Оператор: ${LEGAL_PROFILE.legalEntityName}.`,
         `Адреса: ${LEGAL_PROFILE.operatorAddress}.`,
-        `VAT: ${LEGAL_PROFILE.vatNumber}.`,
+        ...(LEGAL_PROFILE.vatNumber ? [`VAT: ${LEGAL_PROFILE.vatNumber}.`] : []),
         `Питання щодо умов: ${LEGAL_PROFILE.supportEmail}.`,
       ],
     },
@@ -119,7 +119,7 @@ function getEnSections(): Section[] {
       body: [
         'You may cancel membership at any time; cancellation applies to the next billing period.',
         'Refund requests are handled under applicable consumer law and payment provider rules.',
-        'For refund requests, contact: support@handbalancers.studio.',
+        `For refund requests, contact: ${LEGAL_PROFILE.supportEmail}.`,
       ],
     },
     {
@@ -166,7 +166,7 @@ function getEnSections(): Section[] {
       body: [
         `Operator: ${LEGAL_PROFILE.legalEntityName}.`,
         `Address: ${LEGAL_PROFILE.operatorAddress}.`,
-        `VAT: ${LEGAL_PROFILE.vatNumber}.`,
+        ...(LEGAL_PROFILE.vatNumber ? [`VAT: ${LEGAL_PROFILE.vatNumber}.`] : []),
         `Questions about these Terms: ${LEGAL_PROFILE.supportEmail}.`,
       ],
     },
