@@ -7,6 +7,7 @@ import { getUser } from '@/lib/db/auth'
 import { getTrialStatus } from '@/lib/services/subscriptions'
 import Navbar from '@/components/layout/Navbar'
 import TrialBanner from '@/components/layout/TrialBanner'
+import Footer from '@/components/layout/Footer'
 import Link from 'next/link'
 
 export default async function LocaleLayout({
@@ -51,6 +52,7 @@ export default async function LocaleLayout({
             {t('subscribeCta')} →
           </Link>
         </main>
+        <Footer locale={locale} />
       </NextIntlClientProvider>
     )
   }
@@ -62,6 +64,7 @@ export default async function LocaleLayout({
         <TrialBanner daysLeft={trialStatus.trialDaysLeft} locale={locale} />
       )}
       {children}
+      <Footer locale={locale} />
     </NextIntlClientProvider>
   )
 }

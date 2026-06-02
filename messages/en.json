@@ -177,6 +177,22 @@
     "expiredTitle": "Your trial has ended",
     "expiredSub": "One access to everything in Studio: programs, progress, and support."
   },
+  "footer": {
+    "instagram": "Instagram",
+    "youtube": "YouTube",
+    "support": "Support",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "copyright": "© {year} Handbalancer's Studio. All rights reserved."
+  },
+  "legal": {
+    "privacyTitle": "Privacy Policy",
+    "privacyIntro": "We store only data required for workouts, progress tracking, and subscription access.",
+    "privacyContact": "If you have any privacy questions, contact us: support@handbalancers.studio",
+    "termsTitle": "Terms of Use",
+    "termsIntro": "By using Handbalancer's Studio, you agree to the terms for accessing training materials and membership.",
+    "termsContact": "For terms-related questions: support@handbalancers.studio"
+  },
   "notFound": {
     "subtitle": "You went one step too far",
     "description": "Looks like the link is outdated or this page never existed",
