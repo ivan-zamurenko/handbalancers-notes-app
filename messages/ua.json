@@ -31,8 +31,8 @@
     }
   },
   "home": {
-    "title": "Handbalancers Training Platform",
-    "subtitle": "Тренуйся. Відстежуй прогрес. Досягай результату."
+    "title": "Handbalancer's Studio",
+    "subtitle": "Твоя щоденна студія для стійки на руках і гнучкості."
   },
   "dashboard": {
     "title": "Сьогодні",
@@ -52,7 +52,7 @@
     "allProgramsDone": "Усі програми виконано!",
     "allProgramsDoneSub": "Обери нову програму і продовжуй тренуватись",
     "welcomeNew": "Ласкаво просимо!",
-    "welcomeNewSub": "Обери програму і розпочни своє перше тренування"
+    "welcomeNewSub": "Вітаємо у Handbalancer's Studio. Обери ціль і почнемо з першого тренування сьогодні."
   },
   "programs": {
     "title": "Програми тренувань",
@@ -101,15 +101,15 @@
   },
   "billing": {
     "title": "Підписка та оплата",
-    "subscriptionTitle": "Ваша підписка",
-    "noSubscription": "Немає активної підписки",
+    "subscriptionTitle": "Studio Membership",
+    "noSubscription": "Усі програми, трекінг прогресу та нові плани щомісяця.",
     "statusActive": "Активна",
     "statusTrialing": "Пробний період",
     "statusCanceled": "Скасована",
     "statusPastDue": "Прострочена оплата",
     "validUntil": "Дійсна до",
     "included": "Що входить",
-    "proName": "Преміум доступ",
+    "proName": "Studio Membership",
     "priceLabel": "199 ₴",
     "subscribe": "Оформити підписку",
     "perMonth": "/ міс",
@@ -175,7 +175,7 @@
     "warning": "Trial закінчується через {days} дн.",
     "subscribeCta": "Оформити підписку",
     "expiredTitle": "Пробний період закінчився",
-    "expiredSub": "Оформи підписку щоб продовжити тренуватись"
+    "expiredSub": "Один доступ до всього в Studio: програми, прогрес і підтримка."
   },
   "notFound": {
     "subtitle": "Ти зайшов далі, ніж треба",

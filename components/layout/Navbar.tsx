@@ -40,18 +40,18 @@ export default function Navbar() {
         zIndex: 50,
       }}>
         <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', color: '#fff', marginRight: '2.5rem', flexShrink: 0 }}>
-          {/* Іконка HN — зелений квадрат */}
+          {/* Іконка HS — зелений квадрат */}
           <span style={{
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
             width: '28px', height: '28px', borderRadius: '7px',
             background: '#39e600', color: '#000',
             fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.04em',
           }}>
-            HN
+            HS
           </span>
           {/* Повна назва одним рядком — читається миттєво */}
           <span style={{ fontSize: '0.875rem', fontWeight: 600, letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
-            Handbalancer&apos;s Notes
+            Handbalancer&apos;s Studio
           </span>
         </Link>
 

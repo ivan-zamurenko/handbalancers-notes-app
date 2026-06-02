@@ -31,8 +31,8 @@
     }
   },
   "home": {
-    "title": "Handbalancers Training Platform",
-    "subtitle": "Train. Track progress. Achieve results."
+    "title": "Handbalancer's Studio",
+    "subtitle": "Your daily studio for handstand and flexibility."
   },
   "dashboard": {
     "title": "Today",
@@ -52,7 +52,7 @@
     "allProgramsDone": "All programs complete!",
     "allProgramsDoneSub": "Pick a new program and keep training",
     "welcomeNew": "Welcome!",
-    "welcomeNewSub": "Pick a program and start your first workout"
+    "welcomeNewSub": "Welcome to Handbalancer's Studio. Pick your goal and start your first workout today."
   },
   "programs": {
     "title": "Training Programs",
@@ -101,15 +101,15 @@
   },
   "billing": {
     "title": "Billing & Subscription",
-    "subscriptionTitle": "Your Subscription",
-    "noSubscription": "No active subscription",
+    "subscriptionTitle": "Studio Membership",
+    "noSubscription": "All programs, progress tracking, and new plans every month.",
     "statusActive": "Active",
     "statusTrialing": "Trial",
     "statusCanceled": "Canceled",
     "statusPastDue": "Past due",
     "validUntil": "Valid until",
     "included": "What's included",
-    "proName": "Premium Access",
+    "proName": "Studio Membership",
     "priceLabel": "$5.99",
     "subscribe": "Subscribe",
     "perMonth": "/ mo",
@@ -175,7 +175,7 @@
     "warning": "Trial ends in {days} day(s).",
     "subscribeCta": "Subscribe",
     "expiredTitle": "Your trial has ended",
-    "expiredSub": "Subscribe to continue your training"
+    "expiredSub": "One access to everything in Studio: programs, progress, and support."
   },
   "notFound": {
     "subtitle": "You went one step too far",

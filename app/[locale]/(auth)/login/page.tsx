@@ -29,12 +29,25 @@ export default async function LoginPage({
 
         {/* Лого */}
         <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/hnLogo.png"
-            alt="Handbalancer's Notes"
-            style={{ width: '200px', height: '200px', objectFit: 'contain', mixBlendMode: 'screen', display: 'block', margin: '0 auto' }}
-          />
+          <div style={{
+            width: '96px',
+            height: '96px',
+            borderRadius: '24px',
+            background: '#39e600',
+            color: '#000',
+            margin: '0 auto 0.75rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '2rem',
+            fontWeight: 900,
+            letterSpacing: '0.04em',
+          }}>
+            HS
+          </div>
+          <div style={{ color: '#888', fontSize: '0.85rem', fontWeight: 600 }}>
+            Handbalancer&apos;s Studio
+          </div>
         </div>
 
         {/* Заголовок */}

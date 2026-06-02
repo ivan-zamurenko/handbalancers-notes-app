@@ -9,8 +9,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Handbalancer's Notes",
-  description: 'Track your handstand, stretching and fitness progress',
+  title: "Handbalancer's Studio",
+  description: 'Your daily studio for handstand and flexibility',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
