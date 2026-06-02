@@ -135,6 +135,26 @@ export default async function RegisterPage({
             }}
           />
 
+          <label style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start', color: '#777', fontSize: '0.78rem', lineHeight: 1.45 }}>
+            <input
+              type="checkbox"
+              name="legalConsent"
+              required
+              style={{ marginTop: '0.15rem', accentColor: '#39e600' }}
+            />
+            <span>
+              {t('legalConsentPrefix')}{' '}
+              <Link href="/terms" style={{ color: '#aaa', textDecoration: 'none' }}>
+                {t('termsLink')}
+              </Link>{' '}
+              {t('legalConsentAnd')}{' '}
+              <Link href="/privacy" style={{ color: '#aaa', textDecoration: 'none' }}>
+                {t('privacyLink')}
+              </Link>
+              .
+            </span>
+          </label>
+
           <button
             type="submit"
             style={{

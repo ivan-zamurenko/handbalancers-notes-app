@@ -20,6 +20,10 @@
       "name": "Ім'я",
       "email": "Email",
       "password": "Пароль",
+      "legalConsentPrefix": "Я приймаю",
+      "legalConsentAnd": "та",
+      "termsLink": "Умови використання",
+      "privacyLink": "Політику конфіденційності",
       "submit": "Зареєструватись",
       "hasAccount": "Вже є акаунт?",
       "loginLink": "Увійти",
@@ -184,14 +188,6 @@
     "privacy": "Конфіденційність",
     "terms": "Умови",
     "copyright": "© {year} Handbalancer's Studio. Всі права захищено."
-  },
-  "legal": {
-    "privacyTitle": "Політика конфіденційності",
-    "privacyIntro": "Ми зберігаємо лише дані, необхідні для роботи тренувань, прогресу та підписки.",
-    "privacyContact": "Якщо маєш запитання щодо даних, напиши нам: support@handbalancers.studio",
-    "termsTitle": "Умови використання",
-    "termsIntro": "Використовуючи Handbalancer's Studio, ти погоджуєшся з умовами доступу до тренувальних матеріалів і підписки.",
-    "termsContact": "Для запитань щодо умов: support@handbalancers.studio"
   },
   "notFound": {
     "subtitle": "Ти зайшов далі, ніж треба",
