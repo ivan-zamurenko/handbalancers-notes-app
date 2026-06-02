@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
+import { LEGAL_PROFILE } from '@/lib/legal'
 
 type Props = {
   locale: string
@@ -28,7 +29,7 @@ export default async function Footer({ locale }: Props) {
           <a href="https://youtube.com/@handbalancersstudio" target="_blank" rel="noopener noreferrer" style={{ color: '#888', textDecoration: 'none', fontSize: '0.82rem' }}>
             {t('youtube')}
           </a>
-          <a href="mailto:support@handbalancers.studio" style={{ color: '#888', textDecoration: 'none', fontSize: '0.82rem' }}>
+          <a href={`mailto:${LEGAL_PROFILE.supportEmail}`} style={{ color: '#888', textDecoration: 'none', fontSize: '0.82rem' }}>
             {t('support')}
           </a>
           <Link href="/privacy" locale={locale} style={{ color: '#888', textDecoration: 'none', fontSize: '0.82rem' }}>
