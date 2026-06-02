@@ -33,21 +33,33 @@ export default function PricingCard({ priceId, locale }: Props) {
       border: '1px solid #1e1e1e',
       borderRadius: '16px',
       padding: '2rem',
-      maxWidth: '360px',
+      maxWidth: '420px',
     }}>
       <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem', color: '#fff' }}>
         {t('proName')}
       </h3>
+      <p style={{ color: '#888', fontSize: '0.9rem', margin: '0 0 0.9rem' }}>{t('valueSub')}</p>
       <p style={{ fontSize: '2rem', fontWeight: 800, color: '#fff', marginBottom: '0.25rem' }}>
         {t('priceLabel')}
         <span style={{ fontSize: '1rem', fontWeight: 400, color: '#888' }}> {t('perMonth')}</span>
       </p>
 
-      <ul style={{ margin: '1rem 0 1.5rem', padding: '0 0 0 1.25rem', color: '#aaa', lineHeight: '1.9' }}>
+      <ul style={{ margin: '1rem 0 1.1rem', padding: 0, listStyle: 'none', color: '#aaa', display: 'grid', gap: '0.55rem' }}>
         {(t.raw('featuresList') as string[]).map((f: string) => (
-          <li key={f}>{f}</li>
+          <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+            <span style={{ color: '#39e600', fontWeight: 700, flexShrink: 0 }}>✓</span>
+            <span>{f}</span>
+          </li>
         ))}
       </ul>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem', marginBottom: '1.2rem' }}>
+        {[t('cancelAnytime'), t('renewalInfo'), t('refundInfo')].map(item => (
+          <span key={item} style={{ fontSize: '0.72rem', color: '#777', border: '1px solid #2a2a2a', borderRadius: '8px', padding: '0.32rem 0.52rem' }}>
+            {item}
+          </span>
+        ))}
+      </div>
 
       {error && (
         <p style={{ color: '#dc2626', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{error}</p>
