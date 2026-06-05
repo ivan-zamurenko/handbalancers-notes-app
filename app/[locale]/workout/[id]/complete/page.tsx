@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { getUser } from '@/lib/db/auth'
-import { getDayContext } from '@/lib/db/dayProgress'
+import { getCurrentUser } from '@/lib/services/auth-service'
+import { getDayContext } from '@/lib/services/data'
 import { getStreak, getDayCompletionStats } from '@/lib/services/training'
 import AutoRedirect from '@/components/workout/AutoRedirect'
 
@@ -12,7 +12,7 @@ export default async function WorkoutCompletePage({
   params: Promise<{ locale: string; id: string }>
 }) {
   const { locale, id: dayId } = await params
-  const user = await getUser()
+  const user = await getCurrentUser()
   if (!user) redirect(`/${locale}/login`)
 
   const t = await getTranslations('workout')

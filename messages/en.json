@@ -77,7 +77,8 @@
     "completed": "Completed",
     "startProgram": "Start",
     "loading": "Loading...",
-    "upgrade": "Get Premium"
+    "upgrade": "Get Premium",
+    "nextDay": "Next workout"
   },
   "tracking": {
     "title": "Progress Tracking",

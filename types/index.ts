@@ -56,6 +56,16 @@ export type Day = {
   order: number
 }
 
+export type DayWithWeek = Day & {
+  weeks: Week
+}
+
+export type DayFullContext = Day & {
+  weeks: Week & {
+    programs: Program
+  }
+}
+
 export type Exercise = {
   id: string
   day_id: string
@@ -89,11 +99,6 @@ export type WorkoutLogWithExercise = WorkoutLog & {
     name_ua: string
     name_en: string
     is_handstand: boolean
-    days: {
-      weeks: {
-        programs: { title_ua: string; title_en: string } | null
-      } | null
-    } | null
   }
 }
 
@@ -101,23 +106,7 @@ export type UserProgram = {
   id: string
   user_id: string
   program_id: string
-  start_date: string
   purchased_at: string
-}
-
-// День з вкладеними даними тижня (для Home screen)
-export type DayWithWeek = Day & {
-  weeks: { order: number; title_ua: string; title_en: string }
-}
-
-// День з повним контекстом: тиждень + програма (для celebration screen)
-export type DayFullContext = Day & {
-  weeks: {
-    order: number
-    title_ua: string
-    title_en: string
-    programs: { id: string; slug: string; title_ua: string; title_en: string }
-  }
 }
 
 export type Subscription = {

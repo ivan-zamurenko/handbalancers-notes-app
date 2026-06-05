@@ -3,10 +3,10 @@
 // Повертає: { url: string } — URL для редіректу на Stripe Checkout
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
-import { getUser } from '@/lib/db/auth'
+import { getCurrentUser } from '@/lib/services/auth-service'
 
 export async function POST(req: NextRequest) {
-  const user = await getUser()
+  const user = await getCurrentUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { priceId, locale } = (await req.json()) as { priceId: string; locale?: string }

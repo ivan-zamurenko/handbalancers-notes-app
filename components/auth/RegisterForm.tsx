@@ -2,7 +2,7 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { getLocale, getTranslations } from 'next-intl/server'
-import { signUp } from '@/lib/db/auth'
+import { registerWithEmail } from '@/lib/services/auth-service'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -22,7 +22,7 @@ export async function registerAction(formData: FormData) {
 
   let authError: string | null = null
   try {
-    await signUp(email, password, name)
+    await registerWithEmail({ email, password, name })
   } catch (err: unknown) {
     authError = err instanceof Error ? err.message : 'Registration failed'
   }

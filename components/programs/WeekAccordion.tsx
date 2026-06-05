@@ -26,6 +26,7 @@ interface WeekAccordionProps {
   programSlug: string
   labels: {
     completed: string
+    nextDay?: string
     paid: string
   }
 }
@@ -145,7 +146,6 @@ export default function WeekAccordion({
                           background: 'rgba(13,13,13,0.65)',
                         }}>
                           <span style={{
-                            fontSize: '0.68rem',
                             fontWeight: 700,
                             color: '#555',
                             fontSize: '0.75rem',

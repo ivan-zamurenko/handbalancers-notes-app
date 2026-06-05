@@ -1,8 +1,8 @@
 import { redirect, notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { getUser } from '@/lib/db/auth'
-import { getDayByPath } from '@/lib/db/dayProgress'
+import { getCurrentUser } from '@/lib/services/auth-service'
+import { getDayByPath } from '@/lib/services/data'
 import { getStreak, getDayCompletionStats } from '@/lib/services/training'
 import AutoRedirect from '@/components/workout/AutoRedirect'
 
@@ -22,7 +22,7 @@ export default async function WorkoutCompletePage({
   const dayOrder = parsePart(day, 'd')
   if (!weekOrder || !dayOrder) notFound()
 
-  const user = await getUser()
+  const user = await getCurrentUser()
   if (!user) redirect(`/${locale}/login`)
 
   const t = await getTranslations('workout')

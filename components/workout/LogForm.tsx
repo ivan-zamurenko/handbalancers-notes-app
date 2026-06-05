@@ -26,7 +26,7 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minHeight: '56px', borderBottom: '1px solid #1e1e1e' }}>
-      <span style={{ color: '#555', width: '4.5rem', fontSize: '0.75rem', fontWeight: 500, flexShrink: 0 }}>
+      <span style={{ color: '#888', width: '4.5rem', fontSize: '0.75rem', fontWeight: 500, flexShrink: 0 }}>
         {t('set')} {index + 1}
       </span>
       {editing ? (
@@ -65,8 +65,8 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
         </>
       ) : (
         <>
-          <span style={{ flex: 1, fontWeight: 700, color: '#39e600', fontSize: '1.1rem', textAlign: 'center' }}>
-            {saved} <span style={{ fontSize: '0.78rem', fontWeight: 500, opacity: 0.7 }}>{t('reps')}</span>
+          <span style={{ flex: 1, fontWeight: 700, color: '#fff', fontSize: '1.1rem', textAlign: 'center' }}>
+            {saved} <span style={{ fontSize: '0.78rem', fontWeight: 500, opacity: 0.4 }}>{t('reps')}</span>
           </span>
           <button
             type="button"
@@ -88,6 +88,8 @@ export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Pr
   const t = useTranslations('workout')
   const setsKey = `${SETS_STORAGE_KEY_PREFIX}${exerciseId}`
   const [extraOpen, setExtraOpen] = useState(false)
+
+  const [activeTimerIndex, setActiveTimerIndex] = useState<number | null>(null)
 
   const [sets, setSets] = useState<(number | undefined)[]>(() => {
     if (typeof window === 'undefined') return Array(targetSets).fill(undefined)
@@ -134,8 +136,10 @@ export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Pr
               key={i}
               label={`${t('set')} ${i + 1}`}
               savedValue={val}
-              onSave={(secs) => saveSet(i, secs)}
-              onEdit={() => saveSet(i, undefined)}
+              onSave={(secs) => { saveSet(i, secs); setActiveTimerIndex(null) }}
+              onEdit={() => { saveSet(i, undefined); setActiveTimerIndex(null) }}
+              onStart={() => setActiveTimerIndex(i)}
+              isBlocked={activeTimerIndex !== null && activeTimerIndex !== i}
             />
           ) : (
             <RepsSetRow key={i} index={i} saved={val} onSave={(v) => saveSet(i, v)} />

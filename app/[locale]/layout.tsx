@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { headers } from 'next/headers'
 import { routing } from '@/i18n/routing'
-import { getUser } from '@/lib/db/auth'
+import { getCurrentUser } from '@/lib/services/auth-service'
 import { getTrialStatus } from '@/lib/services/subscriptions'
 import Navbar from '@/components/layout/Navbar'
 import TrialBanner from '@/components/layout/TrialBanner'
@@ -21,13 +21,18 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) notFound()
 
   const messages = await getMessages()
-  const user = await getUser()
+  const user = await getCurrentUser()
   const trialStatus = user ? await getTrialStatus(user.id) : null
 
   // Визначаємо поточний шлях щоб не показувати paywall на /billing
   const h = await headers()
   const pathname = h.get('x-pathname') ?? ''
   const isBillingPage = pathname.startsWith('/billing')
+  const isAuthPage =
+    pathname === '/login' ||
+    pathname === '/register' ||
+    pathname.endsWith('/login') ||
+    pathname.endsWith('/register')
 
   // Якщо trial вичерпано і немає підписки — показуємо paywall замість контенту
   const showPaywall = !!trialStatus && !trialStatus.hasAccess && !isBillingPage
@@ -36,7 +41,7 @@ export default async function LocaleLayout({
     const t = await getTranslations('trial')
     return (
       <NextIntlClientProvider messages={messages}>
-        {user && <Navbar />}
+        {user && !isAuthPage && <Navbar />}
         <main style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center' }}>
           <p style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🔒</p>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem', color: '#fff' }}>
@@ -52,19 +57,21 @@ export default async function LocaleLayout({
             {t('subscribeCta')} →
           </Link>
         </main>
-        <Footer locale={locale} />
+        {!isAuthPage && <Footer locale={locale} />}
       </NextIntlClientProvider>
     )
   }
 
   return (
     <NextIntlClientProvider messages={messages}>
-      {user && <Navbar />}
-      {trialStatus?.showWarning && trialStatus.trialDaysLeft !== null && (
-        <TrialBanner daysLeft={trialStatus.trialDaysLeft} locale={locale} />
-      )}
-      {children}
-      <Footer locale={locale} />
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        {user && !isAuthPage && <Navbar />}
+        {trialStatus?.showWarning && trialStatus.trialDaysLeft !== null && (
+          <TrialBanner daysLeft={trialStatus.trialDaysLeft} locale={locale} />
+        )}
+        <div style={{ flex: 1 }}>{children}</div>
+        {!isAuthPage && <Footer locale={locale} />}
+      </div>
     </NextIntlClientProvider>
   )
 }

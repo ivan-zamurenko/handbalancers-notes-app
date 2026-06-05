@@ -1,9 +1,16 @@
 import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
+import FaqBlock from '@/components/billing/blocks/FaqBlock'
+import IncludedFeaturesBlock from '@/components/billing/blocks/IncludedFeaturesBlock'
+import ValueIntroBlock from '@/components/billing/blocks/ValueIntroBlock'
 import PricingCard from '@/components/billing/PricingCard'
 import SubscriptionStatus from '@/components/billing/SubscriptionStatus'
-import { getUser } from '@/lib/db/auth'
-import { getSubscription } from '@/lib/db/subscriptions'
+import { getCurrentUser } from '@/lib/services/auth-service'
+import { getUserSubscription } from '@/lib/services/subscriptions'
+import { getSubscriptionPriceId } from '@/lib/services/billing-config'
+
+type ActiveBlock = 'includedFeatures'
+type InactiveBlock = 'valueIntro' | 'pricingCard' | 'faq'
 
 export default async function BillingPage({
   params,
@@ -15,19 +22,34 @@ export default async function BillingPage({
   const { locale } = await params
   const { success, canceled } = await searchParams
 
-  const user = await getUser()
+  const user = await getCurrentUser()
   if (!user) redirect(`/${locale}/login`)
 
   const t = await getTranslations('billing')
-  const subscription = await getSubscription(user.id)
-  const priceId = process.env.STRIPE_PRICE_ID!
+  const subscription = await getUserSubscription(user.id)
+  const priceId = getSubscriptionPriceId()
 
   const isActive = subscription?.status === 'active' || subscription?.status === 'trialing'
+  const features = t.raw('featuresList') as string[]
   const faqItems = [
     { q: t('faq1q'), a: t('faq1a') },
     { q: t('faq2q'), a: t('faq2a') },
     { q: t('faq3q'), a: t('faq3a') },
   ]
+  const activeBlocksOrder: ActiveBlock[] = ['includedFeatures']
+  const inactiveBlocksOrder: InactiveBlock[] = ['valueIntro', 'pricingCard', 'faq']
+
+  // Pattern: Module / LEGO
+  const activeBlocks: Record<ActiveBlock, JSX.Element> = {
+    includedFeatures: <IncludedFeaturesBlock title={t('included')} features={features} />,
+  }
+
+  // Pattern: Module / LEGO
+  const inactiveBlocks: Record<InactiveBlock, JSX.Element> = {
+    valueIntro: <ValueIntroBlock headline={t('valueHeadline')} description={t('noSubscription')} />,
+    pricingCard: <PricingCard priceId={priceId} locale={locale} />,
+    faq: <FaqBlock title={t('faqTitle')} items={faqItems} />,
+  }
 
   return (
     <main style={{ maxWidth: '480px', margin: '0 auto', padding: '2rem 1rem' }}>
@@ -58,40 +80,13 @@ export default async function BillingPage({
       <SubscriptionStatus subscription={subscription} locale={locale} />
 
       {isActive ? (
-        <div style={{ marginTop: '1.5rem' }}>
-          <p style={{ fontSize: '0.7rem', fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.75rem' }}>
-            {t('included')}
-          </p>
-          <ul style={{ padding: 0, margin: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-            {(t.raw('featuresList') as string[]).map((f: string) => (
-              <li key={f} style={{ fontSize: '0.875rem', color: '#888', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <span style={{ color: '#39e600', fontWeight: 700, flexShrink: 0 }}>✓</span>
-                {f}
-              </li>
-            ))}
-          </ul>
-        </div>
+        activeBlocksOrder.map(block => (
+          <div key={block}>{activeBlocks[block]}</div>
+        ))
       ) : (
-        <>
-          <section style={{ marginBottom: '1rem' }}>
-            <p style={{ fontSize: '1.1rem', fontWeight: 650, color: '#fff', margin: '0 0 0.35rem' }}>{t('valueHeadline')}</p>
-            <p style={{ color: '#888', fontSize: '0.9rem', margin: 0 }}>{t('noSubscription')}</p>
-          </section>
-
-          <PricingCard priceId={priceId} locale={locale} />
-
-          <section style={{ marginTop: '1.4rem' }}>
-            <h3 style={{ color: '#aaa', fontSize: '0.82rem', fontWeight: 600, margin: '0 0 0.65rem' }}>{t('faqTitle')}</h3>
-            <div style={{ display: 'grid', gap: '0.6rem' }}>
-              {faqItems.map(item => (
-                <div key={item.q} style={{ background: '#141414', border: '1px solid #1e1e1e', borderRadius: '10px', padding: '0.75rem 0.85rem' }}>
-                  <p style={{ color: '#fff', fontSize: '0.86rem', fontWeight: 600, margin: '0 0 0.3rem' }}>{item.q}</p>
-                  <p style={{ color: '#777', fontSize: '0.82rem', lineHeight: 1.55, margin: 0 }}>{item.a}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        </>
+        inactiveBlocksOrder.map(block => (
+          <div key={block}>{inactiveBlocks[block]}</div>
+        ))
       )}
     </main>
   )

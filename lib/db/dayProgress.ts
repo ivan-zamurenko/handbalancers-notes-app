@@ -98,6 +98,20 @@ export async function getDayByPath(
   return (day as unknown as DayFullContext) ?? null
 }
 
+/** Повертає повний контекст дня за id (day + week + program). */
+export async function getDayContext(dayId: string): Promise<DayFullContext | null> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('days')
+    .select('*, weeks!inner(order, title_ua, title_en, programs!inner(id, slug, title_ua, title_en))')
+    .eq('id', dayId)
+    .single()
+
+  if (error?.code === 'PGRST116') return null
+  if (error) throw error
+  return (data as unknown as DayFullContext) ?? null
+}
+
 /** Повертає дати (ISO-рядки) всіх виконаних днів користувача, відсортованих від новішого. */
 export async function getCompletedDates(userId: string): Promise<string[]> {
   const supabase = await createClient()

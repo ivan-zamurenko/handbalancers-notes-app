@@ -1,7 +1,6 @@
 'use client'
 // Pattern: Pure Component — статистика без мутацій, обраховується з переданих даних
 import { useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
 import type { Exercise, WorkoutLogWithExercise } from '@/types'
 
 type Props = {
@@ -34,6 +33,32 @@ function computeHandstandToday(logs: WorkoutLogWithExercise[]): number {
 
 export default function ExerciseStats({ favorites, logs, locale }: Props) {
   const t = useTranslations('tracking')
+
+  // Унікальні вправи з логів — favorites першими, потім решта
+  const favoriteIds = new Set(favorites.map(f => f.id))
+  const allExercises: { id: string; name_ua: string; name_en: string; target_hold: number | null }[] = []
+  const seen = new Set<string>()
+
+  // 1. Улюблені першими (зберігаємо порядок)
+  for (const fav of favorites) {
+    if (!seen.has(fav.id)) {
+      allExercises.push(fav)
+      seen.add(fav.id)
+    }
+  }
+  // 2. Решта — з логів
+  for (const log of logs) {
+    if (!seen.has(log.exercise_id)) {
+      allExercises.push({
+        id: log.exercise_id,
+        name_ua: log.exercises.name_ua,
+        name_en: log.exercises.name_en,
+        target_hold: log.hold_sets?.length ? 1 : null,  // визначаємо тип по наявності hold_sets
+      })
+      seen.add(log.exercise_id)
+    }
+  }
+
   const handstandSec = computeHandstandToday(logs)
   const handstandMin = Math.floor(handstandSec / 60)
   const handstandRemSec = handstandSec % 60
@@ -45,59 +70,48 @@ export default function ExerciseStats({ favorites, logs, locale }: Props) {
       {/* Handstand-лічильник за сьогодні */}
       {handstandSec > 0 && (
         <div style={{
-          background: 'rgba(57, 230, 0, 0.07)',
-          border: '1px solid rgba(57, 230, 0, 0.2)',
-          borderRadius: '10px',
-          padding: '0.75rem 1rem',
-          marginBottom: '1rem',
-          fontWeight: 'bold',
+          background: 'rgba(57,230,0,0.07)',
+          borderRadius: '12px',
+          padding: '0.875rem 1rem',
+          marginBottom: '1.25rem',
+          fontSize: '0.875rem',
           color: '#39e600',
+          fontWeight: 600,
         }}>
           {t('handstandToday')}: {handstandMin > 0 ? `${handstandMin} ${t('min')} ` : ''}{handstandRemSec} {t('sec')}
         </div>
       )}
 
-      {!favorites.length && (
-        <div style={{
-          border: '1px solid #1e1e1e',
-          borderRadius: '12px',
-          padding: '2rem 1.5rem',
-          textAlign: 'center',
-          background: '#0f0f0f',
-        }}>
-          <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>—</div>
-          <p style={{ color: '#fff', fontWeight: 600, marginBottom: '0.35rem', fontSize: '0.95rem' }}>{t('noStats')}</p>
-          <p style={{ color: '#555', fontSize: '0.85rem', marginBottom: '1.25rem', lineHeight: 1.5 }}>{t('noStatsDesc')}</p>
-          <Link href="/dashboard" style={{ color: '#39e600', fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none' }}>
-            {t('noStatsCta')}
-          </Link>
-        </div>
+      {!allExercises.length && (
+        <p style={{ color: '#888' }}>{t('noStats')}</p>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {favorites.map(ex => {
+        {allExercises.map(ex => {
           const name = locale === 'en' ? ex.name_en : ex.name_ua
           const { totalSessions, bestHold, avgReps } = computeStats(ex.id, logs)
           if (totalSessions === 0) return null
           const isHold = ex.target_hold !== null
+          const isFav = favoriteIds.has(ex.id)
 
           return (
             <div key={ex.id} style={{
               border: '1px solid #1e1e1e',
-              borderRadius: '10px',
-              padding: '0.875rem',
+              borderRadius: '12px',
+              padding: '1rem',
               background: '#141414',
             }}>
-              <div style={{ fontWeight: 600, marginBottom: '0.5rem', color: '#fff' }}>
+              <div style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.95rem', color: '#fff' }}>
+                {isFav && <span style={{ color: '#39e600', marginRight: '0.4rem', fontSize: '0.8rem' }}>★</span>}
                 {name}
               </div>
-              <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.9rem', color: '#888' }}>
-                <span>{t('total')}: <b>{totalSessions}</b></span>
+              <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.8rem' }}>
+                <span style={{ color: '#555' }}>{t('total')}: <span style={{ color: '#888', fontWeight: 600 }}>{totalSessions}</span></span>
                 {isHold && bestHold !== null && (
-                  <span>{t('best')}: <b>{bestHold} {t('sec')}</b></span>
+                  <span style={{ color: '#555' }}>{t('best')}: <span style={{ color: '#ccc', fontWeight: 600 }}>{bestHold} {t('sec')}</span></span>
                 )}
                 {!isHold && avgReps !== null && (
-                  <span>{t('avg')}: <b>{avgReps} {t('reps')}</b></span>
+                  <span style={{ color: '#555' }}>{t('avg')}: <span style={{ color: '#ccc', fontWeight: 600 }}>{avgReps} {t('reps')}</span></span>
                 )}
               </div>
             </div>

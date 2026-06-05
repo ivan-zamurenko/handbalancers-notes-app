@@ -8,10 +8,12 @@ type Props = {
   label: string
   savedValue?: number
   onSave: (seconds: number) => void
-  onEdit?: () => void  // скидає savedValue назовні
+  onEdit?: () => void
+  onStart?: () => void   // сповіщає LogForm що цей таймер запустився
+  isBlocked?: boolean    // інший таймер зараз активний
 }
 
-export default function Timer({ label, savedValue, onSave, onEdit }: Props) {
+export default function Timer({ label, savedValue, onSave, onEdit, onStart, isBlocked }: Props) {
   const t = useTranslations('workout')
   const [state, setState] = useState<TimerState>('idle')
   const [seconds, setSeconds] = useState(0)
@@ -29,8 +31,8 @@ export default function Timer({ label, savedValue, onSave, onEdit }: Props) {
   if (savedValue !== undefined) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minHeight: '56px', borderBottom: '1px solid #1e1e1e' }}>
-        <span style={{ color: '#555', width: '4.5rem', fontSize: '0.75rem', fontWeight: 500, flexShrink: 0 }}>{label}</span>
-        <span style={{ flex: 1, fontWeight: 700, color: '#39e600', fontSize: '1.1rem', textAlign: 'center' }}>{savedValue}s</span>
+        <span style={{ color: '#888', width: '4.5rem', fontSize: '0.75rem', fontWeight: 500, flexShrink: 0 }}>{label}</span>
+        <span style={{ flex: 1, fontWeight: 700, color: '#fff', fontSize: '1.1rem', textAlign: 'center' }}>{savedValue}s</span>
         <button
           type="button"
           onClick={onEdit}
@@ -49,7 +51,7 @@ export default function Timer({ label, savedValue, onSave, onEdit }: Props) {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minHeight: '56px', borderBottom: '1px solid #1e1e1e' }}>
-      <span style={{ color: '#555', width: '4.5rem', fontSize: '0.75rem', fontWeight: 500, flexShrink: 0 }}>{label}</span>
+      <span style={{ color: '#888', width: '4.5rem', fontSize: '0.75rem', fontWeight: 500, flexShrink: 0 }}>{label}</span>
 
       <span style={{ flex: 1, fontWeight: 700, fontSize: '1.3rem', textAlign: 'center' }}>
         {seconds}s
@@ -57,8 +59,14 @@ export default function Timer({ label, savedValue, onSave, onEdit }: Props) {
 
       {state === 'idle' && (
         <button
-          onClick={() => setState('running')}
-          style={{ padding: '0.5rem 1.25rem', borderRadius: '8px', border: 'none', background: '#39e600', color: '#000', cursor: 'pointer', fontWeight: 700, flexShrink: 0 }}
+          onClick={() => { onStart?.(); setState('running') }}
+          disabled={isBlocked}
+          style={{
+            padding: '0.5rem 1.25rem', borderRadius: '8px', border: 'none', fontWeight: 700, flexShrink: 0,
+            background: isBlocked ? '#1e1e1e' : '#39e600',
+            color: isBlocked ? '#444' : '#000',
+            cursor: isBlocked ? 'not-allowed' : 'pointer',
+          }}
         >
           {t('start')}
         </button>
@@ -83,7 +91,7 @@ export default function Timer({ label, savedValue, onSave, onEdit }: Props) {
           </button>
           <button
             onClick={() => { setSeconds(0); setState('idle') }}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#555', fontSize: '0.9rem', padding: '0.4rem 0.5rem', flexShrink: 0 }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', fontSize: '0.82rem', padding: '0.4rem 0.5rem', flexShrink: 0 }}
           >
             {t('again')}
           </button>

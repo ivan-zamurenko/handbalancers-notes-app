@@ -50,8 +50,8 @@ export async function proxy(request: NextRequest) {
   // Run next-intl locale routing
   const intlResponse = intlMiddleware(request)
 
-  // Forward current path so layout can read it for trial checks
-  intlResponse.headers.set('x-pathname', path)
+  // Expose pathname so server layouts can read it
+  intlResponse.headers.set('x-pathname', pathname)
 
   // Forward any refreshed Supabase cookies to the intl response
   supabaseResponse.cookies.getAll().forEach(({ name, value }) => {
@@ -62,6 +62,6 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|api|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|api).*)'],
 }
 

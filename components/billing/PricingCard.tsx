@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { createSubscriptionCheckoutSession } from '@/lib/services/billing-client'
 
 type Props = { priceId: string; locale: string }
 
@@ -13,14 +14,8 @@ export default function PricingCard({ priceId, locale }: Props) {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId, locale }),
-      })
-      const data = await res.json() as { url?: string; error?: string }
-      if (!res.ok || !data.url) throw new Error(data.error ?? 'Unknown error')
-      window.location.href = data.url
+      const url = await createSubscriptionCheckoutSession({ priceId, locale })
+      window.location.href = url
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error')
       setLoading(false)

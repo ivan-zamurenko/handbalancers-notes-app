@@ -4,7 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import { stripe } from '@/lib/stripe'
-import { upsertSubscription, updateSubscriptionStatus } from '@/lib/db/subscriptions'
+import { upsertUserSubscription, updateUserSubscriptionStatus } from '@/lib/services/subscriptions'
 import type { SubscriptionStatus } from '@/types'
 
 export async function POST(req: NextRequest) {
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const item0 = sub.items.data[0] as any
       const periodEnd = (item0?.current_period_end ?? sub.current_period_end) as number
-      await upsertSubscription({
+      await upsertUserSubscription({
         user_id: userId,
         stripe_customer_id: sub.customer as string,
         stripe_subscription_id: sub.id,
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const item0 = sub.items.data[0] as any
     const periodEnd = (item0?.current_period_end ?? sub.current_period_end) as number
-    await updateSubscriptionStatus(
+    await updateUserSubscriptionStatus(
       sub.id,
       sub.status as SubscriptionStatus,
       new Date(periodEnd * 1000).toISOString(),

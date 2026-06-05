@@ -1,6 +1,12 @@
 // Pattern: Service Layer — бізнес-логіка підписок та trial-доступу
-import { getProfile } from '@/lib/db/auth'
-import { getSubscription } from '@/lib/db/subscriptions'
+import { getCurrentUserProfile } from '@/lib/services/auth-service'
+import {
+  getSubscription as getSubscriptionRepo,
+  hasActiveAccess as hasActiveAccessRepo,
+  upsertSubscription as upsertSubscriptionRepo,
+  updateSubscriptionStatus as updateSubscriptionStatusRepo,
+} from '@/lib/db/subscriptions'
+import type { Subscription, SubscriptionStatus } from '@/types'
 
 const DAY_MS = 86_400_000
 
@@ -17,12 +23,12 @@ export type TrialStatus = {
  * trial вичерпано та немає підписки → hasAccess = false.
  */
 export async function getTrialStatus(userId: string): Promise<TrialStatus> {
-  const sub = await getSubscription(userId)
+  const sub = await getSubscriptionRepo(userId)
   if (sub && (sub.status === 'active' || sub.status === 'trialing')) {
     return { hasAccess: true, trialDaysLeft: null, showWarning: false }
   }
 
-  const profile = await getProfile(userId)
+  const profile = await getCurrentUserProfile(userId)
   if (!profile?.trial_ends_at) {
     return { hasAccess: false, trialDaysLeft: 0, showWarning: false }
   }
@@ -35,4 +41,34 @@ export async function getTrialStatus(userId: string): Promise<TrialStatus> {
     trialDaysLeft: daysLeft,
     showWarning: daysLeft > 0 && daysLeft <= 2,
   }
+}
+
+// Pattern: Facade
+export async function getUserSubscription(userId: string): Promise<Subscription | null> {
+  return getSubscriptionRepo(userId)
+}
+
+// Pattern: Facade
+export async function userHasActiveAccess(userId: string): Promise<boolean> {
+  return hasActiveAccessRepo(userId)
+}
+
+// Pattern: Facade
+export async function upsertUserSubscription(payload: {
+  user_id: string
+  stripe_customer_id: string
+  stripe_subscription_id: string
+  status: SubscriptionStatus
+  current_period_end: string
+}): Promise<void> {
+  await upsertSubscriptionRepo(payload)
+}
+
+// Pattern: Facade
+export async function updateUserSubscriptionStatus(
+  stripeSubscriptionId: string,
+  status: SubscriptionStatus,
+  currentPeriodEnd: string,
+): Promise<void> {
+  await updateSubscriptionStatusRepo(stripeSubscriptionId, status, currentPeriodEnd)
 }

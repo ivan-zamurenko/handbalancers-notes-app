@@ -1,8 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
-import { getUser } from '@/lib/db/auth'
-import { getCategories } from '@/lib/db/categories'
-import { getAllPrograms, getAllEnrollments, getCompletedProgramIds } from '@/lib/db/programs'
+import { getCurrentUser } from '@/lib/services/auth-service'
+import { getCategories, getAllPrograms, getAllEnrollments, getCompletedProgramIds } from '@/lib/services/data'
 import ProgramCard from '@/components/programs/ProgramCard'
 import ProgramShelf from '@/components/programs/ProgramShelf'
 
@@ -12,7 +11,7 @@ export default async function ProgramsPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const user = await getUser()
+  const user = await getCurrentUser()
   if (!user) redirect(`/${locale}/login`)
 
   const t = await getTranslations('programs')

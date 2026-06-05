@@ -1,8 +1,6 @@
 import { redirect, notFound } from 'next/navigation'
-import { getUser } from '@/lib/db/auth'
-import { getExercisesByDay } from '@/lib/db/exercises'
-import { getFavoriteExercises } from '@/lib/db/favorites'
-import { getDayByPath } from '@/lib/db/dayProgress'
+import { getCurrentUser } from '@/lib/services/auth-service'
+import { getExercisesByDay, getFavoriteExercises, getDayByPath } from '@/lib/services/data'
 import WorkoutDay from '@/components/workout/WorkoutDay'
 
 /** Парсить сегмент виду `w1`/`d3`. Повертає число або null. */
@@ -22,7 +20,7 @@ export default async function WorkoutSessionPage({
   const dayOrder = parsePart(day, 'd')
   if (!weekOrder || !dayOrder) notFound()
 
-  const user = await getUser()
+  const user = await getCurrentUser()
   if (!user) redirect(`/${locale}/login`)
 
   const dayContext = await getDayByPath(slug, weekOrder, dayOrder)
@@ -37,14 +35,13 @@ export default async function WorkoutSessionPage({
   const favoriteIds = new Set(favorites.map(f => f.id))
 
   return (
-    <main style={{ padding: '1rem', paddingBottom: '5rem' }}>
+    <main style={{ padding: '1.5rem 1.25rem 6rem', maxWidth: '520px', margin: '0 auto' }}>
       <WorkoutDay
         dayId={dayContext.id}
         completeHref={`/programs/${slug}/${week}/${day}/complete`}
         exercises={exercises}
         favoriteIds={[...favoriteIds]}
         locale={locale}
-        dayContext={dayContext}
       />
     </main>
   )

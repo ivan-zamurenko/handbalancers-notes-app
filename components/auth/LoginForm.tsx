@@ -2,17 +2,17 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { getLocale } from 'next-intl/server'
-import { signIn, signOut } from '@/lib/db/auth'
+import { loginWithEmail, logoutCurrentUser } from '@/lib/services/auth-service'
 
 export async function loginAction(formData: FormData) {
   const locale = await getLocale()
   let authError: string | null = null
 
   try {
-    await signIn(
-      formData.get('email') as string,
-      formData.get('password') as string,
-    )
+    await loginWithEmail({
+      email: formData.get('email') as string,
+      password: formData.get('password') as string,
+    })
   } catch (err: unknown) {
     authError = err instanceof Error ? err.message : 'Login failed'
   }
@@ -24,7 +24,7 @@ export async function loginAction(formData: FormData) {
 }
 
 export async function logoutAction(): Promise<void> {
-  await signOut()
+  await logoutCurrentUser()
   revalidatePath('/', 'layout')
   redirect('/')
 }

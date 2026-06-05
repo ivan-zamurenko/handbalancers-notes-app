@@ -88,12 +88,29 @@ export type CreateLogInput = {
   note?: string
 }
 
+function normalizeVideoUrl(videoUrl?: string | null): string | null {
+  if (!videoUrl?.trim()) return null
+
+  const parsed = new URL(videoUrl.trim())
+  if (!['http:', 'https:'].includes(parsed.protocol)) {
+    throw new Error('Invalid video URL protocol')
+  }
+
+  return parsed.toString()
+}
+
 /** Зберігає результат тренування у БД. Бізнес-логіка (авто-відмітка дня) — в lib/services/training.ts. */
 export async function createLog(userId: string, input: CreateLogInput): Promise<WorkoutLog> {
   const supabase = await createClient()
+  const payload = {
+    ...input,
+    user_id: userId,
+    video_url: normalizeVideoUrl(input.video_url),
+  }
+
   const { data, error } = await supabase
     .from('workout_logs')
-    .insert({ ...input, user_id: userId })
+    .insert(payload)
     .select()
     .single()
 
@@ -111,9 +128,14 @@ export type UpdateLogInput = {
 /** Оновлює запис тренування. Перевіряє що запис належить userId. */
 export async function updateLog(logId: string, userId: string, input: UpdateLogInput): Promise<void> {
   const supabase = await createClient()
+  const payload = {
+    ...input,
+    video_url: normalizeVideoUrl(input.video_url),
+  }
+
   const { error } = await supabase
     .from('workout_logs')
-    .update(input)
+    .update(payload)
     .eq('id', logId)
     .eq('user_id', userId)  // security: тільки свої записи
 

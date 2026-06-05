@@ -5,12 +5,6 @@ import type { WorkoutLogWithExercise } from '@/types'
 const CELL = 11
 const GAP = 3
 
-/** Повертає YYYY-MM-DD рядок за локальним часом (без зсуву UTC). */
-function toLocalDateStr(d: Date): string {
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
-}
-
 function getColor(count: number): string {
   if (count === 0) return '#1a1a1a'
   if (count <= 2) return 'rgba(57, 230, 0, 0.2)'
@@ -53,7 +47,7 @@ export default function WorkoutHeatmap({ logs, locale }: { logs: WorkoutLogWithE
     for (let w = 0; w < weeksCount; w++) {
       const week: { date: string; count: number }[] = []
       for (let d = 0; d < 7; d++) {
-        const date = toLocalDateStr(cur)
+        const date = cur.toISOString().slice(0, 10)
         const count = countByDate[date] ?? 0
         const month = cur.getMonth()
 
@@ -105,7 +99,7 @@ export default function WorkoutHeatmap({ logs, locale }: { logs: WorkoutLogWithE
         </div>
       </div>
 
-      <div className="shelf-scroll" style={{ overflowX: 'auto', paddingBottom: '0.25rem' }}>
+      <div style={{ overflowX: 'auto', paddingBottom: '0.25rem' }}>
         <div style={{ display: 'inline-flex', gap: 0 }}>
 
           {/* Мітки днів */}

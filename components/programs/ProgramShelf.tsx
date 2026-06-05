@@ -53,7 +53,7 @@ export default async function ProgramShelf({ programs, locale, completedIds }: P
             </p>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem' }}>
               <span style={{ fontSize: '0.75rem', color: '#555' }}>
-                {levelLabel} · {program.is_free ? t('free') : t('paid')}
+                {levelLabel} · <span style={{ color: program.is_free ? '#555' : '#c8a84b' }}>{program.is_free ? t('free') : t('paid')}</span>
               </span>
               {isCompleted && <span style={{ fontSize: '0.75rem', color: '#39e600' }}>✓</span>}
             </div>
