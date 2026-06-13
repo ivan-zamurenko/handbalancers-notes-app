@@ -63,61 +63,41 @@ export default function ExerciseStats({ favorites, logs, locale }: Props) {
   const handstandMin = Math.floor(handstandSec / 60)
   const handstandRemSec = handstandSec % 60
 
+  const exercisesWithData = allExercises.filter(ex => computeStats(ex.id, logs).totalSessions > 0)
+  if (!exercisesWithData.length) return null
+
   return (
     <div style={{ marginBottom: '2rem' }}>
-      <h2>{t('statsTitle')}</h2>
+      <p style={{ margin: '0 0 0.5rem', fontSize: '0.75rem', fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+        {t('statsTitle')}
+      </p>
+      <div style={{ borderBottom: '1px solid #1e1e1e', marginBottom: '0.75rem' }} />
 
-      {/* Handstand-лічильник за сьогодні */}
-      {handstandSec > 0 && (
-        <div style={{
-          background: 'rgba(57,230,0,0.07)',
-          borderRadius: '12px',
-          padding: '0.875rem 1rem',
-          marginBottom: '1.25rem',
-          fontSize: '0.875rem',
-          color: '#39e600',
-          fontWeight: 600,
-        }}>
-          {t('handstandToday')}: {handstandMin > 0 ? `${handstandMin} ${t('min')} ` : ''}{handstandRemSec} {t('sec')}
-        </div>
-      )}
+      {/* Exercise rows */}
+      {exercisesWithData.map((ex, i) => {
+        const name = locale === 'en' ? ex.name_en : ex.name_ua
+        const { totalSessions, bestHold, avgReps } = computeStats(ex.id, logs)
+        const isHold = ex.target_hold !== null
+        const isFav = favoriteIds.has(ex.id)
+        const isLast = i === exercisesWithData.length - 1
 
-      {!allExercises.length && (
-        <p style={{ color: '#888' }}>{t('noStats')}</p>
-      )}
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {allExercises.map(ex => {
-          const name = locale === 'en' ? ex.name_en : ex.name_ua
-          const { totalSessions, bestHold, avgReps } = computeStats(ex.id, logs)
-          if (totalSessions === 0) return null
-          const isHold = ex.target_hold !== null
-          const isFav = favoriteIds.has(ex.id)
-
-          return (
-            <div key={ex.id} style={{
-              border: '1px solid #1e1e1e',
-              borderRadius: '12px',
-              padding: '1rem',
-              background: '#141414',
-            }}>
-              <div style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.95rem', color: '#fff' }}>
-                {isFav && <span style={{ color: '#39e600', marginRight: '0.4rem', fontSize: '0.8rem' }}>★</span>}
-                {name}
-              </div>
-              <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.8rem' }}>
-                <span style={{ color: '#555' }}>{t('total')}: <span style={{ color: '#888', fontWeight: 600 }}>{totalSessions}</span></span>
-                {isHold && bestHold !== null && (
-                  <span style={{ color: '#555' }}>{t('best')}: <span style={{ color: '#ccc', fontWeight: 600 }}>{bestHold} {t('sec')}</span></span>
-                )}
-                {!isHold && avgReps !== null && (
-                  <span style={{ color: '#555' }}>{t('avg')}: <span style={{ color: '#ccc', fontWeight: 600 }}>{avgReps} {t('reps')}</span></span>
-                )}
-              </div>
+        return (
+          <div key={ex.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.6rem 0', borderBottom: isLast ? 'none' : '1px solid #1a1a1a' }}>
+            <span style={{ fontSize: '0.875rem', color: '#ccc' }}>
+              {isFav && <span style={{ color: '#39e600', marginRight: '0.3rem', fontSize: '0.7rem' }}>★</span>}
+              {name}
+            </span>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              {isHold && bestHold !== null && (
+                <span style={{ fontSize: '0.8rem', color: '#888' }}>{t('best')}: <span style={{ color: '#ccc', fontWeight: 600 }}>{bestHold} {t('sec')}</span></span>
+              )}
+              {!isHold && avgReps !== null && (
+                <span style={{ fontSize: '0.8rem', color: '#888' }}>{t('avg')}: <span style={{ color: '#ccc', fontWeight: 600 }}>{avgReps} {t('reps')}</span></span>
+              )}
             </div>
-          )
-        })}
-      </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

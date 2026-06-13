@@ -144,9 +144,9 @@ export default function WorkoutHeatmap({ logs, locale }: { logs: WorkoutLogWithE
             <div style={{ display: 'flex', gap: GAP }}>
               {weeks.map((week, wi) => (
                 <div key={wi} style={{ display: 'flex', flexDirection: 'column', gap: GAP }}>
-                  {week.map(cell => (
+                  {week.map((cell, di) => (
                     <div
-                      key={cell.date}
+                      key={`${wi}-${di}`}
                       title={cell.count > 0 ? `${cell.date}: ${cell.count}` : cell.date}
                       style={{
                         width: CELL,

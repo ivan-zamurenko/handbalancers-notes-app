@@ -124,3 +124,21 @@ export async function getCompletedDates(userId: string): Promise<string[]> {
   if (error) throw error
   return (data ?? []).map(r => r.completed_at)
 }
+
+/** Повертає Set program_id програм де юзер виконав хоча б один день сьогодні. */
+export async function getDoneProgramIdsToday(userId: string): Promise<Set<string>> {
+  const supabase = await createClient()
+  const todayStart = new Date()
+  todayStart.setHours(0, 0, 0, 0)
+
+  const { data, error } = await supabase
+    .from('user_day_progress')
+    .select('day_id, days!inner(week_id, weeks!inner(program_id))')
+    .eq('user_id', userId)
+    .gte('completed_at', todayStart.toISOString())
+
+  if (error) throw error
+  return new Set(
+    (data ?? []).map(r => (r.days as unknown as { weeks: { program_id: string } }).weeks.program_id)
+  )
+}

@@ -1,28 +1,17 @@
 'use client'
-import { useTranslations, useLocale } from 'next-intl'
-import { Link, useRouter, usePathname } from '@/i18n/navigation'
-import { logoutAction } from '@/components/auth/LoginForm'
+import { useTranslations } from 'next-intl'
+import { Link, usePathname } from '@/i18n/navigation'
+import LocaleSwitcher from './LocaleSwitcher'
 
 const NAV_LINKS = [
   { href: '/dashboard', labelKey: 'dashboard' as const, icon: '◈' },
   { href: '/programs', labelKey: 'programs' as const, icon: '▦' },
   { href: '/tracking', labelKey: 'tracking' as const, icon: '◉' },
-  { href: '/billing', labelKey: 'billing' as const, icon: '◇' },
 ]
 
 export default function Navbar() {
   const t = useTranslations('nav')
-  const router = useRouter()
   const pathname = usePathname()
-  const locale = useLocale()
-
-  async function handleLogout() {
-    await logoutAction()
-  }
-
-  function switchLocale(next: string) {
-    router.replace(pathname, { locale: next })
-  }
 
   return (
     <>
@@ -87,8 +76,8 @@ export default function Navbar() {
                     height: '2px',
                     borderRadius: '99px',
                     background: '#39e600',
-                    transformOrigin: 'center',
-                    animation: 'navUnderline 0.2s ease',
+                    transformOrigin: 'left center',
+                    animation: 'navUnderline 0.3s ease',
                   }} />
                 )}
               </Link>
@@ -98,22 +87,25 @@ export default function Navbar() {
 
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
           {/* Plain text кнопки — Apple-стандарт для утиліт в navbar */}
-          <button
-            onClick={() => switchLocale(locale === 'ua' ? 'en' : 'ua')}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.05em', transition: 'color 0.15s' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#666')}
+          <LocaleSwitcher />
+          <Link
+            href="/billing"
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: '30px', height: '30px', borderRadius: '50%',
+              border: '1.5px solid #2a2a2a',
+              color: '#666', textDecoration: 'none',
+              transition: 'border-color 0.15s, color 0.15s',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#444'; (e.currentTarget as HTMLAnchorElement).style.color = '#fff' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#2a2a2a'; (e.currentTarget as HTMLAnchorElement).style.color = '#666' }}
+            title={t('account')}
           >
-            {locale === 'ua' ? 'EN' : 'UA'}
-          </button>
-          <button
-            onClick={handleLogout}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', fontSize: '0.8rem', letterSpacing: '0.03em', transition: 'color 0.15s' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#666')}
-          >
-            {t('logout')}
-          </button>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <circle cx="7" cy="4.5" r="2.5"/>
+              <path d="M1.5 12.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/>
+            </svg>
+          </Link>
         </div>
       </nav>
 
@@ -158,6 +150,29 @@ export default function Navbar() {
             </Link>
           )
         })}
+        {/* Profile у mobile */}
+        <Link
+          href="/billing"
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.2rem',
+            textDecoration: 'none',
+            color: pathname === '/billing' ? '#39e600' : '#555',
+            transition: 'color 0.15s',
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <circle cx="9" cy="5.5" r="3"/>
+            <path d="M2 16c0-3.5 3-6 7-6s7 2.5 7 6"/>
+          </svg>
+          <span style={{ fontSize: '0.6rem', fontWeight: 600 }}>
+            {t('account')}
+          </span>
+        </Link>
       </nav>
     </>
   )

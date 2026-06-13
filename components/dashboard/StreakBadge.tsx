@@ -16,7 +16,7 @@ export default function StreakBadge({ streak = 0 }: Props) {
       alignItems: 'center',
       gap: '0.25rem',
       fontSize: '0.85rem',
-      color: '#ff9600',
+      color: '#39e600',
       fontWeight: 600,
       flexShrink: 0,
     }}>

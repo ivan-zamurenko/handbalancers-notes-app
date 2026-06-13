@@ -86,12 +86,6 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale, comp
         </div>
       )}
 
-      {allDone && (
-        <p style={{ color: '#555', fontSize: '0.875rem', textAlign: 'center', marginBottom: '1.5rem' }}>
-          {t('allDone')}
-        </p>
-      )}
-
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
         {exercises.map(exercise => (
           <ExerciseCard

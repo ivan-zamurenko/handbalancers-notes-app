@@ -24,6 +24,10 @@ function formatSets(log: WorkoutLogWithExercise): string {
   return '—'
 }
 
+function formatDateHeader(iso: string, locale: string): string {
+  return new Date(iso).toLocaleDateString(locale === 'ua' ? 'uk-UA' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', year: 'numeric' })
 }
@@ -57,13 +61,9 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
   const [editing, setEditing] = useState<EditState | null>(null)
   const [saving, setSaving] = useState(false)
   const [savedId, setSavedId] = useState<string | null>(null)
-
   if (!logs.length) {
     return (
-      <div style={{ marginTop: '2rem' }}>
-        <h2>{t('historyTitle')}</h2>
-        <p style={{ color: '#888' }}>{t('noHistory')}</p>
-      </div>
+      <p style={{ color: '#555', fontSize: '0.875rem' }}>{t('noHistory')}</p>
     )
   }
 
@@ -104,114 +104,142 @@ export default function TrackingHistory({ logs, onUpdate, locale }: Props) {
     setTimeout(() => setSavedId(null), 2000)
   }
 
+  // Групуємо по даті
+  const groups: { date: string; logs: WorkoutLogWithExercise[] }[] = []
+  for (const log of logs) {
+    const date = log.logged_at.slice(0, 10)
+    const last = groups[groups.length - 1]
+    if (last?.date === date) last.logs.push(log)
+    else groups.push({ date, logs: [log] })
+  }
+
+  // Найновіший день відкритий за замовчуванням
+  const [openDates, setOpenDates] = useState<Set<string>>(
+    () => new Set(groups[0] ? [groups[0].date] : [])
+  )
+
+  function toggleDate(date: string) {
+    setOpenDates(prev => {
+      const next = new Set(prev)
+      if (next.has(date)) next.delete(date)
+      else next.add(date)
+      return next
+    })
+  }
+
   return (
-    <div style={{ marginTop: '2rem' }}>
-      <h2>{t('historyTitle')}</h2>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {logs.map(log => {
-          const isEditing = editing?.logId === log.id
-          const wasSaved = savedId === log.id
-          const exerciseName = locale === 'en' ? log.exercises.name_en : log.exercises.name_ua
-          const record = isRecord(log, logs)
-
+    <div>
+      <p style={{ margin: '0 0 0.5rem', fontSize: '0.75rem', fontWeight: 600, color: '#555', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+        {t('historyTitle')}
+      </p>
+      <div style={{ borderBottom: '1px solid #1e1e1e', marginBottom: '0.75rem' }} />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        {groups.map(({ date, logs: groupLogs }) => {
+          const isOpen = openDates.has(date)
           return (
-            <div key={log.id} style={{
-              border: '1px solid #1e1e1e',
-              borderRadius: '12px',
-              padding: '1rem',
-              background: '#141414',
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#fff' }}>{exerciseName}</div>
-                  <div style={{ color: '#888', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-                    {formatSets(log)}
-                    {record && <span style={{ marginLeft: '0.5rem', color: '#39e600', fontSize: '0.75rem', fontWeight: 600 }}>↑ рекорд</span>}
-                  </div>
-                  <div style={{ color: '#444', fontSize: '0.75rem', marginTop: '0.25rem' }}>
-                    {formatDate(log.logged_at)}
-                  </div>
-                </div>
-                {!isEditing && (
-                  wasSaved
-                    ? <span style={{ color: '#555', fontSize: '0.8rem' }}>{t('updated')}</span>
-                    : <button
-                        onClick={() => startEdit(log)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8rem', color: '#555', padding: '0.25rem 0' }}
-                      >
-                        {t('edit')}
-                      </button>
-                )}
-              </div>
+            <div key={date} style={{ border: '1px solid #1e1e1e', borderRadius: '12px', background: '#141414', overflow: 'hidden' }}>
+              {/* Accordion header */}
+              <button
+                onClick={() => toggleDate(date)}
+                style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                <span style={{ fontSize: '0.8rem', color: '#888' }}>{formatDateHeader(date, locale)}</span>
+                <span style={{ fontSize: '0.7rem', color: '#444', transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', display: 'inline-block' }}>▾</span>
+              </button>
 
-              {log.note && !isEditing && (
-                <p style={{ margin: '0.5rem 0 0', color: '#555', fontSize: '0.82rem' }}>
-                  {log.note}
-                </p>
-              )}
+              {/* Accordion body */}
+              {isOpen && groupLogs.map((log, i) => {
+                const isEditing = editing?.logId === log.id
+                const wasSaved = savedId === log.id
+                const exerciseName = locale === 'en' ? log.exercises.name_en : log.exercises.name_ua
+                const record = isRecord(log, logs)
 
-              {log.video_url && !isEditing && (
-                <a href={log.video_url} target="_blank" rel="noopener noreferrer"
-                  style={{ display: 'block', marginTop: '0.3rem', color: '#888', fontSize: '0.82rem', textDecoration: 'none' }}>
-                  {t('video')} →
-                </a>
-              )}
-
-              {isEditing && editing && (
-                <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  <div>
-                    <label style={{ fontSize: '0.8rem', color: '#64748b' }}>
-                      {log.hold_sets?.length ? `${t('sets')} (сек)` : `${t('sets')} (повт)`}
-                    </label>
-                    <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
-                      {editing.sets.map((val, i) => (
-                        <input
-                          key={i}
-                          type="number" min="1"
-                          value={val}
-                          onChange={e => setEditing(prev => prev ? {
-                            ...prev,
-                            sets: prev.sets.map((s, idx) => idx === i ? e.target.value : s)
-                          } : prev)}
-                          style={{ width: '4rem', padding: '0.3rem', borderRadius: '8px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', textAlign: 'center' }}
-                        />
-                      ))}
+                return (
+                  <div key={log.id} style={{ borderTop: '1px solid #1a1a1a' }}>
+                    <div style={{ padding: '0.7rem 1rem', borderBottom: isEditing ? '1px solid #1a1a1a' : 'none' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <span style={{ fontSize: '0.875rem', color: '#ccc' }}>{exerciseName}</span>
+                          <span style={{ marginLeft: '0.75rem', fontSize: '0.8rem', color: '#555' }}>{formatSets(log)}</span>
+                          {record && <span style={{ marginLeft: '0.4rem', color: '#39e600', fontSize: '0.72rem', fontWeight: 700 }}>↑</span>}
+                        </div>
+                        {!isEditing && (
+                          wasSaved
+                            ? <span style={{ color: '#555', fontSize: '0.75rem', flexShrink: 0 }}>{t('updated')}</span>
+                            : <button
+                                onClick={() => startEdit(log)}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.78rem', color: '#444', padding: '0.2rem 0', flexShrink: 0 }}
+                              >
+                                {t('edit')}
+                              </button>
+                        )}
+                      </div>
+                      {log.note && !isEditing && (
+                        <p style={{ margin: '0.3rem 0 0', color: '#444', fontSize: '0.78rem' }}>{log.note}</p>
+                      )}
+                      {log.video_url && !isEditing && (
+                        <a href={log.video_url} target="_blank" rel="noopener noreferrer"
+                          style={{ display: 'block', marginTop: '0.2rem', color: '#555', fontSize: '0.78rem', textDecoration: 'none' }}>
+                          {t('video')} →
+                        </a>
+                      )}
                     </div>
+
+                    {isEditing && editing && (
+                      <div style={{ padding: '0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <div>
+                          <label style={{ fontSize: '0.8rem', color: '#555' }}>
+                            {log.hold_sets?.length ? `${t('sets')} (сек)` : `${t('sets')} (повт)`}
+                          </label>
+                          <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
+                            {editing.sets.map((val, idx) => (
+                              <input
+                                key={idx}
+                                type="number" min="1"
+                                value={val}
+                                onChange={e => setEditing(prev => prev ? {
+                                  ...prev,
+                                  sets: prev.sets.map((s, si) => si === idx ? e.target.value : s)
+                                } : prev)}
+                                style={{ width: '4rem', padding: '0.3rem', borderRadius: '8px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', textAlign: 'center' }}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder={t('note')}
+                          value={editing.note}
+                          onChange={e => setEditing(prev => prev ? { ...prev, note: e.target.value } : prev)}
+                          style={{ padding: '0.4rem 0.6rem', borderRadius: '8px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', fontSize: '0.875rem' }}
+                        />
+                        <input
+                          type="url"
+                          placeholder={t('video')}
+                          value={editing.video}
+                          onChange={e => setEditing(prev => prev ? { ...prev, video: e.target.value } : prev)}
+                          style={{ padding: '0.4rem 0.6rem', borderRadius: '8px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', fontSize: '0.875rem' }}
+                        />
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button
+                            onClick={() => handleUpdate(log)}
+                            disabled={saving}
+                            style={{ flex: 1, padding: '0.6rem', borderRadius: '10px', background: '#39e600', color: '#000', border: 'none', cursor: 'pointer', fontWeight: 700, opacity: saving ? 0.5 : 1 }}
+                          >
+                            {saving ? '...' : t('update')}
+                          </button>
+                          <button
+                            onClick={cancelEdit}
+                            style={{ padding: '0.6rem 0.75rem', borderRadius: '10px', border: 'none', background: 'transparent', cursor: 'pointer', color: '#555', fontSize: '0.875rem' }}
+                          >
+                            {t('cancel')}
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-
-                  <input
-                    type="text"
-                    placeholder={t('note')}
-                    value={editing.note}
-                    onChange={e => setEditing(prev => prev ? { ...prev, note: e.target.value } : prev)}
-                    style={{ padding: '0.4rem 0.6rem', borderRadius: '8px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', fontSize: '0.875rem' }}
-                  />
-
-                  <input
-                    type="url"
-                    placeholder={t('video')}
-                    value={editing.video}
-                    onChange={e => setEditing(prev => prev ? { ...prev, video: e.target.value } : prev)}
-                    style={{ padding: '0.4rem 0.6rem', borderRadius: '8px', border: '1px solid #2a2a2a', background: '#0d0d0d', color: '#fff', fontSize: '0.875rem' }}
-                  />
-
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button
-                      onClick={() => handleUpdate(log)}
-                      disabled={saving}
-                      style={{ flex: 1, padding: '0.6rem', borderRadius: '10px', background: '#39e600', color: '#000', border: 'none', cursor: 'pointer', fontWeight: 700, opacity: saving ? 0.5 : 1 }}
-                    >
-                      {saving ? '...' : t('update')}
-                    </button>
-                    <button
-                      onClick={cancelEdit}
-                      style={{ padding: '0.6rem 0.75rem', borderRadius: '10px', border: 'none', background: 'transparent', cursor: 'pointer', color: '#555', fontSize: '0.875rem' }}
-                    >
-                      {t('cancel')}
-                    </button>
-                  </div>
-                </div>
-              )}
+                )
+              })}
             </div>
           )
         })}

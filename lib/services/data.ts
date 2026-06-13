@@ -13,6 +13,6 @@ export {
 } from '@/lib/db/programs'
 export { getExercisesByDay } from '@/lib/db/exercises'
 export { getFavoriteExercises, toggleFavorite } from '@/lib/db/favorites'
-export { getNextDay, getCompletedDayIds, getDayByPath, getDayContext } from '@/lib/db/dayProgress'
-export { getLogsByUser, getChartData, updateLog } from '@/lib/db/workoutLogs'
+export { getNextDay, getCompletedDayIds, getDayByPath, getDayContext, getDoneProgramIdsToday } from '@/lib/db/dayProgress'
+export { getLogsByUser, getChartData, getHandstandChartData, updateLog } from '@/lib/db/workoutLogs'
 export type { CreateLogInput, UpdateLogInput } from '@/lib/db/workoutLogs'
