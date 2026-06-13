@@ -238,6 +238,42 @@ export async function getPersonalBest(
   return { bestHold, bestReps }
 }
 
+export type RadarDataPoint = {
+  category: string   // slug категорії
+  label_ua: string
+  label_en: string
+  count: number      // кількість залогованих вправ за 30 днів
+}
+
+/**
+ * Повертає дані для radar chart: кількість залогованих вправ по категорії за останні 30 днів.
+ * Кожна вправа рахується як 1 (підходи не рахуємо).
+ */
+export async function getRadarData(userId: string): Promise<RadarDataPoint[]> {
+  const since = new Date(Date.now() - 30 * DAY_MS).toISOString()
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('workout_logs')
+    .select('exercises(exercise_category_id, categories!exercise_category_id(slug, title_ua, title_en))')
+    .eq('user_id', userId)
+    .gte('logged_at', since)
+
+  if (!data?.length) return []
+
+  const counts: Record<string, { label_ua: string; label_en: string; count: number }> = {}
+
+  for (const row of data) {
+    const ex = row.exercises as { exercise_category_id: string | null; categories: { slug: string; title_ua: string; title_en: string } | null } | null
+    if (!ex?.categories || !ex.exercise_category_id) continue
+    const { slug, title_ua, title_en } = ex.categories
+    counts[slug] ??= { label_ua: title_ua, label_en: title_en, count: 0 }
+    counts[slug].count++
+  }
+
+  return Object.entries(counts).map(([category, v]) => ({ category, ...v }))
+}
+
 /** Повертає exercise_id і hold_sets логів вказаних вправ за сьогодні. Використовується для статистики на completion-екрані. */
 export async function getLogsSummaryToday(
   userId: string,

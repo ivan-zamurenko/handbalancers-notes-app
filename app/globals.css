@@ -37,3 +37,54 @@ body {
   animation: shimmer 1.4s infinite;
   border-radius: 6px;
 }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Dashboard two-column layout */
+.dashboard-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-section {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.dashboard-section:first-child {
+  padding-top: 0;
+}
+
+.dashboard-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+@media (min-width: 640px) {
+  .dashboard-row {
+    display: flex;
+    padding: 2rem 0;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .dashboard-row:first-child {
+    padding-top: 0;
+  }
+  .dashboard-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .dashboard-col-left {
+    flex: 1;
+    min-width: 0;
+    padding-right: 2.5rem;
+    border-right: 1px solid #1a1a1a;
+  }
+  .dashboard-col-right {
+    flex: 1;
+    min-width: 0;
+    padding-left: 2.5rem;
+  }
+}

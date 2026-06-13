@@ -8,16 +8,26 @@ export default function LogoutButton({ label }: Props) {
     <button
       onClick={() => logoutAction()}
       style={{
-        background: 'none',
-        border: 'none',
+        width: '100%',
+        background: 'rgba(239,68,68,0.06)',
+        border: '1px solid rgba(239,68,68,0.2)',
+        borderRadius: '12px',
         cursor: 'pointer',
-        color: '#555',
+        color: '#ef4444',
         fontSize: '0.875rem',
-        padding: 0,
-        transition: 'color 0.15s',
+        fontWeight: 500,
+        padding: '0.875rem 1rem',
+        minHeight: '44px',
+        transition: 'background 0.15s, border-color 0.15s',
       }}
-      onMouseEnter={e => (e.currentTarget.style.color = '#ef4444')}
-      onMouseLeave={e => (e.currentTarget.style.color = '#555')}
+      onMouseEnter={e => {
+        e.currentTarget.style.background = 'rgba(239,68,68,0.12)'
+        e.currentTarget.style.borderColor = 'rgba(239,68,68,0.35)'
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.background = 'rgba(239,68,68,0.06)'
+        e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'
+      }}
     >
       {label}
     </button>

@@ -62,7 +62,7 @@ export default async function BillingPage({
   }
 
   return (
-    <main style={{ maxWidth: '420px', margin: '0 auto', padding: isActive ? '2rem 1.25rem' : '3rem 1.25rem 4rem' }}>
+    <main style={{ maxWidth: '680px', margin: '0 auto', padding: isActive ? '1.5rem 1.25rem' : '2rem 1.25rem 4rem' }}>
 
       {isActive ? (
         // ── Акаунт (активна підписка) ──
@@ -111,14 +111,14 @@ export default async function BillingPage({
           </div>
 
           {/* Вийти */}
-          <div style={{ paddingTop: '1.5rem', borderTop: '1px solid #1a1a1a' }}>
+          <div style={{ paddingTop: '0.5rem' }}>
             <LogoutButton label={navT('logout')} />
           </div>
         </>
       ) : (
         // ── Paywall (без підписки) ──
         <>
-          <div style={{ marginBottom: '2.5rem', textAlign: 'center' }}>
+          <div style={{ marginBottom: '1.75rem', textAlign: 'center' }}>
             <h1 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.15, margin: '0 0 0.75rem' }}>
               {t('title')}
             </h1>
@@ -136,6 +136,10 @@ export default async function BillingPage({
           {inactiveBlocksOrder.map(block => (
             <div key={block}>{inactiveBlocks[block]}</div>
           ))}
+
+          <div style={{ paddingTop: '2rem', borderTop: '1px solid #1a1a1a', marginTop: '0.5rem' }}>
+            <LogoutButton label={navT('logout')} />
+          </div>
         </>
       )}
     </main>

@@ -16,11 +16,14 @@ type Props = {
   isLogged: boolean
   isNewRecord?: boolean
   isFavorite: boolean
+  savedSets?: number[]
+  isHoldResult?: boolean
   onLog: (data: { hold_sets?: number[]; reps_sets?: number[]; video_url?: string; note?: string }) => void
+  onEdit: () => void
   onToggleFavorite: () => void
 }
 
-export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, isFavorite, onLog, onToggleFavorite }: Props) {
+export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, isFavorite, savedSets, isHoldResult, onLog, onEdit, onToggleFavorite }: Props) {
   const t = useTranslations('workout')
   const [videoOpen, setVideoOpen] = useState(false)
   const name = locale === 'en' ? exercise.name_en : exercise.name_ua
@@ -35,19 +38,20 @@ export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, 
       padding: '1.25rem',
       background: '#141414',
     }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <h2 style={{ margin: 0, fontSize: '1.1rem' }}>{name}</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem' }}>
+        <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, lineHeight: 1.3, color: '#fff' }}>{name}</h2>
         <button
           onClick={onToggleFavorite}
           style={{
             background: 'none',
             border: 'none',
             cursor: 'pointer',
-            fontSize: '1.25rem',
+            fontSize: '1.1rem',
             lineHeight: 1,
-            color: isFavorite ? '#39e600' : '#444',
+            color: isFavorite ? '#39e600' : '#555',
             padding: 0,
             flexShrink: 0,
+            marginTop: '2px',
           }}
           title={isFavorite ? t('unfavorite') : t('favorite')}
         >
@@ -55,9 +59,11 @@ export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, 
         </button>
       </div>
 
-      {description && <p style={{ color: '#666', margin: '0.5rem 0 0', fontSize: '0.875rem' }}>{description}</p>}
+      {description && (
+        <p style={{ color: '#666', margin: '0.5rem 0 0', fontSize: '0.875rem', lineHeight: 1.5 }}>{description}</p>
+      )}
 
-      <p style={{ margin: '0.375rem 0 0.875rem', fontSize: '0.8rem' }}>
+      <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem' }}>
         <span style={{ color: '#555' }}>{t('target')}: </span>
         <span style={{ color: '#ccc', fontWeight: 600 }}>
           {isHold
@@ -68,15 +74,20 @@ export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, 
       </p>
 
       {youtubeId && !isLogged && (
-        <div style={{ margin: '0.5rem 0' }}>
+        <div style={{ marginTop: '0.75rem', borderTop: '1px solid #1e1e1e', paddingTop: '0.75rem' }}>
           <button
             onClick={() => setVideoOpen(v => !v)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888', fontSize: '0.82rem', padding: 0 }}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              width: '100%', color: '#888', fontSize: '0.82rem', minHeight: '44px',
+            }}
           >
-            {videoOpen ? t('hideVideo') : t('watchVideo')}
+            <span>{videoOpen ? t('hideVideo') : t('watchVideo')}</span>
+            <span style={{ fontSize: '1rem', color: '#555', transform: videoOpen ? 'rotate(90deg)' : 'none', display: 'inline-block', transition: 'transform 0.2s' }}>›</span>
           </button>
           {videoOpen && (
-            <div style={{ marginTop: '0.5rem', borderRadius: '8px', overflow: 'hidden', aspectRatio: '16/9' }}>
+            <div style={{ marginTop: '0.5rem', borderRadius: '10px', overflow: 'hidden', aspectRatio: '16/9' }}>
               <iframe
                 width="100%"
                 height="100%"
@@ -91,13 +102,37 @@ export default function ExerciseCard({ exercise, locale, isLogged, isNewRecord, 
       )}
 
       {isLogged ? (
-        <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ color: '#555', fontSize: '0.8rem' }}>{t('saved')}</span>
-          {isNewRecord && (
-            <span style={{ color: '#39e600', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.03em' }}>
-              ↑ {t('newRecord')}
-            </span>
-          )}
+        <div style={{ marginTop: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              {savedSets && savedSets.length > 0 && (
+                <span style={{ color: '#ccc', fontSize: '0.875rem', fontWeight: 600 }}>
+                  {savedSets.map((v, i) => (
+                    <span key={i}>
+                      {i > 0 && <span style={{ color: '#444', margin: '0 3px' }}>·</span>}
+                      {v}{isHoldResult ? 'с' : ''}
+                    </span>
+                  ))}
+                </span>
+              )}
+              {!savedSets?.length && (
+                <span style={{ color: '#555', fontSize: '0.8rem' }}>{t('saved')}</span>
+              )}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              {isNewRecord && (
+                <span style={{ color: '#39e600', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.03em' }}>
+                  ↑ {t('newRecord')}
+                </span>
+              )}
+              <button
+                onClick={onEdit}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#555', fontSize: '0.8rem', padding: 0 }}
+              >
+                {t('edit')}
+              </button>
+            </div>
+          </div>
         </div>
       ) : (
         <LogForm isHold={isHold} targetSets={exercise.target_sets ?? 1} exerciseId={exercise.id} onSubmit={onLog} />

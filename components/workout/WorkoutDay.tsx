@@ -5,8 +5,14 @@ import { useTranslations } from 'next-intl'
 import { useRouter } from '@/i18n/navigation'
 import type { Exercise } from '@/types'
 import ExerciseCard from './ExerciseCard'
-import { saveLog, toggleFavoriteAction } from './actions'
+import { saveLog, updateLogAction, toggleFavoriteAction } from './actions'
 import { SETS_STORAGE_KEY_PREFIX } from './LogForm'
+
+type LogResult = {
+  logId: string
+  sets: number[]
+  isHold: boolean
+}
 
 type Props = {
   dayId: string
@@ -19,12 +25,15 @@ type Props = {
 export default function WorkoutDay({ dayId, exercises, favoriteIds, locale, completeHref }: Props) {
   const t = useTranslations('workout')
   const router = useRouter()
-  const loggedKey = `workout_logged_${dayId}`
+  const today = new Date().toISOString().slice(0, 10)
+  const loggedKey = `workout_logged_${dayId}_${today}`
 
-  // Відновлюємо стан після перемикання мови (sessionStorage переживає remount).
-  // Починаємо з empty Set (SSR-сумісно), потім гідруємо з sessionStorage після mount.
   const [logged, setLogged] = useState<Set<string>>(new Set())
   const [hydrated, setHydrated] = useState(false)
+  // logId + saved sets per exerciseId — для редагування
+  const [logResults, setLogResults] = useState<Record<string, LogResult>>({})
+  // які вправи зараз в режимі редагування
+  const [editing, setEditing] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     const stored = sessionStorage.getItem(loggedKey)
@@ -47,22 +56,53 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale, comp
 
   async function handleLog(exerciseId: string, data: { hold_sets?: number[]; reps_sets?: number[]; video_url?: string; note?: string }) {
     setError(null)
+    const isEditing = editing.has(exerciseId)
+    const existingLogId = logResults[exerciseId]?.logId
+
     try {
-      const { isNewRecord } = await saveLog({ exercise_id: exerciseId, ...data })
+      let logId: string
+      let isNewRecord = false
+
+      if (isEditing && existingLogId) {
+        // Оновлюємо існуючий запис
+        await updateLogAction(existingLogId, {
+          hold_sets: data.hold_sets,
+          reps_sets: data.reps_sets,
+          note: data.note ?? null,
+          video_url: data.video_url ?? null,
+        })
+        logId = existingLogId
+        setEditing(prev => { const n = new Set(prev); n.delete(exerciseId); return n })
+      } else {
+        // Новий запис
+        const result = await saveLog({ exercise_id: exerciseId, ...data })
+        logId = result.logId
+        isNewRecord = result.isNewRecord
+      }
+
       sessionStorage.removeItem(`${SETS_STORAGE_KEY_PREFIX}${exerciseId}`)
+
+      const sets = data.hold_sets ?? data.reps_sets ?? []
+      setLogResults(prev => ({ ...prev, [exerciseId]: { logId, sets, isHold: !!data.hold_sets?.length } }))
+
       const newLogged = new Set([...logged, exerciseId])
       setLogged(newLogged)
+
       if (isNewRecord) {
         setNewRecords(prev => new Set([...prev, exerciseId]))
       }
-      // Якщо всі вправи залоговані — переходимо на celebration screen
-      if (exercises.every(e => newLogged.has(e.id))) {
+
+      if (!isEditing && exercises.every(e => newLogged.has(e.id))) {
         const completeUrl = completeHref ?? `/workout/${dayId}/complete`
         setTimeout(() => router.push(completeUrl), 600)
       }
     } catch {
       setError(t('saveError'))
     }
+  }
+
+  function handleEdit(exerciseId: string) {
+    setEditing(prev => new Set([...prev, exerciseId]))
   }
 
   async function handleToggleFavorite(exerciseId: string) {
@@ -73,8 +113,6 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale, comp
       return next
     })
   }
-
-  const allDone = exercises.every(e => logged.has(e.id))
 
   return (
     <div>
@@ -92,10 +130,13 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale, comp
             key={exercise.id}
             exercise={exercise}
             locale={locale}
-            isLogged={logged.has(exercise.id)}
+            isLogged={logged.has(exercise.id) && !editing.has(exercise.id)}
             isNewRecord={newRecords.has(exercise.id)}
             isFavorite={favorites.has(exercise.id)}
+            savedSets={logResults[exercise.id]?.sets}
+            isHoldResult={logResults[exercise.id]?.isHold}
             onLog={(data) => handleLog(exercise.id, data)}
+            onEdit={() => handleEdit(exercise.id)}
             onToggleFavorite={() => handleToggleFavorite(exercise.id)}
           />
         ))}

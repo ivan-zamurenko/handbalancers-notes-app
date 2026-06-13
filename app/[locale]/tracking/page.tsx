@@ -22,7 +22,7 @@ export default async function TrackingPage({
   ])
 
   return (
-    <main style={{ padding: '1.5rem 1.25rem 4rem', maxWidth: '600px', margin: '0 auto' }}>
+    <main style={{ padding: '1.5rem 1.25rem 4rem', maxWidth: '680px', margin: '0 auto' }}>
       <TrackingClient logs={logs} favorites={favorites} locale={locale} />
     </main>
   )

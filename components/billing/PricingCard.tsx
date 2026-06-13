@@ -28,7 +28,6 @@ export default function PricingCard({ priceId, locale }: Props) {
       border: '1px solid #1e1e1e',
       borderRadius: '16px',
       padding: '2rem',
-      maxWidth: '420px',
     }}>
       <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem', color: '#fff' }}>
         {t('proName')}

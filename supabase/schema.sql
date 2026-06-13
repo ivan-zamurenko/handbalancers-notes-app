@@ -74,19 +74,20 @@ CREATE TABLE days (
 -- 6. EXERCISES
 -- Вправи всередині одного дня
 CREATE TABLE exercises (
-  id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  day_id          uuid NOT NULL REFERENCES days(id) ON DELETE CASCADE,
-  name_ua         text NOT NULL,
-  name_en         text NOT NULL,
-  description_ua  text,
-  description_en  text,
-  target_hold     int,                 -- ціль: секунди (handstand hold)
-  target_reps     int,                 -- ціль: кількість повторень
-  target_sets     int,                 -- ціль: кількість підходів
-  youtube_url     text,                -- посилання на YouTube (легко замінити на Vimeo)
-  screenshot_urls text[],              -- масив URL зображень з Supabase Storage
-  is_handstand    boolean NOT NULL DEFAULT false,  -- враховується у добовому лічильнику handstand-часу
-  "order"         int NOT NULL DEFAULT 0
+  id                   uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  day_id               uuid NOT NULL REFERENCES days(id) ON DELETE CASCADE,
+  exercise_category_id uuid REFERENCES categories(id) ON DELETE SET NULL,  -- категорія вправи для radar chart
+  name_ua              text NOT NULL,
+  name_en              text NOT NULL,
+  description_ua       text,
+  description_en       text,
+  target_hold          int,                 -- ціль: секунди (handstand hold)
+  target_reps          int,                 -- ціль: кількість повторень
+  target_sets          int,                 -- ціль: кількість підходів
+  youtube_url          text,                -- посилання на YouTube (легко замінити на Vimeo)
+  screenshot_urls      text[],              -- масив URL зображень з Supabase Storage
+  is_handstand         boolean NOT NULL DEFAULT false,  -- враховується у добовому лічильнику handstand-часу
+  "order"              int NOT NULL DEFAULT 0
 );
 
 

@@ -72,12 +72,13 @@ function RepsSetRow({ index, saved, onSave }: { index: number; saved?: number; o
             type="button"
             onClick={() => { setInput(String(saved)); setEditing(true) }}
             style={{
-              width: '44px', height: '44px', borderRadius: '50%', flexShrink: 0,
+              flexShrink: 0, minWidth: '44px', height: '44px',
               border: 'none', background: 'transparent',
-              color: '#555', cursor: 'pointer', fontSize: '0.9rem',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#555', cursor: 'pointer', fontSize: '0.75rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+              padding: 0,
             }}
-          >✎</button>
+          >{t('edit')}</button>
         </>
       )}
     </div>
@@ -154,15 +155,13 @@ export default function LogForm({ isHold, targetSets, exerciseId, onSubmit }: Pr
         style={{
           width: '100%', background: 'none', border: 'none', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '0.6rem 0', color: '#555', fontSize: '0.82rem',
+          padding: '0 0', minHeight: '44px',
+          borderTop: '1px solid #1e1e1e',
+          color: '#888', fontSize: '0.82rem',
         }}
       >
         <span>{extraOpen ? t('hideExtra') : t('addNote')}</span>
-        <span style={{
-          display: 'inline-block', fontSize: '0.8rem', color: '#444',
-          transform: extraOpen ? 'rotate(90deg)' : 'rotate(0)',
-          transition: 'transform 0.2s',
-        }}>›</span>
+        <span style={{ fontSize: '1rem', color: '#555', transform: extraOpen ? 'rotate(90deg)' : 'none', display: 'inline-block', transition: 'transform 0.2s' }}>›</span>
       </button>
 
       {extraOpen && (
