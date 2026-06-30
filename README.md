@@ -1,168 +1,162 @@
-# 🤸 Handbalancers Notes App
+# 🤸 Handbalancer's Studio
 
-Тренувальна платформа для акробатів, гімнастів та всіх, хто займається стійками на руках, розтяжкою, силовими та повітряними елементами.
+> Your daily studio for handstand and flexibility.
 
-Побудована на **Next.js 16**, **Supabase** та **Stripe**. Підтримує дві мови: 🇺🇦 українська (за замовчуванням) та 🇬🇧 англійська.
+A premium training platform for handbalancers, gymnasts, and anyone working on
+handstands, mobility, prehab, and strength. Members follow structured multi-week
+programs, log every set, and watch their progress grow over time.
+
+Built with **Next.js 16**, **Supabase**, and **Stripe**. Fully bilingual:
+🇺🇦 Ukrainian (default) and 🇬🇧 English.
 
 ---
 
-## 🛠 Стек технологій
+## ✨ Features
 
-| Технологія | Роль |
+- **Structured programs** — content organized as category → program → week → day → exercise
+- **Daily workout flow** — one clear next action, timers, and per-set logging
+- **Progress tracking** — growth charts per exercise, streaks, and an activity overview
+- **Personal dashboard** — Apple-style progress ring, today's focus, and momentum at a glance
+- **Subscriptions & trials** — 7-day free trial, then a single all-access membership via Stripe
+- **Bilingual UI & content** — every label and every program available in UA and EN
+
+---
+
+## 🛠 Tech Stack
+
+| Technology | Role |
 |---|---|
-| Next.js 16 (App Router, Turbopack) | Фреймворк |
-| TypeScript | Типізація |
-| Tailwind CSS | Стилі (mobile-first) |
-| Supabase (+ @supabase/ssr) | Auth + PostgreSQL + RLS |
-| next-intl 4 | Інтернаціоналізація (uk / en) |
-| Stripe | Підписки + Payment Links |
-| Recharts | Графіки прогресу |
-| Resend | Email-сповіщення (заплановано) |
+| Next.js 16 (App Router, Turbopack) | Framework |
+| TypeScript | Type safety |
+| Supabase (`@supabase/ssr`) | Auth + PostgreSQL + Row Level Security |
+| next-intl 4 | Internationalization (`ua` / `en`) |
+| Stripe | Subscriptions, Checkout & webhooks |
+| Recharts | Progress charts |
+| Inline styles | Design system (no Tailwind — intentional) |
+
+**Design language:** Apple-clean + Strava-confident. Accent `#39E600`, background
+`#0d0d0d`, neutral grays. The accent is reserved for actions and records, never
+for static metadata.
 
 ---
 
-## 📁 Структура проєкту
+## 🏗 Architecture
+
+The codebase follows a layered, swap-friendly architecture so any block can be
+added, removed, or replaced without rewriting a page.
+
+- **Pages** (`app/[locale]/…`) orchestrate and fetch data
+- **Services** (`lib/services/…`) hold business rules
+- **Repositories** (`lib/db/…`) own all database access
+- **Facade** (`lib/services/data.ts`) gives pages a single import surface
+- **Adapters** (`lib/stripe.ts`, `lib/supabase*.ts`) isolate external providers
+
+UI components render and trigger actions only — they never know provider-specific
+details (Stripe, Supabase, etc.).
 
 ```
 app/
-├── [locale]/                       # uk (default) / en
-│   ├── layout.tsx                  # NextIntlClientProvider + Navbar
-│   ├── page.tsx                    # Лендінг
-│   ├── (auth)/
-│   │   ├── login/
-│   │   └── register/
-│   ├── dashboard/
-│   ├── programs/
-│   │   ├── page.tsx                # Список категорій / програм
-│   │   └── [id]/                   # Деталі програми
-│   ├── workout/
-│   │   └── [id]/                   # Сторінка тренування
-│   ├── tracking/
-│   └── billing/
-├── api/
-│   └── stripe/
-│       ├── checkout/
-│       └── webhook/
-├── globals.css
-└── layout.tsx
+├── [locale]/                 # ua (default) / en
+│   ├── page.tsx              # Landing
+│   ├── (auth)/               # login / register
+│   ├── dashboard/            # Progress ring, today, streak
+│   ├── programs/             # Catalog + program details
+│   ├── workout/[id]/         # Workout session
+│   ├── tracking/             # History, charts, activity
+│   └── billing/              # Membership & pricing
+└── api/stripe/               # checkout + webhook
 
-components/
-├── auth/           LoginForm, RegisterForm
-├── billing/        PricingCard, SubscriptionStatus
-├── dashboard/      ProgressChart, StatsCard, StreakBadge
-├── layout/         Navbar (з перемикачем мови)
-├── programs/       ProgramCard, ProgramList
-├── tracking/       ExerciseStats, TrackingHistory
-└── workout/        ExerciseCard, LogForm, Timer
-
+components/                   # auth, billing, dashboard, layout,
+                              # programs, tracking, workout
 lib/
-├── supabase.ts             # Браузерний клієнт
-├── supabase-server.ts      # Серверний клієнт (RSC / Server Actions)
-├── stripe.ts
-├── db/                     # Весь доступ до БД тут
-│   ├── categories.ts
-│   ├── programs.ts         # programs + weeks + days
-│   ├── exercises.ts
-│   ├── workoutLogs.ts
-│   ├── subscriptions.ts    # hasActiveAccess() (підписка або trial)
-│   └── bookings.ts
-└── hooks/
-    └── useAuth.ts
-
-i18n/
-├── routing.ts              # Локалі: uk (default), en
-├── request.ts              # getRequestConfig
-└── navigation.ts           # createNavigation
-
-messages/
-├── uk.json
-└── en.json
-
-types/
-└── index.ts                # Profile, Category, Program, Week, Day,
-                            # Exercise, WorkoutLog, Booking, Subscription
-
-supabase/
-├── schema.sql              # Схема v2
-└── reset.sql               # Скидання БД перед застосуванням схеми
-
-proxy.ts                    # Supabase session refresh + next-intl routing
+├── db/                       # Repositories (one file per domain)
+├── services/                 # Business logic + data facade
+├── stripe.ts                 # Stripe adapter
+└── supabase*.ts              # Browser / server / admin clients
+i18n/                         # routing, request config, navigation
+messages/                     # ua.json + en.json (UI strings)
+supabase/                     # schema.sql, seeds, helper scripts
+types/                        # Shared TypeScript types
+proxy.ts                      # Supabase session refresh + next-intl routing
 ```
 
 ---
 
-## 🗄 Схема бази даних
+## 🗄 Data Model
 
-Ієрархія контенту: **категорія → програма → тиждень → день → вправа**
+Content hierarchy: **category → program → week → day → exercise**
 
-| Таблиця | Опис |
+| Table | Purpose |
 |---|---|
-| `profiles` | Профілі користувачів (`trial_ends_at`) |
-| `categories` | Категорії (стійки, розтяжка, сила, повітряне) |
-| `programs` | Тренувальні програми |
-| `weeks` | Тижні у програмі |
-| `days` | Дні у тижні |
-| `exercises` | Вправи (`youtube_url`, `screenshot_urls[]`, `target_sets`) |
-| `workout_logs` | Записи результатів (`sets`, `video_url`) |
-| `user_programs` | Зв'язок користувач–програма |
-| `subscriptions` | Підписки Stripe |
-| `bookings` | Записи на Google Meet з тренером |
+| `profiles` | User profiles (incl. `trial_ends_at`) |
+| `categories` | Training categories (handstand, flexibility, strength, prehab) |
+| `programs` / `weeks` / `days` | Program structure |
+| `exercises` | Exercise details (video, target sets, reps/holds) |
+| `workout_logs` | Logged results per set |
+| `user_programs` | User ↔ program enrollment |
+| `subscriptions` | Stripe subscription state |
+| `bookings` | Coaching consultation bookings |
 
-Усі таблиці захищені **Row Level Security (RLS)**.
+All tables are protected with **Row Level Security (RLS)**.
 
 ---
 
-## 💰 Доступ та білінг
+## 💳 Access & Billing
 
-- Нові користувачі отримують **7-денний безкоштовний trial** (тригер `handle_new_user`)
-- Після trial — платна підписка через Stripe
-- `lib/db/subscriptions.ts → hasActiveAccess()` перевіряє обидва стани
+- New members get a **7-day free trial** (set on profile creation)
+- After the trial, access requires an active **all-access membership** via Stripe
+- `lib/db/subscriptions.ts → hasActiveAccess()` checks both states
 
 ---
 
-## 🚀 Швидкий старт
+## 🚀 Getting Started
 
-### 1. Клонувати репозиторій
-
-```bash
-git clone https://github.com/YOUR_USERNAME/handbalancers-notes-app.git
-cd handbalancers-notes-app
-```
-
-### 2. Встановити залежності
+### 1. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Налаштувати змінні середовища
+### 2. Configure environment
+
+Create `.env.local` in the project root:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
 STRIPE_SECRET_KEY=your_stripe_secret_key
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
-NEXT_PUBLIC_STRIPE_PAYMENT_LINK=your_stripe_payment_link_url
+STRIPE_PRICE_ID_UAH=your_stripe_price_id
 ```
 
-### 4. Застосувати схему Supabase
+### 3. Apply the database schema
 
-Якщо оновлюєш існуючу БД, спочатку запусти `supabase/reset.sql` у Supabase SQL Editor, потім `supabase/schema.sql`.
+In the Supabase SQL Editor: run `supabase/reset.sql` first (only when resetting an
+existing database), then `supabase/schema.sql`.
 
-Для нового проєкту — одразу `supabase/schema.sql`.
-
-### 5. Запустити dev-сервер
+### 4. Run the dev server
 
 ```bash
 npm run dev
 ```
 
-Відкрий [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## 📄 Ліцензія
+## 📜 Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the development server |
+| `npm run build` | Production build |
+| `npm run start` | Run the production build |
+
+---
+
+## 📄 License
 
 MIT
