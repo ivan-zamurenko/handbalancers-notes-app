@@ -6,13 +6,9 @@ import ProgressChart from './ProgressChart'
 // Supabase клієнт — один на весь модуль, не створюємо при кожному fetch
 const supabase = createClient()
 
-const PERIODS = [
-  { label: '7д', value: 7 },
-  { label: '30д', value: 30 },
-  { label: '90д', value: 90 },
-] as const
+const PERIODS = [7, 30, 90] as const
 
-type Period = (typeof PERIODS)[number]['value']
+type Period = (typeof PERIODS)[number]
 
 interface Props {
   userId: string
@@ -21,6 +17,7 @@ interface Props {
   exerciseId?: string
   unit?: string
   height?: number
+  locale: string
   emptyText: string
   emptySubText?: string
 }
@@ -91,6 +88,7 @@ export default function ProgressChartWithPeriod({
   exerciseId,
   unit,
   height = 220,
+  locale,
   emptyText,
   emptySubText,
 }: Props) {
@@ -123,22 +121,22 @@ export default function ProgressChartWithPeriod({
         <div style={{ display: 'flex', gap: '0.125rem', flexShrink: 0 }}>
           {PERIODS.map(p => (
             <button
-              key={p.value}
-              onClick={() => setPeriod(p.value)}
+              key={p}
+              onClick={() => setPeriod(p)}
               style={{
-                background: period === p.value ? '#1e1e1e' : 'none',
+                background: period === p ? '#1e1e1e' : 'none',
                 border: 'none',
                 padding: '3px 8px',
                 borderRadius: '5px',
                 fontSize: '0.68rem',
                 fontWeight: 600,
                 cursor: 'pointer',
-                color: period === p.value ? '#fff' : '#444',
+                color: period === p ? '#fff' : '#444',
                 letterSpacing: '0.04em',
                 minHeight: '24px',
               }}
             >
-              {p.label}
+              {p}{locale === 'en' ? 'd' : 'д'}
             </button>
           ))}
         </div>

@@ -68,6 +68,7 @@ export default function FavoriteChartCarousel({ exercises, userId, locale, empty
         exerciseId={selected.id}
         unit={selected.target_hold != null ? (locale === 'en' ? 's' : 'с') : undefined}
         height={260}
+        locale={locale}
         emptyText={emptyText}
       />
     </div>
