@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { createSubscriptionCheckoutSession } from '@/lib/services/billing-client'
 
-type Props = { priceId: string; locale: string }
+type Props = { priceId: string; amountLabel: string; locale: string }
 
-export default function PricingCard({ priceId, locale }: Props) {
+export default function PricingCard({ priceId, amountLabel, locale }: Props) {
   const t = useTranslations('billing')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -35,7 +35,7 @@ export default function PricingCard({ priceId, locale }: Props) {
       </h3>
       <p style={{ color: '#888', fontSize: '0.9rem', margin: '0 0 0.9rem' }}>{t('valueSub')}</p>
       <p style={{ fontSize: '2rem', fontWeight: 800, color: '#fff', marginBottom: '0.25rem' }}>
-        {t('priceLabel')}
+        {amountLabel}
         <span style={{ fontSize: '1rem', fontWeight: 400, color: '#888' }}> {t('perMonth')}</span>
       </p>
 

@@ -7,7 +7,7 @@ import PricingCard from '@/components/billing/PricingCard'
 import SubscriptionStatus from '@/components/billing/SubscriptionStatus'
 import { getCurrentUser } from '@/lib/services/auth-service'
 import { getUserSubscription } from '@/lib/services/subscriptions'
-import { getSubscriptionPriceId } from '@/lib/services/billing-config'
+import { getSubscriptionPrice } from '@/lib/services/billing-config'
 
 type ActiveBlock = 'includedFeatures'
 type InactiveBlock = 'valueIntro' | 'pricingCard' | 'faq'
@@ -27,7 +27,7 @@ export default async function BillingPage({
 
   const t = await getTranslations('billing')
   const subscription = await getUserSubscription(user.id)
-  const priceId = getSubscriptionPriceId()
+  const price = getSubscriptionPrice(locale)
 
   const isActive = subscription?.status === 'active' || subscription?.status === 'trialing'
   const features = t.raw('featuresList') as string[]
@@ -47,7 +47,7 @@ export default async function BillingPage({
   // Pattern: Module / LEGO
   const inactiveBlocks: Record<InactiveBlock, JSX.Element> = {
     valueIntro: <ValueIntroBlock headline={t('valueHeadline')} description={t('noSubscription')} />,
-    pricingCard: <PricingCard priceId={priceId} locale={locale} />,
+    pricingCard: <PricingCard priceId={price.priceId} amountLabel={price.amountLabel} locale={locale} />,
     faq: <FaqBlock title={t('faqTitle')} items={faqItems} />,
   }
 

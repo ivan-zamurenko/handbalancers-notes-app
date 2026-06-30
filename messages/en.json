@@ -91,8 +91,9 @@
     "upgrade": "Get Premium"
   },
   "tracking": {
-    "title": "Progress Tracking",
-    "statsTitle": "Exercise Stats",
+    "title": "Progress Tracking",    "empty": "Your progress will appear here",
+    "emptySub": "Log your first workout — stats, history and the heatmap will show up here.",
+    "emptyCta": "Start a workout",    "statsTitle": "Exercise Stats",
     "historyTitle": "Training History",
     "noHistory": "No records yet",
     "sets": "sets",
@@ -137,7 +138,6 @@
     "validUntil": "Valid until",
     "included": "What's included",
     "proName": "Studio Membership",
-    "priceLabel": "$5.99",
     "subscribe": "Subscribe",
     "perMonth": "/ mo",
     "loading": "Loading...",
