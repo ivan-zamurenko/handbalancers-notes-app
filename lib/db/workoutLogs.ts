@@ -264,7 +264,7 @@ export async function getRadarData(userId: string): Promise<RadarDataPoint[]> {
   const counts: Record<string, { label_ua: string; label_en: string; count: number }> = {}
 
   for (const row of data) {
-    const ex = row.exercises as { exercise_category_id: string | null; categories: { slug: string; title_ua: string; title_en: string } | null } | null
+    const ex = row.exercises as unknown as { exercise_category_id: string | null; categories: { slug: string; title_ua: string; title_en: string } | null } | null
     if (!ex?.categories || !ex.exercise_category_id) continue
     const { slug, title_ua, title_en } = ex.categories
     counts[slug] ??= { label_ua: title_ua, label_en: title_en, count: 0 }
