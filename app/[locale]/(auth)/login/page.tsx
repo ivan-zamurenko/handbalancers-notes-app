@@ -17,9 +17,8 @@ export default async function LoginPage({
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       background: '#0d0d0d',
-      backgroundImage: 'radial-gradient(ellipse at 50% 0%, rgba(57,230,0,0.08) 0%, transparent 60%)',
       padding: '3.5rem 1.5rem 2.5rem',
       position: 'relative',
     }}>
@@ -29,14 +28,14 @@ export default async function LoginPage({
       <div style={{ width: '100%', maxWidth: '320px' }}>
 
         {/* Лого */}
-        <div style={{ textAlign: 'center', marginBottom: '1.1rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
           <div style={{
             width: '96px',
             height: '96px',
             borderRadius: '24px',
             background: '#39e600',
             color: '#000',
-            margin: '0 auto 0.8rem',
+            margin: '0 auto 0.75rem',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -46,11 +45,22 @@ export default async function LoginPage({
           }}>
             HS
           </div>
-          <div style={{ color: '#aaa', fontSize: '0.85rem', fontWeight: 600 }}>
+          <div style={{ color: '#888', fontSize: '0.85rem', fontWeight: 600 }}>
             Handbalancer&apos;s Studio
           </div>
         </div>
 
+        {/* Заголовок */}
+        <h1 style={{
+          fontWeight: 300,
+          fontSize: '0.85rem',
+          letterSpacing: '0.08em',
+          textAlign: 'center',
+          color: '#555',
+          margin: '0 0 1.5rem',
+        }}>
+          {t('title')}
+        </h1>
 
         {error && (
           <div style={{

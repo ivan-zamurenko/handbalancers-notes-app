@@ -25,7 +25,7 @@ export default async function ProgramsPage({
   const completedIds = await getCompletedProgramIds(user.id, enrolledProgramIds)
 
   return (
-    <main style={{ maxWidth: '680px', margin: '0 auto', paddingBottom: '2rem' }}>
+    <main style={{ maxWidth: '480px', margin: '0 auto', paddingBottom: '2rem' }}>
       <h1 style={{ padding: '1.25rem 1rem 0', margin: 0, fontSize: '1.5rem', fontWeight: 700, color: '#fff' }}>
         {t('title')}
       </h1>

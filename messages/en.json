@@ -88,8 +88,7 @@
     "completed": "Completed",
     "startProgram": "Start",
     "loading": "Loading...",
-    "upgrade": "Get Premium",
-    "nextDay": "Next workout"
+    "upgrade": "Get Premium"
   },
   "tracking": {
     "title": "Progress Tracking",
@@ -116,11 +115,9 @@
     "sec": "sec"
   },
   "billing": {
-    "title": "All programs. One subscription.",
-    "titleActive": "Account",
-    "subtitle": "Train every day. No searching for plans, no wasted time.",
+    "title": "Billing & Subscription",
     "subscriptionTitle": "Studio Membership",
-    "noSubscription": "All programs, progress tracking and new plans every month.",
+    "noSubscription": "All programs, progress tracking, and new plans every month.",
     "valueHeadline": "One access to everything in Studio",
     "valueSub": "Programs, progress, and support in one membership.",
     "cancelAnytime": "Cancel anytime",
@@ -130,7 +127,7 @@
     "faq1q": "When am I charged?",
     "faq1a": "After starting membership, billing repeats monthly on the same date.",
     "faq2q": "How do I cancel?",
-    "faq2a": "Anytime from your account. Access stays active until the end of the paid period.",
+    "faq2a": "Anytime from billing. Access stays active until the end of the paid period.",
     "faq3q": "Does this include all programs?",
     "faq3a": "Yes. Studio Membership includes all current programs and future updates.",
     "statusActive": "Active",
@@ -141,19 +138,16 @@
     "included": "What's included",
     "proName": "Studio Membership",
     "priceLabel": "$5.99",
-    "subscribe": "Start training",
+    "subscribe": "Subscribe",
     "perMonth": "/ mo",
     "loading": "Loading...",
     "successMessage": "Subscription activated!",
     "canceledMessage": "Checkout canceled.",
-    "logout": "Log out",
-    "streakLabel": "day streak",
-    "totalSessions": "workouts",
     "featuresList": [
-      "All programs — now and new ones monthly",
-      "Daily progress tracking",
-      "Growth charts for every exercise",
-      "Streak and daily motivation"
+      "All premium programs",
+      "Unlimited exercise access",
+      "Progress tracking",
+      "New programs monthly"
     ]
   },
   "workout": {
@@ -177,13 +171,12 @@
     "set": "Set",
     "again": "Try again",
     "saved": "Saved",
-    "edit": "Edit",
     "newRecord": "New record!",
     "target": "Target",
     "sec": "sec",
     "sets": "sets",
     "reps": "reps",
-    "allDone": "Day complete",
+    "allDone": "Day complete! 🎉",
     "completionTitle": "Day Complete!",
     "completionSubtitle": "Great work, keep it up!",
     "completionExercises": "{count} exercises",

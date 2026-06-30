@@ -25,8 +25,6 @@ interface WeekAccordionProps {
   locale: string
   programSlug: string
   labels: {
-    completed: string
-    nextDay?: string
     paid: string
   }
 }

@@ -59,35 +59,13 @@ export default async function ProgramDetailPage({
         }}>
           {t(program.level as 'beginner' | 'intermediate' | 'advanced')}
         </span>
-        <span style={{ color: program.is_free ? '#444' : '#c8a84b', fontSize: '0.75rem' }}>
+        <span style={{ color: '#444', fontSize: '0.75rem' }}>
           {program.is_free ? t('free') : t('paid')}
         </span>
       </div>
 
       {!enrolled && canAccess && (
         <StartProgramButton programId={program.id} isFree={program.is_free} slug={slug} />
-      )}
-      {enrolled && nextDay && (
-        <Link
-          href={`/programs/${slug}/w${nextDay.weeks.order}/d${nextDay.order}`}
-          style={{
-            display: 'block',
-            marginBottom: '1.5rem',
-            padding: '0.875rem 2rem',
-            background: '#39e600',
-            color: '#000',
-            borderRadius: '14px',
-            fontSize: '0.9rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-            width: '100%',
-            textAlign: 'center',
-            textDecoration: 'none',
-            boxSizing: 'border-box',
-          }}
-        >
-          {t('continueProgram')}
-        </Link>
       )}
       {!enrolled && !canAccess && (
         <Link
@@ -118,8 +96,6 @@ export default async function ProgramDetailPage({
         locale={locale}
         programSlug={slug}
         labels={{
-          completed: t('completed'),
-          nextDay: t('nextDay'),
           paid: t('paid'),
         }}
       />
