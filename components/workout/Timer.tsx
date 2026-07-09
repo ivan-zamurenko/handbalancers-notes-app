@@ -62,9 +62,10 @@ export default function Timer({ label, savedValue, onSave, onEdit, onStart, isBl
           onClick={() => { onStart?.(); setState('running') }}
           disabled={isBlocked}
           style={{
-            padding: '0.5rem 1.25rem', borderRadius: '8px', border: 'none', fontWeight: 700, flexShrink: 0,
-            background: isBlocked ? '#1e1e1e' : '#39e600',
-            color: isBlocked ? '#444' : '#000',
+            padding: '0.5rem 1.25rem', borderRadius: '8px', fontWeight: 700, flexShrink: 0,
+            background: isBlocked ? 'transparent' : 'transparent',
+            border: isBlocked ? '1px solid #222' : '1px solid #2a3d1a',
+            color: isBlocked ? '#333' : '#39e600',
             cursor: isBlocked ? 'not-allowed' : 'pointer',
           }}
         >

@@ -49,11 +49,6 @@ export default function PricingCard({ priceId, amountLabel, locale }: Props) {
       </ul>
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem', marginBottom: '1.2rem' }}>
-        {[t('cancelAnytime'), t('renewalInfo'), t('refundInfo')].map(item => (
-          <span key={item} style={{ fontSize: '0.72rem', color: '#777', border: '1px solid #2a2a2a', borderRadius: '8px', padding: '0.32rem 0.52rem' }}>
-            {item}
-          </span>
-        ))}
       </div>
 
       {error && (
@@ -77,6 +72,9 @@ export default function PricingCard({ priceId, amountLabel, locale }: Props) {
       >
         {loading ? t('loading') : t('subscribe')}
       </button>
+      <p style={{ color: '#444', fontSize: '0.75rem', textAlign: 'center', margin: '0.75rem 0 0' }}>
+        {t('cancelAnytime')} · {t('renewalInfo')}
+      </p>
     </div>
   )
 }

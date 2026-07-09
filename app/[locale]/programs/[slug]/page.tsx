@@ -42,28 +42,61 @@ export default async function ProgramDetailPage({
 
   return (
     <main style={{ padding: '2.5rem 1.25rem 3rem', maxWidth: '480px', margin: '0 auto' }}>
-      <h1 style={{ color: '#fff', fontWeight: 800, margin: '0 0 0.625rem' }}>{title}</h1>
-      {description && (
-        <p style={{ color: '#666', margin: '0 0 1.125rem', fontSize: '0.85rem', lineHeight: 1.5 }}>{description}</p>
-      )}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2.25rem' }}>
+      <Link
+        href="/programs"
+        style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', color: '#555', fontSize: '0.85rem', textDecoration: 'none', marginBottom: '1.25rem', transition: 'color 0.15s' }}
+      >
+        <svg width="6" height="11" viewBox="0 0 6 11" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 1L1 5.5L5 10"/></svg>
+        {t('back')}
+      </Link>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
         <span style={{
-          fontSize: '0.7rem',
+          fontSize: '0.65rem',
           fontWeight: 700,
           color: levelColor,
-          border: `1px solid ${levelColor}`,
+          border: `1px solid ${levelColor}33`,
+          background: `${levelColor}12`,
           borderRadius: '999px',
-          padding: '2px 9px',
+          padding: '2px 8px',
           letterSpacing: '0.06em',
           textTransform: 'uppercase',
         }}>
           {t(program.level as 'beginner' | 'intermediate' | 'advanced')}
         </span>
-        <span style={{ color: '#444', fontSize: '0.75rem' }}>
+        <span style={{ color: '#555', fontSize: '0.72rem' }}>
           {program.is_free ? t('free') : t('paid')}
         </span>
       </div>
+      <h1 style={{ color: '#fff', fontWeight: 800, margin: '0 0 0.625rem' }}>{title}</h1>
+      {description && (
+        <p style={{ color: '#666', margin: '0 0 2rem', fontSize: '0.85rem', lineHeight: 1.5 }}>{description}</p>
+      )}
 
+      {enrolled && nextDay && (
+        <Link
+          href={`/programs/${slug}/w${nextDay.weeks.order}/d${nextDay.order}`}
+          style={{
+            display: 'inline-block',
+            marginBottom: '2rem',
+            padding: '0.75rem 2rem',
+            background: '#39e600',
+            color: '#000',
+            borderRadius: '12px',
+            fontWeight: 700,
+            fontSize: '0.85rem',
+            textDecoration: 'none',
+            textTransform: 'uppercase',
+            letterSpacing: '0.15em',
+          }}
+        >
+          {t('continueProgram')}
+        </Link>
+      )}
+      {enrolled && !nextDay && (
+        <p style={{ color: '#39e600', fontSize: '0.85rem', fontWeight: 600, marginBottom: '2rem' }}>
+          ✓ {t('completed')}
+        </p>
+      )}
       {!enrolled && canAccess && (
         <StartProgramButton programId={program.id} isFree={program.is_free} slug={slug} />
       )}

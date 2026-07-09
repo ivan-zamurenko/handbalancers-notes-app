@@ -17,9 +17,9 @@ export default async function LoginPage({
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
       background: '#0d0d0d',
-      padding: '3.5rem 1.5rem 2.5rem',
+      padding: '2rem 1.5rem',
       position: 'relative',
     }}>
       <div style={{ position: 'absolute', top: '1.25rem', right: '1.25rem' }}>

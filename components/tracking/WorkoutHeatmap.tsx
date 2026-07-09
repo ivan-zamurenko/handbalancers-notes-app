@@ -1,5 +1,6 @@
 'use client'
 import { useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import type { WorkoutLogWithExercise } from '@/types'
 
 const CELL = 11
@@ -14,6 +15,7 @@ function getColor(count: number): string {
 }
 
 export default function WorkoutHeatmap({ logs, locale }: { logs: WorkoutLogWithExercise[]; locale: string }) {
+  const t = useTranslations('tracking')
   const currentYear = new Date().getFullYear()
   const [year, setYear] = useState(currentYear)
 
@@ -79,7 +81,7 @@ export default function WorkoutHeatmap({ logs, locale }: { logs: WorkoutLogWithE
     <div style={{ marginBottom: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
         <p style={{ fontSize: '0.8rem', color: '#555', margin: 0 }}>
-          {totalForYear} {isUa ? 'тренувань' : 'workouts'}
+          {totalForYear} {t('heatmapWorkouts')}
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <button
@@ -165,11 +167,11 @@ export default function WorkoutHeatmap({ logs, locale }: { logs: WorkoutLogWithE
 
       {/* Легенда — поза зоною скролу */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 8, justifyContent: 'flex-end' }}>
-        <span style={{ fontSize: '0.6rem', color: '#444' }}>{isUa ? 'Менше' : 'Less'}</span>
+        <span style={{ fontSize: '0.6rem', color: '#444' }}>{t('heatmapLess')}</span>
         {[0, 2, 4, 7, 11].map(n => (
           <div key={n} style={{ width: CELL, height: CELL, borderRadius: 2, background: getColor(n) }} />
         ))}
-        <span style={{ fontSize: '0.6rem', color: '#444' }}>{isUa ? 'Більше' : 'More'}</span>
+        <span style={{ fontSize: '0.6rem', color: '#444' }}>{t('heatmapMore')}</span>
       </div>
     </div>
   )

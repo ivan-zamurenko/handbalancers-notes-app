@@ -30,5 +30,5 @@ export async function registerAction(formData: FormData) {
   if (authError) redirect(`/${locale}/register?error=` + encodeURIComponent(authError))
 
   revalidatePath('/', 'layout')
-  redirect(`/${locale}/dashboard`)
+  redirect(`/${locale}/onboarding`)
 }

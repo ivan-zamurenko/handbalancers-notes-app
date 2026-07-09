@@ -2,15 +2,12 @@ import { redirect } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import FaqBlock from '@/components/billing/blocks/FaqBlock'
 import IncludedFeaturesBlock from '@/components/billing/blocks/IncludedFeaturesBlock'
-import ValueIntroBlock from '@/components/billing/blocks/ValueIntroBlock'
 import PricingCard from '@/components/billing/PricingCard'
 import SubscriptionStatus from '@/components/billing/SubscriptionStatus'
+import LogoutButton from '@/components/auth/LogoutButton'
 import { getCurrentUser } from '@/lib/services/auth-service'
 import { getUserSubscription } from '@/lib/services/subscriptions'
 import { getSubscriptionPrice } from '@/lib/services/billing-config'
-
-type ActiveBlock = 'includedFeatures'
-type InactiveBlock = 'valueIntro' | 'pricingCard' | 'faq'
 
 export default async function BillingPage({
   params,
@@ -36,20 +33,6 @@ export default async function BillingPage({
     { q: t('faq2q'), a: t('faq2a') },
     { q: t('faq3q'), a: t('faq3a') },
   ]
-  const activeBlocksOrder: ActiveBlock[] = ['includedFeatures']
-  const inactiveBlocksOrder: InactiveBlock[] = ['valueIntro', 'pricingCard', 'faq']
-
-  // Pattern: Module / LEGO
-  const activeBlocks: Record<ActiveBlock, JSX.Element> = {
-    includedFeatures: <IncludedFeaturesBlock title={t('included')} features={features} />,
-  }
-
-  // Pattern: Module / LEGO
-  const inactiveBlocks: Record<InactiveBlock, JSX.Element> = {
-    valueIntro: <ValueIntroBlock headline={t('valueHeadline')} description={t('noSubscription')} />,
-    pricingCard: <PricingCard priceId={price.priceId} amountLabel={price.amountLabel} locale={locale} />,
-    faq: <FaqBlock title={t('faqTitle')} items={faqItems} />,
-  }
 
   return (
     <main style={{ maxWidth: '480px', margin: '0 auto', padding: '2rem 1rem' }}>
@@ -74,20 +57,21 @@ export default async function BillingPage({
         </div>
       )}
 
-      <h2 style={{ fontSize: '1rem', fontWeight: 600, color: '#888', marginBottom: '0.75rem' }}>
-        {t('subscriptionTitle')}
-      </h2>
-      <SubscriptionStatus subscription={subscription} locale={locale} />
-
       {isActive ? (
-        activeBlocksOrder.map(block => (
-          <div key={block}>{activeBlocks[block]}</div>
-        ))
+        <>
+          <SubscriptionStatus subscription={subscription} locale={locale} />
+          <IncludedFeaturesBlock title={t('included')} features={features} />
+        </>
       ) : (
-        inactiveBlocksOrder.map(block => (
-          <div key={block}>{inactiveBlocks[block]}</div>
-        ))
+        <>
+          <PricingCard priceId={price.priceId} amountLabel={price.amountLabel} locale={locale} />
+          <FaqBlock title={t('faqTitle')} items={faqItems} />
+        </>
       )}
+
+      <div style={{ marginTop: '3rem', paddingTop: '1.5rem', borderTop: '1px solid #1a1a1a' }}>
+        <LogoutButton label={t('logout')} />
+      </div>
     </main>
   )
 }

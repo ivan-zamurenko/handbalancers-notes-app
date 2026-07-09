@@ -5,6 +5,13 @@ import { getCategories, getAllPrograms, getAllEnrollments, getCompletedProgramId
 import ProgramCard from '@/components/programs/ProgramCard'
 import ProgramShelf from '@/components/programs/ProgramShelf'
 
+const CATEGORY_COLORS: Record<string, string> = {
+  handstand:  '#39e600',
+  stretching: '#a78bfa',
+  strength:   '#fb923c',
+  health:     '#f472b6',
+}
+
 export default async function ProgramsPage({
   params,
 }: {
@@ -64,6 +71,7 @@ export default async function ProgramsPage({
                 programs={categoryPrograms}
                 locale={locale}
                 completedIds={completedIds}
+                categoryColor={CATEGORY_COLORS[category.slug] ?? '#2a2a2a'}
               />
             </div>
           </section>

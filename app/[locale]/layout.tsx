@@ -29,6 +29,7 @@ export default async function LocaleLayout({
   const h = await headers()
   const pathname = h.get('x-pathname') ?? ''
   const isBillingPage = pathname.startsWith(`/${locale}/billing`)
+  const isOnboardingPage = pathname.startsWith(`/${locale}/onboarding`)
 
   // Якщо trial вичерпано і немає підписки — показуємо paywall замість контенту
   const showPaywall = !!trialStatus && !trialStatus.hasAccess && !isBillingPage
@@ -54,6 +55,15 @@ export default async function LocaleLayout({
           </Link>
         </main>
         <Footer locale={locale} />
+      </NextIntlClientProvider>
+    )
+  }
+
+  // Онбординг — clean full-screen без Navbar та Footer
+  if (isOnboardingPage) {
+    return (
+      <NextIntlClientProvider messages={messages}>
+        {children}
       </NextIntlClientProvider>
     )
   }

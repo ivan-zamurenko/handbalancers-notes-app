@@ -63,7 +63,9 @@
     "welcomeNew": "Welcome!",
     "welcomeNewSub": "Welcome to Handbalancer's Studio. Pick your goal and start your first workout today.",
     "allDone": "Day complete",
-    "programComplete": "Program complete"
+    "programComplete": "Program complete",
+    "days": "days",
+    "trainingSessions": "training days"
   },
   "programs": {
     "title": "Training Programs",
@@ -78,7 +80,7 @@
     "weeks": "weeks",
     "days": "days",
     "forYou": "For You",
-    "back": "← Programs",
+    "back": "Programs",
     "continueProgram": "Continue",
     "noPrograms": "No programs available",
     "completed": "Completed",
@@ -112,7 +114,10 @@
     "noStatsCta": "Go to today's workout →",
     "handstandToday": "Handstand today",
     "min": "min",
-    "sec": "sec"
+    "sec": "sec",
+    "heatmapWorkouts": "workouts",
+    "heatmapLess": "Less",
+    "heatmapMore": "More"
   },
   "billing": {
     "title": "Billing & Subscription",
@@ -147,7 +152,8 @@
       "Unlimited exercise access",
       "Progress tracking",
       "New programs monthly"
-    ]
+    ],
+    "logout": "Log out"
   },
   "workout": {
     "title": "Workout",
@@ -187,7 +193,9 @@
     "backHome": "Back to Home",
     "favorite": "Add to favorites",
     "unfavorite": "Remove from favorites",
-    "saveError": "Could not save. Please try again."
+    "saveError": "Could not save. Please try again.",
+    "weekLabel": "Week {n}",
+    "dayLabel": "Day {n}"
   },
   "stats": {
     "title": "Average Stats",
@@ -216,6 +224,19 @@
     "description": "Looks like the link is outdated or this page never existed",
     "backHome": "Go Home",
     "browsePrograms": "Browse Programs"
+  },
+  "onboarding": {
+    "title": "What's your main goal?",
+    "subtitle": "We'll pick your first program based on your choice",
+    "cta": "Get started →",
+    "handstand": "Handstand",
+    "handstandSub": "Balance, arm strength and body control",
+    "flexibility": "Flexibility",
+    "flexibilitySub": "New range of motion and joint mobility",
+    "strength": "Strength",
+    "strengthSub": "Build a solid foundation with bodyweight",
+    "health": "Prehab & Wellness",
+    "healthSub": "Posture, injury prevention, joints"
   },
   "error": {
     "title": "Something went wrong",

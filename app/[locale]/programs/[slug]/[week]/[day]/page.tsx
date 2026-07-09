@@ -34,6 +34,9 @@ export default async function WorkoutSessionPage({
 
   const favoriteIds = new Set(favorites.map(f => f.id))
 
+  const programTitle = locale === 'en' ? dayContext.weeks.programs.title_en : dayContext.weeks.programs.title_ua
+  const dayTitle = locale === 'en' ? dayContext.title_en : dayContext.title_ua
+
   return (
     <main style={{ padding: '1.5rem 1.25rem 6rem', maxWidth: '520px', margin: '0 auto' }}>
       <WorkoutDay
@@ -42,6 +45,7 @@ export default async function WorkoutSessionPage({
         exercises={exercises}
         favoriteIds={[...favoriteIds]}
         locale={locale}
+        context={{ programTitle, slug, weekOrder, dayOrder, dayTitle }}
       />
     </main>
   )

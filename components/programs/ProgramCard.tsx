@@ -29,9 +29,7 @@ export default function ProgramCard({ program, locale, isCompleted = false }: Pr
         <span style={{ fontSize: '0.8rem', color: '#555' }}>
           {levelLabel}
           {' · '}
-          <span style={{ color: program.is_free ? '#555' : '#c8a84b' }}>
-            {program.is_free ? t('free') : t('paid')}
-          </span>
+          {program.is_free ? t('free') : t('paid')}
         </span>
         <Link href={`/programs/${program.slug}`} style={{ color: '#fff', fontSize: '0.875rem', fontWeight: 500, textDecoration: 'none' }}>{t('view')} →</Link>
       </div>

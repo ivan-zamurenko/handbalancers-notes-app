@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from '@/i18n/navigation'
+import { Link } from '@/i18n/navigation'
 import type { Exercise } from '@/types'
 import ExerciseCard from './ExerciseCard'
 import { saveLog, updateLogAction, toggleFavoriteAction } from './actions'
@@ -14,15 +15,24 @@ type LogResult = {
   isHold: boolean
 }
 
+type WorkoutContext = {
+  programTitle: string
+  slug: string
+  weekOrder: number
+  dayOrder: number
+  dayTitle: string
+}
+
 type Props = {
   dayId: string
   exercises: Exercise[]
   favoriteIds: string[]
   locale: string
   completeHref?: string
+  context?: WorkoutContext
 }
 
-export default function WorkoutDay({ dayId, exercises, favoriteIds, locale, completeHref }: Props) {
+export default function WorkoutDay({ dayId, exercises, favoriteIds, locale, completeHref, context }: Props) {
   const t = useTranslations('workout')
   const router = useRouter()
   const today = new Date().toISOString().slice(0, 10)
@@ -116,7 +126,26 @@ export default function WorkoutDay({ dayId, exercises, favoriteIds, locale, comp
 
   return (
     <div>
-      <h1 style={{ margin: '0 0 1.75rem', fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em' }}>{t('title')}</h1>
+      {/* Контекст: back link + програма/тиждень/день */}
+      <div style={{ marginBottom: '1.75rem' }}>
+        {context && (
+          <div style={{ marginBottom: '0.75rem' }}>
+            <Link
+              href={`/programs/${context.slug}`}
+              style={{ color: '#555', fontSize: '0.85rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', transition: 'color 0.15s' }}
+            >
+              <svg width="6" height="11" viewBox="0 0 6 11" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 1L1 5.5L5 10"/></svg>
+              {context.programTitle}
+            </Link>
+            <p style={{ margin: '0.2rem 0 0', color: '#3a3a3a', fontSize: '0.72rem', letterSpacing: '0.04em', fontWeight: 500 }}>
+              {t('weekLabel', { n: context.weekOrder })} · {t('dayLabel', { n: context.dayOrder })}
+            </p>
+          </div>
+        )}
+        <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
+          {context?.dayTitle ?? t('title')}
+        </h1>
+      </div>
 
       {error && (
         <div style={{ background: 'rgba(239, 68, 68, 0.08)', color: '#f87171', padding: '0.75rem', borderRadius: '8px', marginBottom: '1rem' }}>

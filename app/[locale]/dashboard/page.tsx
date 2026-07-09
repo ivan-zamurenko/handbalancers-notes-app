@@ -3,12 +3,12 @@ import { getTranslations } from 'next-intl/server'
 import type { CSSProperties } from 'react'
 import { Link } from '@/i18n/navigation'
 import { getCurrentUser } from '@/lib/services/auth-service'
-import { getFavoriteExercises, getAllEnrollments, getNextDay, getCompletedDayIds, getTotalDaysInProgram, getDoneProgramIdsToday } from '@/lib/services/data'
+import { getFavoriteExercises, getAllEnrollments, getNextDay, getCompletedDayIds, getTotalDaysInProgram, getDoneProgramIdsToday, getDashboardStats } from '@/lib/services/data'
 import { getStreak } from '@/lib/services/training'
 import FavoriteChartCarousel from '@/components/dashboard/FavoriteChartCarousel'
 
 // Кільце прогресу програми — головний емоційний елемент героя (виконано N з M днів).
-function ProgressRing({ completed, total }: { completed: number; total: number }) {
+function ProgressRing({ completed, total, ofLabel, daysLabel }: { completed: number; total: number; ofLabel: string; daysLabel: string }) {
   const size = 88
   const stroke = 7
   const r = (size - stroke) / 2
@@ -23,7 +23,8 @@ function ProgressRing({ completed, total }: { completed: number; total: number }
       </svg>
       <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <span style={{ fontSize: '1.6rem', fontWeight: 800, lineHeight: 1, color: '#fff', letterSpacing: '-0.02em' }}>{completed}</span>
-        <span style={{ fontSize: '0.7rem', color: '#666', marginTop: '1px' }}>/ {total}</span>
+        <span style={{ fontSize: '0.7rem', color: '#666', marginTop: '1px' }}>{ofLabel}</span>
+        <span style={{ fontSize: '0.58rem', color: '#444', marginTop: '1px', letterSpacing: '0.02em' }}>{daysLabel}</span>
       </div>
     </div>
   )
@@ -55,11 +56,12 @@ export default async function DashboardPage({
   const user = await getCurrentUser()
   if (!user) redirect(`/${locale}/login`)
 
-  const [streak, favorites, enrollments, doneTodayIds] = await Promise.all([
+  const [streak, favorites, enrollments, doneTodayIds, stats] = await Promise.all([
     getStreak(user.id),
     getFavoriteExercises(user.id),
     getAllEnrollments(user.id),
     getDoneProgramIdsToday(user.id),
+    getDashboardStats(user.id),
   ])
 
   const t = await getTranslations('dashboard')
@@ -137,10 +139,10 @@ export default async function DashboardPage({
         borderRadius: '24px',
         background: 'linear-gradient(180deg, #171717 0%, #101010 100%)',
         padding: '1.75rem',
-        marginBottom: others.length > 0 ? '1rem' : '3.5rem',
+        marginBottom: '0.75rem',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-          <ProgressRing completed={ringCompleted} total={primary.totalDays} />
+          <ProgressRing completed={ringCompleted} total={primary.totalDays} ofLabel={t('ofTotal', { total: primary.totalDays })} daysLabel={t('days')} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <p style={{ margin: 0, fontSize: '0.8rem', color: '#888', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pTitle}</p>
             <h2 style={{ margin: '0.2rem 0 0', fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#fff', lineHeight: 1.15 }}>{heroTitle}</h2>
@@ -163,6 +165,18 @@ export default async function DashboardPage({
           </Link>
         )}
       </section>
+
+      {/* ── Статистика ── */}
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: others.length > 0 ? '0.75rem' : '3.5rem' }}>
+        <div style={{ flex: 1, background: '#111', border: '1px solid #1a1a1a', borderRadius: '16px', padding: '1rem 1.125rem' }}>
+          <p style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.02em', lineHeight: 1 }}>{stats.totalSessions}</p>
+          <p style={{ margin: '4px 0 0', fontSize: '0.72rem', color: '#555', fontWeight: 500 }}>{t('trainingSessions')}</p>
+        </div>
+        <div style={{ flex: 1, background: '#111', border: '1px solid #1a1a1a', borderRadius: '16px', padding: '1rem 1.125rem' }}>
+          <p style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: streak > 0 ? '#fff' : '#2a2a2a', letterSpacing: '-0.02em', lineHeight: 1 }}>🔥 {streak}</p>
+          <p style={{ margin: '4px 0 0', fontSize: '0.72rem', color: '#555', fontWeight: 500 }}>{t('streakLabel')}</p>
+        </div>
+      </div>
 
       {/* ── Інші програми (компактно) ── */}
       {others.length > 0 && (

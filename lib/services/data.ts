@@ -14,5 +14,5 @@ export {
 export { getExercisesByDay } from '@/lib/db/exercises'
 export { getFavoriteExercises, toggleFavorite } from '@/lib/db/favorites'
 export { getNextDay, getCompletedDayIds, getDayByPath, getDayContext, getDoneProgramIdsToday, getTotalDaysInProgram } from '@/lib/db/dayProgress'
-export { getLogsByUser, getChartData, getHandstandChartData, updateLog, getRadarData } from '@/lib/db/workoutLogs'
+export { getLogsByUser, getChartData, getHandstandChartData, updateLog, getRadarData, getDashboardStats } from '@/lib/db/workoutLogs'
 export type { CreateLogInput, UpdateLogInput, RadarDataPoint } from '@/lib/db/workoutLogs'

@@ -7,9 +7,10 @@ type Props = {
   programs: Program[]
   locale: string
   completedIds: Set<string>
+  categoryColor?: string
 }
 
-export default async function ProgramShelf({ programs, locale, completedIds }: Props) {
+export default async function ProgramShelf({ programs, locale, completedIds, categoryColor }: Props) {
   const t = await getTranslations('programs')
 
   return (
@@ -42,6 +43,7 @@ export default async function ProgramShelf({ programs, locale, completedIds }: P
               minHeight: '110px',
               background: '#141414',
               border: '1px solid #1e1e1e',
+              borderTop: `2px solid ${categoryColor ?? '#2a2a2a'}`,
               borderRadius: '12px',
               padding: '1rem',
               scrollSnapAlign: 'start',
@@ -53,7 +55,7 @@ export default async function ProgramShelf({ programs, locale, completedIds }: P
             </p>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem' }}>
               <span style={{ fontSize: '0.75rem', color: '#555' }}>
-                {levelLabel} · <span style={{ color: program.is_free ? '#555' : '#c8a84b' }}>{program.is_free ? t('free') : t('paid')}</span>
+                {levelLabel} · {program.is_free ? t('free') : t('paid')}
               </span>
               {isCompleted && <span style={{ fontSize: '0.75rem', color: '#39e600' }}>✓</span>}
             </div>
