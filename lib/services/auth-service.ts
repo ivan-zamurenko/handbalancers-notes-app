@@ -1,4 +1,5 @@
 import { getProfile, getUser, signIn, signOut, signUp } from '@/lib/db/auth'
+import { sendWelcomeEmail } from '@/lib/email'
 import type { Profile } from '@/types'
 
 export type LoginInput = {
@@ -10,6 +11,7 @@ export type RegisterInput = {
   email: string
   password: string
   name: string
+  locale: string
 }
 
 // Pattern: Facade
@@ -20,6 +22,8 @@ export async function loginWithEmail(input: LoginInput): Promise<void> {
 // Pattern: Facade
 export async function registerWithEmail(input: RegisterInput): Promise<void> {
   await signUp(input.email, input.password, input.name)
+  // fire-and-forget: email не блокує реєстрацію якщо впаде
+  void sendWelcomeEmail(input.email, input.name, input.locale)
 }
 
 // Pattern: Facade
