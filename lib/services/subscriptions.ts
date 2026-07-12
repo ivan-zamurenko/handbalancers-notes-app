@@ -7,8 +7,7 @@ import {
   updateSubscriptionStatus as updateSubscriptionStatusRepo,
 } from '@/lib/db/subscriptions'
 import type { Subscription, SubscriptionStatus } from '@/types'
-
-const DAY_MS = 86_400_000
+import { DAY_MS } from '@/lib/constants'
 
 export type TrialStatus = {
   hasAccess: boolean

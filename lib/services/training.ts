@@ -4,8 +4,7 @@ import { createLog, getLogsByExercisesToday, getLogsSummaryToday, getPersonalBes
 import { getCompletedDates, markDayComplete } from '@/lib/db/dayProgress'
 import { getExerciseById, getExercisesByDay } from '@/lib/db/exercises'
 import type { WorkoutLog } from '@/types'
-
-const DAY_MS = 86_400_000
+import { DAY_MS } from '@/lib/constants'
 
 /**
  * Повертає кількість підряд ідучих днів, у які юзер завершив хоча б один день програми (streak).

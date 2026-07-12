@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 import type { WorkoutLogWithExercise } from '@/types'
+import { DAY_MS } from '@/lib/constants'
 
 const CELL = 11
 const GAP = 3
@@ -37,7 +38,7 @@ export default function WorkoutHeatmap({ logs, locale }: { logs: WorkoutLogWithE
     // Завжди малюємо повний рік до 31 грудня
     const end = new Date(year, 11, 31)
 
-    const totalDays = Math.ceil((end.getTime() - start.getTime()) / 86400000) + 1
+    const totalDays = Math.ceil((end.getTime() - start.getTime()) / DAY_MS) + 1
     const weeksCount = Math.ceil(totalDays / 7)
 
     const weeks: { date: string; count: number }[][] = []

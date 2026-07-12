@@ -1,10 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase'
+import { fetchHandstandChartData, fetchExerciseChartData } from './actions'
 import ProgressChart from './ProgressChart'
-
-// Supabase клієнт — один на весь модуль, не створюємо при кожному fetch
-const supabase = createClient()
 
 const PERIODS = [7, 30, 90] as const
 
@@ -20,65 +17,6 @@ interface Props {
   locale: string
   emptyText: string
   emptySubText?: string
-}
-
-async function fetchHandstandData(userId: string, days: number): Promise<{ date: string; value: number }[]> {
-  const since = new Date(Date.now() - days * 86_400_000).toISOString()
-
-  // Один запит з JOIN — exercises!inner фільтрує тільки is_handstand=true
-  const { data } = await supabase
-    .from('workout_logs')
-    .select('logged_at, hold_sets, exercises!inner(is_handstand)')
-    .eq('user_id', userId)
-    .eq('exercises.is_handstand', true)
-    .not('hold_sets', 'is', null)
-    .gte('logged_at', since)
-    .order('logged_at', { ascending: true })
-
-  if (!data?.length) return []
-
-  const grouped: Record<string, number[]> = {}
-  for (const r of data) {
-    if (!(r.hold_sets as number[] | null)?.length) continue
-    const date = (r.logged_at as string).slice(0, 10)
-    grouped[date] ??= []
-    grouped[date].push(Math.max(...r.hold_sets as number[]))
-  }
-
-  return Object.entries(grouped).map(([date, values]) => ({ date, value: Math.max(...values) }))
-}
-
-async function fetchExerciseData(userId: string, exerciseId: string, days: number): Promise<{ date: string; value: number }[]> {
-  const since = new Date(Date.now() - days * 86_400_000).toISOString()
-
-  const { data } = await supabase
-    .from('workout_logs')
-    .select('logged_at, hold_sets, reps_sets')
-    .eq('user_id', userId)
-    .eq('exercise_id', exerciseId)
-    .gte('logged_at', since)
-    .order('logged_at', { ascending: true })
-
-  if (!data?.length) return []
-
-  const grouped: Record<string, number[]> = {}
-  let isHold = false
-  for (const r of data) {
-    const date = (r.logged_at as string).slice(0, 10)
-    grouped[date] ??= []
-    if ((r.hold_sets as number[] | null)?.length) {
-      isHold = true
-      grouped[date].push(Math.max(...r.hold_sets as number[]))
-    } else if ((r.reps_sets as number[] | null)?.length) {
-      const sets = r.reps_sets as number[]
-      grouped[date].push(Math.round(sets.reduce((a, b) => a + b, 0) / sets.length))
-    }
-  }
-
-  const aggregate = (nums: number[]) =>
-    isHold ? Math.max(...nums) : Math.round(nums.reduce((a, b) => a + b, 0) / nums.length)
-
-  return Object.entries(grouped).map(([date, values]) => ({ date, value: aggregate(values) }))
 }
 
 export default function ProgressChartWithPeriod({
@@ -100,8 +38,8 @@ export default function ProgressChartWithPeriod({
     setLoading(true)
     const promise =
       type === 'handstand'
-        ? fetchHandstandData(userId, period)
-        : fetchExerciseData(userId, exerciseId!, period)
+        ? fetchHandstandChartData(userId, period)
+        : fetchExerciseChartData(userId, exerciseId!, period)
 
     promise.then(d => {
       setData(d)

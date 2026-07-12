@@ -1,8 +1,7 @@
 // Pattern: Repository — ізолює всі запити до workout_logs від решти коду
 import { createClient } from '@/lib/supabase-server'
 import type { WorkoutLog, WorkoutLogWithExercise } from '@/types'
-
-const DAY_MS = 86_400_000
+import { DAY_MS } from '@/lib/constants'
 
 /** Повертає загальну статистику для дашборду: кількість тренувальних днів, середній hold і середні повторення. */
 export async function getDashboardStats(userId: string) {
