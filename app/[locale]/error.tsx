@@ -18,16 +18,6 @@ export default function ErrorPage({ reset }: ErrorPageProps) {
 
   return (
     <>
-      <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        .fu-1 { animation: fadeUp 0.4s ease-out 0.05s both; }
-        .fu-2 { animation: fadeUp 0.4s ease-out 0.18s both; }
-        .fu-3 { animation: fadeUp 0.4s ease-out 0.32s both; }
-      `}</style>
-
       <main style={{
         minHeight: '100vh',
         background: '#0d0d0d',

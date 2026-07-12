@@ -15,7 +15,6 @@ export default async function ProgramShelf({ programs, locale, completedIds, cat
 
   return (
     <div
-      className="shelf-scroll"
       style={{
         display: 'flex',
         gap: '0.75rem',

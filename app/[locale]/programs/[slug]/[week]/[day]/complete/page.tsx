@@ -47,24 +47,6 @@ export default async function WorkoutCompletePage({
 
   return (
     <>
-      <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        .fade-up { animation: fadeUp 0.45s ease-out forwards; }
-        .fade-up-1 { animation-delay: 0.05s; opacity: 0; }
-        .fade-up-2 { animation-delay: 0.18s; opacity: 0; }
-        .fade-up-3 { animation-delay: 0.32s; opacity: 0; }
-        .fade-up-4 { animation-delay: 0.48s; opacity: 0; }
-        @keyframes checkPop {
-          0%   { transform: scale(0.5); opacity: 0; }
-          70%  { transform: scale(1.1); opacity: 1; }
-          100% { transform: scale(1);   opacity: 1; }
-        }
-        .check-pop { animation: checkPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-      `}</style>
-
       <main style={{
         minHeight: '100vh',
         background: '#0d0d0d',

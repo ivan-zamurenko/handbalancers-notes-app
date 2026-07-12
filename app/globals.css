@@ -1,26 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+/* ── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
 body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
   background: #0d0d0d;
   color: #fff;
   font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
 }
+img, picture, video, canvas, svg { display: block; max-width: 100%; }
+input, button, textarea, select { font: inherit; }
 
-* {
-  box-sizing: border-box;
-}
-
-/* Responsive nav: bottom nav on mobile, top nav links on desktop */
-.mobile-bottom-nav { display: flex; }
-.desktop-nav { display: none; }
-
-@media (min-width: 640px) {
-  .mobile-bottom-nav { display: none !important; }
-  .desktop-nav { display: flex; }
-}
-
+/* ── Keyframes ─────────────────────────────────────── */
 @keyframes navUnderline {
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
@@ -31,6 +23,30 @@ body {
   to   { background-position: 200% 0; }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes checkPop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  70%  { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+@keyframes prPop {
+  0%   { opacity: 0; transform: scale(0.7); }
+  60%  { transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ── Utility classes (лише те що потребує CSS — анімації та media queries) ── */
+
+/* Loading skeleton */
 .skeleton {
   background: linear-gradient(90deg, #1a1a1a 25%, #242424 50%, #1a1a1a 75%);
   background-size: 200% 100%;
@@ -38,6 +54,25 @@ body {
   border-radius: 6px;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+/* Completion page — поява елементів */
+.check-pop { animation: checkPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.fade-up   { animation: fadeUp 0.45s ease-out forwards; }
+.fade-up-1 { animation-delay: 0.05s; opacity: 0; }
+.fade-up-2 { animation-delay: 0.18s; opacity: 0; }
+.fade-up-3 { animation-delay: 0.32s; opacity: 0; }
+.fade-up-4 { animation-delay: 0.48s; opacity: 0; }
+
+/* Error / not-found page */
+.fu-1 { animation: fadeUp 0.4s ease-out 0.05s both; }
+.fu-2 { animation: fadeUp 0.4s ease-out 0.18s both; }
+.fu-3 { animation: fadeUp 0.4s ease-out 0.32s both; }
+.fu-4 { animation: fadeUp 0.4s ease-out 0.48s both; }
+
+/* Responsive nav — media query неможливий в inline styles */
+.mobile-bottom-nav { display: flex; }
+.desktop-nav       { display: none; }
+
+@media (min-width: 640px) {
+  .mobile-bottom-nav { display: none !important; }
+  .desktop-nav       { display: flex; }
 }
