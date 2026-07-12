@@ -22,7 +22,7 @@ export async function registerAction(formData: FormData) {
 
   let authError: string | null = null
   try {
-    await registerWithEmail({ email, password, name, locale })
+    await registerWithEmail({ email, password, name })
   } catch (err: unknown) {
     authError = err instanceof Error ? err.message : 'Registration failed'
   }
