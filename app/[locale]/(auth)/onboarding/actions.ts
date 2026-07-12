@@ -5,21 +5,24 @@ import { getCurrentUser } from '@/lib/services/auth-service'
 import { getProgramBySlug, enrollProgram } from '@/lib/services/data'
 import { sendWelcomeEmail } from '@/lib/email'
 
-const GOAL_TO_SLUG: Record<string, string> = {
-  handstand:   'handstand-beginners',
-  flexibility: 'basic-flexibility',
-  strength:    'strength-foundations',
-  health:      'daily-prehab',
+// Pattern: Strategy — маппінг (ціль × рівень) → slug програми
+const GOAL_LEVEL_TO_SLUG: Record<string, Record<string, string>> = {
+  handstand:   { beginner: 'handstand-beginners',  intermediate: 'freestanding-handstand' },
+  flexibility: { beginner: 'basic-flexibility',    intermediate: 'splits-8-weeks' },
+  strength:    { beginner: 'basic-calisthenics',   intermediate: 'basic-calisthenics' },
+  health:      { beginner: 'back-rehabilitation',  intermediate: 'office-posture' },
 }
 
-/** Записує юзера на програму, що відповідає обраній цілі, і редіректить на День 1. */
+/** Записує юзера на програму відповідно до цілі та рівня, відправляє email, редіректить на День 1. */
 export async function onboardingAction(formData: FormData): Promise<void> {
   const locale = await getLocale()
   const user = await getCurrentUser()
   if (!user) redirect(`/${locale}/login`)
 
-  const goal = formData.get('goal') as string
-  const slug = GOAL_TO_SLUG[goal]
+  const goal  = formData.get('goal')  as string
+  const level = formData.get('level') as string
+
+  const slug = GOAL_LEVEL_TO_SLUG[goal]?.[level]
   if (!slug) redirect(`/${locale}/dashboard`)
 
   const program = await getProgramBySlug(slug)
@@ -27,8 +30,7 @@ export async function onboardingAction(formData: FormData): Promise<void> {
 
   await enrollProgram(user.id, program.id)
 
-  // fire-and-forget: email не блокує перехід на день 1
-  const day1Url = `/${locale}/programs/${slug}/w1/d1`
+  const day1Url    = `/${locale}/programs/${slug}/w1/d1`
   const programTitle = locale === 'en' ? (program.title_en ?? program.title_ua) : program.title_ua
   void sendWelcomeEmail({
     email: user.email!,
@@ -39,4 +41,6 @@ export async function onboardingAction(formData: FormData): Promise<void> {
   })
 
   redirect(day1Url)
+}
+
 }

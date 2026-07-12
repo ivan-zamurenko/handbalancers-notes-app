@@ -236,7 +236,14 @@
     "strength": "Strength",
     "strengthSub": "Build a solid foundation with bodyweight",
     "health": "Prehab & Wellness",
-    "healthSub": "Posture, injury prevention, joints"
+    "healthSub": "Posture, injury prevention, joints",
+    "levelTitle": "What's your level?",
+    "levelSubtitle": "We'll match you with the right program",
+    "beginner": "Starting from zero",
+    "beginnerSub": "No experience needed, we explain everything step by step",
+    "intermediate": "I have some experience",
+    "intermediateSub": "Trained before and ready for more challenge",
+    "back": "Back"
   },
   "error": {
     "title": "Something went wrong",
