@@ -72,10 +72,11 @@ export default function WorkoutHeatmap({ logs, locale }: { logs: WorkoutLogWithE
     return { weeks, monthLabels, totalForYear }
   }, [countByDate, year, locale])
 
-  const isUa = locale === 'ua'
-  const dayLabels = isUa
-    ? ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
-    : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  // Jan 1, 2023 = неділя — базова дата для генерації назв днів тижня
+  const bcp47 = locale === 'ua' ? 'uk-UA' : 'en-US'
+  const dayLabels = Array.from({ length: 7 }, (_, i) =>
+    new Date(2023, 0, i + 1).toLocaleDateString(bcp47, { weekday: 'short' })
+  )
   const shownDayIndices = new Set([1, 3, 5])
 
   return (

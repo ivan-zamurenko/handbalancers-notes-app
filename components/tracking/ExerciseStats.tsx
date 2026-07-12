@@ -24,7 +24,7 @@ function computeStats(exerciseId: string, logs: WorkoutLogWithExercise[]) {
 
 /** Сума секунд handstand-вправ за сьогодні (за локальним часом). */
 function computeHandstandToday(logs: WorkoutLogWithExercise[]): number {
-  const today = new Date().toLocaleDateString('sv-SE')  // формат YYYY-MM-DD
+  const today = new Date().toISOString().slice(0, 10)
   return logs
     .filter(l => l.exercises.is_handstand && l.logged_at.startsWith(today))
     .flatMap(l => l.hold_sets ?? [])
