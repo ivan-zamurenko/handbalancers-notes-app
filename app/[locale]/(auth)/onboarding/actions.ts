@@ -42,5 +42,3 @@ export async function onboardingAction(formData: FormData): Promise<void> {
 
   redirect(day1Url)
 }
-
-}
