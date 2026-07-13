@@ -67,7 +67,32 @@ export default function OnboardingClient() {
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       background: '#0d0d0d', padding: '2rem 1.5rem',
+      position: 'relative',
     }}>
+
+      {/* iOS-стайл back button — тільки на кроці 2 */}
+      {step === 2 && (
+        <button
+          type="button"
+          onClick={() => setStep(1)}
+          style={{
+            position: 'absolute', top: '1.25rem', left: '1.25rem',
+            background: 'none', border: 'none',
+            color: '#888', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: '0.25rem',
+            padding: '0.5rem', borderRadius: '8px',
+            fontSize: '0.85rem', fontWeight: 500,
+            transition: 'color 0.15s',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+          onMouseLeave={e => (e.currentTarget.style.color = '#888')}
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M11 4L6 9l5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      )}
+
       <div style={{ width: '100%', maxWidth: '380px' }}>
 
         {/* Лого */}
@@ -122,14 +147,6 @@ export default function OnboardingClient() {
         ) : (
           /* ── Крок 2: Рівень ── */
           <form onSubmit={handleSubmit}>
-            <button
-              type="button"
-              onClick={() => setStep(1)}
-              style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: '0.85rem', padding: '0 0 1.25rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
-            >
-              ← {t('back')}
-            </button>
-
             <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#fff', textAlign: 'center', margin: '0 0 0.5rem', lineHeight: 1.2 }}>
               {t('levelTitle')}
             </h1>
