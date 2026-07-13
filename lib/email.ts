@@ -1,8 +1,6 @@
 // Pattern: Adapter — ізолює Resend від решти коду. Якщо міняємо провайдера → тільки цей файл.
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 /** Email адреса відправника (має бути верифікований домен в Resend). */
 const FROM = process.env.RESEND_FROM ?? 'Handbalancers <hello@handbalancers.com>'
 
@@ -68,6 +66,11 @@ function welcomeHtml({ name, locale, programTitle, day1Url }: WelcomeEmailParams
  * Ніколи не кидає — помилка логується але не блокує flow.
  */
 export async function sendWelcomeEmail(params: WelcomeEmailParams): Promise<void> {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('[email] RESEND_API_KEY not set — skipping welcome email')
+    return
+  }
+  const resend = new Resend(process.env.RESEND_API_KEY)
   const isUa = params.locale === 'ua'
   const subject = isUa
     ? `Твій шлях розпочався — ${params.programTitle} 🤸`
