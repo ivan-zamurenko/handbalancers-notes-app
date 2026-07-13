@@ -44,6 +44,11 @@ input, button, textarea, select { font: inherit; }
   100% { opacity: 1; transform: scale(1); }
 }
 
+@keyframes drawLine {
+  from { stroke-dashoffset: 360; }
+  to   { stroke-dashoffset: 0; }
+}
+
 /* ── Utility classes (лише те що потребує CSS — анімації та media queries) ── */
 
 /* Loading skeleton */

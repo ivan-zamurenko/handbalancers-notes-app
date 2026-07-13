@@ -6,6 +6,7 @@ import { getCurrentUser } from '@/lib/services/auth-service'
 import { getFavoriteExercises, getAllEnrollments, getNextDay, getCompletedDayIds, getTotalDaysInProgram, getDoneProgramIdsToday, getDashboardStats } from '@/lib/services/data'
 import { getStreak } from '@/lib/services/training'
 import FavoriteChartCarousel from '@/components/dashboard/FavoriteChartCarousel'
+import ProgressMotivation from '@/components/dashboard/ProgressMotivation'
 
 // Кільце прогресу програми — головний емоційний елемент героя (виконано N з M днів).
 function ProgressRing({ completed, total, ofLabel, daysLabel }: { completed: number; total: number; ofLabel: string; daysLabel: string }) {
@@ -206,6 +207,9 @@ export default async function DashboardPage({
           })}
         </div>
       )}
+
+      {/* ── Мотивація для нових юзерів (менше 5 тренувань) ── */}
+      {stats.totalSessions < 5 && <ProgressMotivation />}
 
       {/* ── Твій ріст: графіки обраних вправ (лише якщо є обрані) ── */}
       {favoriteCharts.length > 0 && (

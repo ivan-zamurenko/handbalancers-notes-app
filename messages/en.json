@@ -65,7 +65,14 @@
     "allDone": "Day complete",
     "programComplete": "Program complete",
     "days": "days",
-    "trainingSessions": "training days"
+    "trainingSessions": "training days",
+    "motivationEyebrow": "progress forecast",
+    "motivationTitle": "Train daily — results 2× faster",
+    "motivationDaily": "Daily",
+    "motivationSlow": "2× / week",
+    "motivationGoal": "Your goal",
+    "motivationWeeks": "weeks",
+    "motivationCaption": "Estimated skill progress with bodyweight training"
   },
   "programs": {
     "title": "Training Programs",

@@ -65,7 +65,14 @@
     "allDone": "День завершено",
     "programComplete": "Програма завершена",
     "days": "днів",
-    "trainingSessions": "тренувальних днів"
+    "trainingSessions": "тренувальних днів",
+    "motivationEyebrow": "візуалізація прогресу",
+    "motivationTitle": "Щоденне тренування — результат у 2× швидше",
+    "motivationDaily": "Щодня",
+    "motivationSlow": "2× / тиж.",
+    "motivationGoal": "Твоя ціль",
+    "motivationWeeks": "тижні",
+    "motivationCaption": "Оріўнтовний графік нарощення навички з власною вагою"
   },
   "programs": {
     "title": "Програми тренувань",
